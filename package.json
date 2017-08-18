@@ -1,0 +1,26 @@
+{
+  "name": "tanks2",
+  "version": "1.0.0",
+  "description": "multiplayer tanks game",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kraken22/tanks2.git"
+  },
+  "keywords": [
+    "tanks"
+  ],
+  "author": "Jordan Jantschulev",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kraken22/tanks2/issues"
+  },
+  "homepage": "https://github.com/kraken22/tanks2#readme",
+  "dependencies": {
+    "express": "^4.15.4",
+    "socket.io": "^2.0.3"
+  }
+}
