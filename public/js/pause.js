@@ -1,5 +1,4 @@
 var pause;
-var colourSelector;
 
 function Pause() {
   this.paused = false;
@@ -8,16 +7,16 @@ function Pause() {
   this.buttons.push(new Button(3*width/6, 2*height/3, 200, 'Resume', 24));
   this.buttons.push(new Button(5*width/6, 2*height/3, 200, 'Change Colour', 24));
 
+  this.mapEditor = new MapEditor();
+  this.colorSelect = new ColorSelect();
 
   this.use = function () {
     if(this.paused){
-      this.showPauseMenu();
-
+      this.show();
     }
-
   }
 
-  this.showPauseMenu = function () {
+  this.show = function () {
     fill(tank.colour);
     textAlign(CENTER, CENTER);
     textSize(100);
@@ -29,46 +28,52 @@ function Pause() {
     for (var i = 0; i < this.buttons.length; i++) {
       this.buttons[i].show();
     }
+
+    if(this.mapEditor.active){
+      this.mapEditor.show();
+    }
+    if(this.colorSelect.active){
+      this.colorSelect.show();
+    }
+
   }
 
   this.mouseClick = function () {
-    if(!this.paused && !trackEditor.creatingTrack){
-      return;
-    }
-    for (var i = 0; i < this.buttons.length; i++) {
-      if(this.buttons[i].detectPress()){
-        if(this.buttons[i].text == 'Map Editor'){
-          trackEditor.changeMode();
-        }
-        if(this.buttons[i].text == 'Resume'){
-          this.togglePause();
-        }
-        if(this.buttons[i].text == 'Change Colour'){
-          colourSelector.toggleColourSelector();
+    if (this.mapEditor.active) {
+      this.mapEditor.mouseClick();
+    } else if (this.colorSelect.active) {
+      this.colorSelect.mouseClick();
+    } else {
+      for (var i = 0; i < this.buttons.length; i++) {
+        if(this.buttons[i].detectPress()){
+          if(this.buttons[i].text == 'Map Editor'){
+            this.mapEditor.changeMode();
+          }
+          if(this.buttons[i].text == 'Resume'){
+            this.togglePause();
+          }
+          if(this.buttons[i].text == 'Change Colour'){
+            this.colorSelect.toggleColorSelect();
+          }
         }
       }
     }
   }
 
   this.togglePause = function () {
-    if(!trackEditor.creatingTrack){
-      if(this.paused){
-        this.paused = false;
-      } else {
-        this.paused = true;
-      }
+    if(this.paused){
+      this.paused = false;
+    } else {
+      this.paused = true;
     }
   }
 }
 
-function ColourSelector() {
+function ColorSelect() {
   this.colours = ['#10802E', '#E40C19', '#CE9621', '#3614A5'];
-  this.selectingColour = false;
+  this.active = false;
 
   this.show = function () {
-    if (!this.selectingColour) {
-      return;
-    }
     fill(this.colours[0]);
     rect(0, 0, width/2, height/2);
     fill(this.colours[1]);
@@ -79,10 +84,7 @@ function ColourSelector() {
     rect(width/2, height/2, width/2, height/2);
   }
 
-  this.press = function () {
-    if (!this.selectingColour) {
-      return;
-    }
+  this.mouseClick = function () {
     if(collidePointRect(mouseX, mouseY, 0, 0, width/2, height/2)){
       tank.loadImages('green');
     }
@@ -95,14 +97,14 @@ function ColourSelector() {
     if(collidePointRect(mouseX, mouseY, width/2, height/2, width/2, height/2)){
       tank.loadImages('blue');
     }
-    this.toggleColourSelector();
+    this.toggleColorSelect();
   }
 
-  this.toggleColourSelector = function () {
-    if (this.selectingColour) {
-      this.selectingColour = false;
+  this.toggleColorSelect = function () {
+    if (this.active) {
+      this.active = false;
     } else {
-      this.selectingColour = true;
+      this.active = true;
     }
   }
 }

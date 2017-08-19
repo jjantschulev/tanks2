@@ -3,16 +3,12 @@ function setup() {
   tank = new Tank();
   view = new View();
   minimap = new Minimap();
-  trackEditor = new TrackEditor();
   pause = new Pause();
-  colourSelector = new ColourSelector();
 }
 
 function draw() {
   background(0);
   pause.use();
-  trackEditor.show();
-  colourSelector.show();
   if(pause.paused){
     return;
   }

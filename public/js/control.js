@@ -27,47 +27,41 @@ function keyHold(k) {
 }
 
 function keyDown(k) {
-  // TrackEditor Key Logic
-  if(trackEditor.creatingTrack){
-    if (k == 65) {
-      trackEditor.addLine();
-    }
-    if (k == 83) {
-      trackEditor.saveMap()
-    }
-    if (k == 69) {
-      trackEditor.toggleEraser();
-    }
-    if (k == 67) {
-      trackEditor.clearAll();
-    }
-    if (k == 32) {
-      trackEditor.mouseClick();
-    }
-    if (k == 27) {
-      trackEditor.changeMode();
-    }
-    if (k == 76) {
-      trackEditor.loadLines();
-    }
-    return;
-  }
-  // Executes only when not in editor
   if (k == 27) {
     pause.togglePause();
   }
-  if (pause.paused) {
-    return;
-  }
-  if (k == 220){
-    minimap.toggleDisplay();
-  }
-  // Gun Mode Change
-  if (k == 49) {
-    tank.gun.type = 1;
-  }
-  if (k == 50) {
-    tank.gun.type = 2;
+  if(pause.paused){
+    if(pause.mapEditor.active){
+      if (k == 65) {
+        pause.mapEditor.addLine();
+      }
+      if (k == 83) {
+        pause.mapEditor.saveMap()
+      }
+      if (k == 69) {
+        pause.mapEditor.toggleEraser();
+      }
+      if (k == 67) {
+        pause.mapEditor.clearAll();
+      }
+      if (k == 32) {
+        pause.mapEditor.mouseClick();
+      }
+      if (k == 76) {
+        pause.mapEditor.loadLines();
+      }
+    }
+  }else{ // not paused:
+    if (k == 220){
+      minimap.toggleDisplay();
+    }
+    // Gun Mode Change
+    if (k == 49) {
+      tank.gun.type = 1;
+    }
+    if (k == 50) {
+      tank.gun.type = 2;
+    }
   }
 }
 
@@ -76,9 +70,9 @@ function keyUp(k) {
 }
 
 function mousePressed() {
-  trackEditor.mouseClick();
-  colourSelector.press();
-  pause.mouseClick();
+  if(pause.paused){
+    pause.mouseClick();
+  }
 }
 
 var keys = [];

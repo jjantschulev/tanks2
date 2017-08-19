@@ -45,7 +45,7 @@ socket.on("update", function (tanks_array) {
 });
 
 socket.on('new_map', function (data) {
-  trackEditor.newMap(data);
+  pause.mapEditor.newMap(data);
 });
 
 socket.on('bullet', function (bulletData) {

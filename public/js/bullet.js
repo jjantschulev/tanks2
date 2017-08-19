@@ -79,8 +79,10 @@ function Gun() {
     }
     bullets.push(new Bullet(bulletData.x, bulletData.y, bulletData.dir, bulletData.id, bulletData.type, bulletData.col));
     socket.emit('bullet', bulletData);
-    tank.pos.x -= this.type*sin(tank.gunDir+tank.dir);
-    tank.pos.y += this.type*cos(tank.gunDir+tank.dir);
+
+    // Recoil effect
+    tank.pos.x -= this.type**2*sin(tank.gunDir+tank.dir);
+    tank.pos.y += this.type**2*cos(tank.gunDir+tank.dir);
   }
 
   this.update = function () {
