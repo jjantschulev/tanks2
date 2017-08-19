@@ -25,7 +25,7 @@ function draw() {
   showTanks();
   tank.update();
   tank.show();
-
+  showExplosions();
   pop();
   minimap.show();
 }

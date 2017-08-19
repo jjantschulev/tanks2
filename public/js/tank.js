@@ -23,10 +23,25 @@ function Tank() {
   this.h = 30;
 
   this.id = "";
-  this.colour = "yellow";
+
+  this.colour = Cookies.get('tank_colour');
+  if (this.colour == undefined) {
+    var colours = ['red', 'green', 'yellow', 'blue'];
+    var col = colours[Math.floor(random(4))];
+    console.log(col);
+    this.colour = col;
+  }
 
   this.health = 100;
-  this.name = "Kraken";
+
+  this.name = Cookies.get('name');
+  if (this.name == undefined) {
+    this.name = prompt("What's you name");
+    while(this.name == ''){
+      this.name = prompt("What's you name");
+    }
+    Cookies.set('name', this.name);
+  }
 
   //Weaponry
   this.gun = new Gun();
@@ -37,6 +52,8 @@ function Tank() {
     this.pos.y -= this.speed * cos(this.dir);
     this.dir += this.dirVel;
     this.gunDir += this.gunDirVel;
+
+    this.respawnTimer --;
 
     // CHECKING
     this.collisions();
@@ -56,7 +73,7 @@ function Tank() {
     translate(this.pos.x, this.pos.y);
 
     // SHOW HEALTH BAR
-    fill(this.colour);
+    fill(color(this.colour));
     noStroke();
     rectMode(CENTER);
     rect(0, -30, map(this.health, 0, 100, 0, 30), 1.6);
@@ -107,6 +124,13 @@ function Tank() {
     } else {
       this.previousPos.set(this.pos);
     }
+  }
+
+  this.death = function () {
+    this.health = 100;
+    this.pos.set(random(width), random(height));
+    bullets = [];
+    pause.deathScreen.toggleDeathScreen();
   }
 
   this.loadImages = function (col) {

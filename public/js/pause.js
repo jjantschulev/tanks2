@@ -9,6 +9,7 @@ function Pause() {
 
   this.mapEditor = new MapEditor();
   this.colorSelect = new ColorSelect();
+  this.deathScreen = new DeathScreen();
 
   this.use = function () {
     if(this.paused){
@@ -36,6 +37,7 @@ function Pause() {
       this.colorSelect.show();
     }
 
+    this.deathScreen.show();
   }
 
   this.mouseClick = function () {
@@ -98,6 +100,7 @@ function ColorSelect() {
       tank.loadImages('blue');
     }
     this.toggleColorSelect();
+    Cookies.set('tank_colour', tank.colour);
   }
 
   this.toggleColorSelect = function () {
@@ -105,6 +108,39 @@ function ColorSelect() {
       this.active = false;
     } else {
       this.active = true;
+    }
+  }
+}
+
+function DeathScreen() {
+  this.dead = false;
+  this.respawnTimer = 0;
+  this.show = function () {
+    this.respawnTimer--;
+    if(this.respawnTimer == 0){
+      this.toggleDeathScreen();
+    }
+    if(this.dead){
+      fill(0);
+      rect(0, 0, width, height);
+      fill(tank.colour);
+      textAlign(CENTER, CENTER);
+      textSize(100);
+      text('Paused', width/2, height/2);
+      textSize(20);
+      fill(120);
+      text('respawning in ' + Math.round(this.respawnTimer/60) + 's', width/2, height/2 + 80);
+    }
+  }
+
+  this.toggleDeathScreen = function () {
+    if(this.dead){
+      this.dead = false;
+      pause.paused = false;
+    }else{
+      this.dead = true;
+      pause.paused = true;
+      this.respawnTimer = 300;
     }
   }
 }

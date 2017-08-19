@@ -17,6 +17,14 @@ function View() {
     scale(this.zoom);
     translate(-this.x, -this.y);
   }
+
+  this.getRealMousePoints = function () {
+    var mdata = {
+      x: map(mouseX, 0, width, this.x - width/this.zoom/2, this.x + width/this.zoom/2),
+      y: map(mouseY, 0, height, this.y - height/this.zoom/2, this.y + height/this.zoom/2),
+    }
+    return mdata;
+  }
 }
 
 function showWalls() {

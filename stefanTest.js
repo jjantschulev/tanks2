@@ -1,7 +1,7 @@
 var foo = 7;
 var bar = 5;
 
-var foobar = multiplyTwoNumbers(foo, bar);
+var foobar = aFunction(foo, bar);
 
 console.log("this is foobar: " + foobar);
 
@@ -14,10 +14,10 @@ if(foobar > 50){
 }
 
 for (var i = 0; i < foobar; i++) {
-  console.log("Javascript is fun " + i);
+  console.log("Javascript is fun #" + i);
 }
 
-function multiplyTwoNumbers(var1, var2) {
-  var result = var1 * var2;
-  return result;
+function aFunction(var1, var2) {
+  var result = (var1 - var2);
+  return result * result;
 }
