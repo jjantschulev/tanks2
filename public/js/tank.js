@@ -24,6 +24,10 @@ function Tank() {
 
   this.id = "";
   this.colour = "yellow";
+
+  this.health = 100;
+  this.name = "Kraken";
+
   //Weaponry
   this.gun = new Gun();
 
@@ -50,6 +54,20 @@ function Tank() {
     push();
     imageMode(CENTER);
     translate(this.pos.x, this.pos.y);
+
+    // SHOW HEALTH BAR
+    fill(this.colour);
+    noStroke();
+    rectMode(CENTER);
+    rect(0, -30, map(this.health, 0, 100, 0, 30), 1.6);
+
+    // SHOW NAME
+    fill(120);
+    textAlign(CENTER, CENTER);
+    textSize(8);
+    text(this.name, 0, -36);
+
+    // SHOW TANK
     rotate(this.dir);
     image(this.image, 0, 0, this.w, this.h);
     rotate(this.gunDir);
@@ -112,6 +130,9 @@ function EnemyTank() {
   this.colour = "yellow";
   this.paused = false;
 
+  this.health = 100;
+  this.name = 'other';
+
   this.show = function () {
     if(this.paused){
       return;
@@ -119,6 +140,21 @@ function EnemyTank() {
     push();
     imageMode(CENTER);
     translate(this.pos.x, this.pos.y);
+
+    // SHOW HEALTH BAR
+    fill(this.colour);
+    noStroke();
+    rectMode(CENTER);
+    rect(0, -30, map(this.health, 0, 100, 0, 30), 1.6);
+
+    // SHOW NAME
+    fill(120);
+    textAlign(CENTER, CENTER);
+    textSize(8);
+    text(this.name, 0, -36);
+
+    // SHOW TANK
+
     rotate(this.dir);
     image(this.image, 0, 0, this.w, this.h);
     rotate(this.gunDir);

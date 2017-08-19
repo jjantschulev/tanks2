@@ -9,7 +9,9 @@ function sync() {
     gunDir: tank.gunDir,
     id: tank.id,
     col: tank.colour,
-    paused: pause.paused
+    paused: pause.paused,
+    health: tank.health,
+    name: tank.name,
   }
   socket.emit('sync', data);
 }
@@ -24,10 +26,6 @@ socket.on("update", function (tanks_array) {
   for (var i = 0; i < tanks_array.length; i++) {
     if(tanks[i] == null){
       var newTank = new EnemyTank();
-      newTank.pos.x = tanks_array[i].x;
-      newTank.pos.y = tanks_array[i].y;
-      newTank.dir = tanks_array[i].dir;
-      newTank.gunDir = tanks_array[i].gunDir;
       newTank.id = tanks_array[i].id;
       newTank.loadImages(tanks_array[i].col);
       tanks.push(newTank);
@@ -40,6 +38,8 @@ socket.on("update", function (tanks_array) {
       if(tanks[i].colour != tanks_array[i].col){
         tanks[i].loadImages(tanks_array[i].col);
       }
+      tanks[i].name = tanks_array[i].name;
+      tanks[i].health = tanks_array[i].health;
     }
   }
 });

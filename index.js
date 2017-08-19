@@ -30,7 +30,9 @@ io.on('connection', function (socket) {
     dir:0,
     gunDir:0,
     col: "yellow",
-    paused: false
+    paused: false,
+    name: 'anonym',
+    health: 100
   });
   socket.emit("initial-update", socket.id);
   socket.emit('new_map', map);
@@ -44,6 +46,8 @@ io.on('connection', function (socket) {
         tanks[i].gunDir = data.gunDir;
         tanks[i].col = data.col;
         tanks[i].paused = data.paused;
+        tanks[i].health = data.health;
+        tanks[i].name = data.name;
       }
     }
   });
