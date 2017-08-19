@@ -72,7 +72,7 @@ function Minimap() {
     }
     noStroke();
     for (var i = 0; i < tanks.length; i++) {
-      if(tanks[i].id != tank.id){
+      if(tanks[i].id != tank.id && !tanks[i].paused){
         fill(tanks[i].colour);
         ellipse(tanks[i].pos.x, tanks[i].pos.y, 40, 40);
       }

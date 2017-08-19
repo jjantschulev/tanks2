@@ -47,10 +47,13 @@ function TrackEditor() {
   }
 
   this.changeMode = function () {
-    if(this.creatingTrack){
-      this.creatingTrack = false;
-    }else{
-      this.creatingTrack = true;
+    if(pause.paused){
+      if(this.creatingTrack){
+        this.creatingTrack = false;
+      }else{
+        this.loadLines();
+        this.creatingTrack = true;
+      }
     }
   }
 
@@ -114,6 +117,7 @@ function TrackEditor() {
   }
 
   this.toggleEraser = function () {
+    this.addLine();
     if(this.eraser){
       this.eraser = false;
     }else {
@@ -182,6 +186,7 @@ function TrackEditorMenu() {
     }
     ellipse(this.x, y, this.r-5, this.r-5);
     fill(0);
+    textSize(12);
     textAlign(CENTER, CENTER);
     text(t, this.x, y);
   }

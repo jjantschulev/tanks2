@@ -8,7 +8,8 @@ function sync() {
     dir: tank.dir,
     gunDir: tank.gunDir,
     id: tank.id,
-    col: tank.colour
+    col: tank.colour,
+    paused: pause.paused
   }
   socket.emit('sync', data);
 }
@@ -35,6 +36,7 @@ socket.on("update", function (tanks_array) {
       tanks[i].pos.y = tanks_array[i].y;
       tanks[i].gunDir = tanks_array[i].gunDir;
       tanks[i].dir = tanks_array[i].dir;
+      tanks[i].paused = tanks_array[i].paused;
       if(tanks[i].colour != tanks_array[i].col){
         tanks[i].loadImages(tanks_array[i].col);
       }
@@ -47,7 +49,9 @@ socket.on('new_map', function (data) {
 });
 
 socket.on('bullet', function (bulletData) {
-  bullets.push(new Bullet(bulletData.x, bulletData.y, bulletData.dir, bulletData.id, bulletData.type, bulletData.col));
+  if(!pause.paused){
+    bullets.push(new Bullet(bulletData.x, bulletData.y, bulletData.dir, bulletData.id, bulletData.type, bulletData.col));
+  }
 });
 
 socket.on('remove', function (id) {

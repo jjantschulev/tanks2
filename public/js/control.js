@@ -28,9 +28,6 @@ function keyHold(k) {
 
 function keyDown(k) {
   // TrackEditor Key Logic
-  if (k == 220) {
-    trackEditor.changeMode();
-  }
   if(trackEditor.creatingTrack){
     if (k == 65) {
       trackEditor.addLine();
@@ -47,10 +44,22 @@ function keyDown(k) {
     if (k == 32) {
       trackEditor.mouseClick();
     }
+    if (k == 27) {
+      trackEditor.changeMode();
+    }
+    if (k == 76) {
+      trackEditor.loadLines();
+    }
     return;
   }
   // Executes only when not in editor
-  if (k == 48){
+  if (k == 27) {
+    pause.togglePause();
+  }
+  if (pause.paused) {
+    return;
+  }
+  if (k == 220){
     minimap.toggleDisplay();
   }
   // Gun Mode Change
@@ -68,26 +77,28 @@ function keyUp(k) {
 
 function mousePressed() {
   trackEditor.mouseClick();
+  colourSelector.press();
+  pause.mouseClick();
 }
 
 var keys = [];
 window.addEventListener('keydown', function () {
   var addKeyToArray = true;
   for (var i = 0; i < keys.length; i++) {
-    if (keys[i] == event.which) {
+    if (keys[i] == event.keyCode) {
       addKeyToArray = false;
     }
   }
   if (addKeyToArray) {
-    keys.push(event.which);
+    keys.push(event.keyCode);
   }
-  keyDown(event.which);
+  keyDown(event.keyCode);
 });
 window.addEventListener('keyup', function () {
   for (var i = 0; i < keys.length; i++) {
-    if (keys[i] == event.which) {
+    if (keys[i] == event.keyCode) {
       keys.splice(i, 1);
     }
   }
-  keyUp(event.which);
+  keyUp(event.keyCode);
 });

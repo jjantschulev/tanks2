@@ -25,18 +25,19 @@ function Bullet(x, y, dir, id, type, col) {
     this.x += this.speed * sin(this.dir);
     this.y -= this.speed * cos(this.dir);
     this.collisions();
+    this.deleteOffScreen();
   }
 
   this.collisions = function () {
     for (var i = 0; i < walls.length; i++) {
-      if (walls[i].bulletColliding(this.x, this.y, this.r*5)) {
+      if (walls[i].bulletColliding(this.x, this.y, 20)) {
         bullets.splice(bullets.indexOf(this), 1);
         return;
       }
     }
     for (var i = 0; i < tanks.length; i++) {
-      if (this.id != tanks[i].id) {
-        if (collideRectCircle(tanks[i].pos.x - tanks[i].w/2, tanks[i].pos.y - tanks[i].h/2, tanks[i].w, tanks[i].h, this.x, this.y, this.r)) {
+      if (this.id != tanks[i].id && !tanks[i].paused) {
+        if (collideRectCircle(tanks[i].pos.x - tanks[i].w/2, tanks[i].pos.y - tanks[i].h/2, tanks[i].w, tanks[i].h, this.x, this.y, this.r/2)) {
           bullets.splice(bullets.indexOf(this), 1);
         }
       }
@@ -62,9 +63,9 @@ function Gun() {
   this.reload2 = 0;
   this.shoot = function () {
     if(this.reload1 <= 0 && this.type == 1){
-      this.reload1 = 10;
+      this.reload1 = 6;
     } else if(this.reload2 <= 0 && this.type == 2){
-      this.reload2 = 100;
+      this.reload2 = 50;
     }else{
       return;
     }

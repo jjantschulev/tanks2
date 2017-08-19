@@ -29,7 +29,8 @@ io.on('connection', function (socket) {
     y:0,
     dir:0,
     gunDir:0,
-    col: "yellow"
+    col: "yellow",
+    paused: false
   });
   socket.emit("initial-update", socket.id);
   socket.emit('new_map', map);
@@ -42,6 +43,7 @@ io.on('connection', function (socket) {
         tanks[i].dir = data.dir;
         tanks[i].gunDir = data.gunDir;
         tanks[i].col = data.col;
+        tanks[i].paused = data.paused;
       }
     }
   });

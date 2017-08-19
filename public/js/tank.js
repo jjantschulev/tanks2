@@ -110,8 +110,12 @@ function EnemyTank() {
 
   this.id = "";
   this.colour = "yellow";
+  this.paused = false;
 
   this.show = function () {
+    if(this.paused){
+      return;
+    }
     push();
     imageMode(CENTER);
     translate(this.pos.x, this.pos.y);
