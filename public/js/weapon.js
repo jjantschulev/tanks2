@@ -3,9 +3,9 @@ function WeaponManager() {
   this.bombs = [];
   this.blasts = [];
 
-  this.landmineAmount = 30;
-  this.bombAmount = 40;
-  this.blastAmount = 40;
+  this.landmineAmount = 100;
+  this.bombAmount = 100;
+  this.blastAmount = 100;
 
   this.landmineColour = color(0, 190, 255);
   this.bombColour = color(255, 180, 0);
@@ -167,7 +167,7 @@ function Landmine(x, y, owner, col) {
 
   this.explode = function () {
     tank.removeHealth(28);
-    tank.weaponManager.pushTank(this.x, this.y, 30);
+    tank.weaponManager.pushTank(this.x, this.y, 45);
     explosions.push(new Explosion(this.x, this.y, 200, tank.weaponManager.landmineColour, 50));
     tank.checkDeath(this.owner);
   }

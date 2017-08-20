@@ -32,4 +32,5 @@ function draw() {
   tank.weaponManager.showInfo();
 
   pause.use();
+  showNotifications();
 }

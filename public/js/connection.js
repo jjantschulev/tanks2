@@ -59,7 +59,7 @@ socket.on('weapon', function (data) {
 socket.on('death', function (deathData) {
   gifExplosions.push(new GifExplosion(deathData.victimX, deathData.victimY));
   if(deathData.killerName == tank.name){
-    tank.kill();
+    tank.kill(deathData.victimName);
   }
 });
 
