@@ -49,14 +49,16 @@ socket.on('new_map', function (data) {
 });
 
 socket.on('bullet', function (bulletData) {
-  if(!pause.paused){
-    bullets.push(new Bullet(bulletData.x, bulletData.y, bulletData.dir, bulletData.id, bulletData.name, bulletData.type, bulletData.col));
-  }
+  bullets.push(new Bullet(bulletData.x, bulletData.y, bulletData.dir, bulletData.name, bulletData.type, bulletData.col));
 });
+
+socket.on('weapon', function (data) {
+  tank.weaponManager.dropWeapon(data);
+})
 
 socket.on('death', function (deathData) {
   gifExplosions.push(new GifExplosion(deathData.victimX, deathData.victimY));
-  if(deathData.killerId == tank.id){
+  if(deathData.killerName == tank.name){
     tank.kill();
   }
 });
@@ -68,3 +70,12 @@ socket.on('remove', function (id) {
     }
   }
 });
+
+function refresh() {
+  socket.emit('refresh');
+  window.location.reload(true);
+}
+
+socket.on('refresh', function () {
+  window.location.reload(true);
+})

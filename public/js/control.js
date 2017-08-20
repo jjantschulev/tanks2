@@ -62,6 +62,16 @@ function keyDown(k) {
     if (k == 50) {
       tank.gun.type = 2;
     }
+    // Add weapons
+    if (k == 77) {
+      tank.weaponManager.dropBomb();
+    }
+    if (k == 78) {
+      tank.weaponManager.dropLandmine();
+    }
+    if (k == 66) {
+      tank.weaponManager.dropBlast();
+    }
   }
 }
 

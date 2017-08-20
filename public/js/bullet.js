@@ -1,17 +1,20 @@
 var bullets = [];
 
 function showBullets() {
-  for (var i = bullets.length-1; i >= 0; i--) {
+  for (var i = 0; i < bullets.length; i++) {
     bullets[i].show();
     bullets[i].update();
   }
+  // for (var i = bullets.length-1; i >= 0; i--) {
+  //   bullets[i].show();
+  //   bullets[i].update();
+  // }
 }
 
-function Bullet(x, y, dir, id, name, type, col) {
+function Bullet(x, y, dir, name, type, col) {
   this.x = x;
   this.y = y;
   this.dir = dir;
-  this.id = id;
   this.name = name;
   this.col = col;
   this.type = type;
@@ -21,7 +24,7 @@ function Bullet(x, y, dir, id, name, type, col) {
     this.damage = 2.5;
   }else if (type == 2) {
     this.r = 8;
-    this.damage = 13;
+    this.damage = 15;
   }
 
   this.update = function () {
@@ -42,23 +45,26 @@ function Bullet(x, y, dir, id, name, type, col) {
       }
     }
     // Splice and apply damage if hitting tank
-    if(this.id != tank.id){
+    if(this.name != tank.name){
       if (collideRectCircle(tank.pos.x - tank.w/2, tank.pos.y - tank.h/2, tank.w, tank.h, this.x, this.y, this.r/2)) {
-        tank.health -= this.damage;
-        if(tank.health <= 0){
-          tank.death(this.id, this.name);
+        if(teams){
+          if(this.col != tank.colour){
+            this.hit();
+            return true;
+          }
+        }else{
+          this.hit();
+          return true;
         }
-        explosions.push(new Explosion(this.x, this.y, this.r * 6, this.col, 30));
-        tank.pos.x += this.type**2*sin(this.dir);
-        tank.pos.y -= this.type**2*cos(this.dir);
-        bullets.splice(bullets.indexOf(this), 1);
-        return true;
       }
     }
     // Splice if hitting other tank
     for (var i = 0; i < tanks.length; i++) {
-      if (this.id != tanks[i].id) {
+      if (this.name != tanks[i].name && !tanks[i].paused) {
         if (collideRectCircle(tanks[i].pos.x - tanks[i].w/2, tanks[i].pos.y - tanks[i].h/2, tanks[i].w, tanks[i].h, this.x, this.y, this.r/2)) {
+          if (teams && this.col == tanks[i].colour) {
+            return false;
+          }
           explosions.push(new Explosion(this.x, this.y, this.r * 6, this.col, 30));
           bullets.splice(bullets.indexOf(this), 1);
           return true;
@@ -67,9 +73,19 @@ function Bullet(x, y, dir, id, name, type, col) {
     }
   }
 
+  this.hit = function () {
+    tank.removeHealth(this.damage);
+    explosions.push(new Explosion(this.x, this.y, this.r * 6, this.col, 30));
+    tank.pos.x += this.type**2*sin(this.dir);
+    tank.pos.y -= this.type**2*cos(this.dir);
+    tank.checkDeath(this.name);
+    bullets.splice(bullets.indexOf(this), 1);
+  }
+
   this.deleteOffScreen = function () {
     if(this.x < 0 || this.x > width || this.y < 0 || this.y > height){
       bullets.splice(bullets.indexOf(this), 1);
+      return true;
     }
   }
 
@@ -98,12 +114,11 @@ function Gun() {
       x: tank.pos.x + 20*sin(tank.gunDir+tank.dir),
       y: tank.pos.y - 20*cos(tank.gunDir+tank.dir),
       dir: tank.gunDir + tank.dir,
-      id: tank.id,
       type: this.type,
       col: tank.colour,
       name: tank.name
     }
-    bullets.push(new Bullet(bulletData.x, bulletData.y, bulletData.dir, bulletData.id, bulletData.name, bulletData.type, bulletData.col));
+    bullets.push(new Bullet(bulletData.x, bulletData.y, bulletData.dir, bulletData.name, bulletData.type, bulletData.col));
     socket.emit('bullet', bulletData);
 
     // Recoil effect

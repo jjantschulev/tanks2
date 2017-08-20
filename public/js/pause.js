@@ -18,6 +18,11 @@ function Pause() {
   }
 
   this.show = function () {
+    fill(0);
+    noStroke();
+    rectMode(CORNER);
+    rect(0, 0, width, height);
+
     fill(tank.colour);
     textAlign(CENTER, CENTER);
     textSize(100);
@@ -64,6 +69,7 @@ function Pause() {
 
   this.togglePause = function () {
     if(this.paused){
+      tank.weaponManager.pushTank(tank.pos.x+1, tank.pos.y+1, 35, random(TWO_PI));
       this.paused = false;
     } else {
       this.paused = true;
@@ -115,10 +121,12 @@ function ColorSelect() {
 function DeathScreen() {
   this.dead = false;
   this.respawnTimer = 0;
+  this.killerName = '';
+
   this.show = function () {
     this.respawnTimer--;
     if(this.respawnTimer == 0){
-      this.toggleDeathScreen();
+      this.toggleDeathScreen('');
     }
     if(this.dead){
       fill(0);
@@ -127,20 +135,24 @@ function DeathScreen() {
       textAlign(CENTER, CENTER);
       textSize(100);
       text('You Died', width/2, height/2);
-      textSize(20);
       fill(120);
-      text('respawning in ' + Math.round(this.respawnTimer/60) + 's', width/2, height/2 + 80);
+      textSize(30);
+      text('you were killed by '+this.killerName, width/2, height/2 + 100);
+      textSize(20);
+      text('respawning in ' + Math.round(this.respawnTimer/60) + 's', width/2, height/2 + 150);
     }
   }
 
-  this.toggleDeathScreen = function () {
+  this.toggleDeathScreen = function (n) {
     if(this.dead){
       this.dead = false;
       pause.paused = false;
+      this.killerName = '';
     }else{
       this.dead = true;
       pause.paused = true;
       this.respawnTimer = 300;
+      this.killerName = n;
     }
   }
 }

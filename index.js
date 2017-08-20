@@ -61,8 +61,16 @@ io.on('connection', function (socket) {
     socket.broadcast.emit('bullet', data);
   });
 
+  socket.on('weapon', function (data) {
+    socket.broadcast.emit('weapon', data);
+  });
+
   socket.on('death', function (deathData) {
     socket.broadcast.emit('death', deathData);
+  });
+
+  socket.on('refresh', function () {
+    socket.broadcast.emit('refresh');
   })
 
   socket.on('disconnect', function () {

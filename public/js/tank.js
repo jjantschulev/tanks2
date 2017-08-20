@@ -12,7 +12,8 @@ function showTanks() {
 
 function Tank() {
   this.pos = createVector(random(width), random(height));
-  this.previousPos = createVector(0, 0);
+  this.previousPos = this.pos.copy();
+  this.viewPos = this.pos.copy();
   this.dir = 0;
   this.gunDir = 0;
   this.speed = 0;
@@ -45,6 +46,7 @@ function Tank() {
 
   //Weaponry
   this.gun = new Gun();
+  this.weaponManager = new WeaponManager();
 
   this.update = function () {
     // UPDATE VARIABLES
@@ -52,8 +54,11 @@ function Tank() {
     this.pos.y -= this.speed * cos(this.dir);
     this.dir += this.dirVel;
     this.gunDir += this.gunDirVel;
-
     this.respawnTimer --;
+
+    // SMOOTHEN TANK MOVEMENT
+    this.viewPos.x = lerp(this.viewPos.x, this.pos.x, 0.6);
+    this.viewPos.y = lerp(this.viewPos.y, this.pos.y, 0.6);
 
     // CHECKING
     this.collisions();
@@ -70,7 +75,7 @@ function Tank() {
   this.show = function () {
     push();
     imageMode(CENTER);
-    translate(this.pos.x, this.pos.y);
+    translate(this.viewPos.x, this.viewPos.y);
 
     // SHOW HEALTH BAR
     fill(color(this.colour));
@@ -126,10 +131,8 @@ function Tank() {
     }
   }
 
-  this.death = function (id, name) {
+  this.death = function (name) {
     var deathData = {
-      killerId: id,
-      victimeId: this.id,
       killerName: name,
       victimName: this.name,
       victimX: this.pos.x,
@@ -139,13 +142,26 @@ function Tank() {
     this.health = 100;
     this.pos.set(random(width), random(height));
     this.previousPos.set(this.pos);
-    bullets = [];
-    pause.deathScreen.toggleDeathScreen();
+    pause.deathScreen.toggleDeathScreen(name);
+  }
+
+  this.checkDeath = function (name) {
+    if(this.health <= 0){
+      this.death(name);
+    }
   }
 
   this.kill = function () {
-    explosions.push(new Explosion(this.pos.x, this.pos.y, 150, 'white', 40));
+    this.health = 100;
+    this.weaponManager.landmineAmount += 2;
+    this.weaponManager.bombAmount += 2;
+    this.weaponManager.blastAmount += 2;
+  }
 
+  this.removeHealth = function (amount) {
+    if(!pause.paused){
+      this.health -= amount;
+    }
   }
 
   this.loadImages = function (col) {
