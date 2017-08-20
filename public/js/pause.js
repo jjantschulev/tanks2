@@ -126,7 +126,7 @@ function DeathScreen() {
       fill(tank.colour);
       textAlign(CENTER, CENTER);
       textSize(100);
-      text('Paused', width/2, height/2);
+      text('You Died', width/2, height/2);
       textSize(20);
       fill(120);
       text('respawning in ' + Math.round(this.respawnTimer/60) + 's', width/2, height/2 + 80);

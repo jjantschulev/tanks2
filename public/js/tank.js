@@ -19,7 +19,7 @@ function Tank() {
   this.dirVel = 0;
   this.gunDirVel = 0;
 
-  this.w = 30;
+  this.w = 25.5;
   this.h = 30;
 
   this.id = "";
@@ -126,11 +126,26 @@ function Tank() {
     }
   }
 
-  this.death = function () {
+  this.death = function (id, name) {
+    var deathData = {
+      killerId: id,
+      victimeId: this.id,
+      killerName: name,
+      victimName: this.name,
+      victimX: this.pos.x,
+      victimY: this.pos.y
+    }
+    socket.emit('death', deathData);
     this.health = 100;
     this.pos.set(random(width), random(height));
+    this.previousPos.set(this.pos);
     bullets = [];
     pause.deathScreen.toggleDeathScreen();
+  }
+
+  this.kill = function () {
+    explosions.push(new Explosion(this.pos.x, this.pos.y, 150, 'white', 40));
+
   }
 
   this.loadImages = function (col) {
@@ -144,10 +159,13 @@ function Tank() {
 
 function EnemyTank() {
   this.pos = createVector(random(width), random(height));
+  this.viewPos = this.pos.copy();
   this.dir = 0;
   this.gunDir = 0;
+  this.viewDir = 0;
+  this.viewGunDir = 0;
 
-  this.w = 30;
+  this.w = 25.5;
   this.h = 30;
 
   this.id = "";
@@ -163,7 +181,13 @@ function EnemyTank() {
     }
     push();
     imageMode(CENTER);
-    translate(this.pos.x, this.pos.y);
+    // SMOOTHEN TANK MOVEMENT
+    this.viewPos.x = lerp(this.viewPos.x, this.pos.x, 0.6);
+    this.viewPos.y = lerp(this.viewPos.y, this.pos.y, 0.6);
+    this.viewDir = lerp(this.viewDir, this.dir, 0.6);
+    this.viewGunDir = lerp(this.viewGunDir, this.gunDir, 0.6);
+
+    translate(this.viewPos.x, this.viewPos.y);
 
     // SHOW HEALTH BAR
     fill(this.colour);
@@ -178,10 +202,9 @@ function EnemyTank() {
     text(this.name, 0, -36);
 
     // SHOW TANK
-
-    rotate(this.dir);
+    rotate(this.viewDir);
     image(this.image, 0, 0, this.w, this.h);
-    rotate(this.gunDir);
+    rotate(this.viewGunDir);
     image(this.gunImage, 0, -this.w/4, this.w, this.h);
     pop();
   }

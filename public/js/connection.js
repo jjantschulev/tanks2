@@ -50,7 +50,14 @@ socket.on('new_map', function (data) {
 
 socket.on('bullet', function (bulletData) {
   if(!pause.paused){
-    bullets.push(new Bullet(bulletData.x, bulletData.y, bulletData.dir, bulletData.id, bulletData.type, bulletData.col));
+    bullets.push(new Bullet(bulletData.x, bulletData.y, bulletData.dir, bulletData.id, bulletData.name, bulletData.type, bulletData.col));
+  }
+});
+
+socket.on('death', function (deathData) {
+  gifExplosions.push(new GifExplosion(deathData.victimX, deathData.victimY));
+  if(deathData.killerId == tank.id){
+    tank.kill();
   }
 });
 

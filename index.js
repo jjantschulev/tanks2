@@ -61,6 +61,10 @@ io.on('connection', function (socket) {
     socket.broadcast.emit('bullet', data);
   });
 
+  socket.on('death', function (deathData) {
+    socket.broadcast.emit('death', deathData);
+  })
+
   socket.on('disconnect', function () {
     for (var i = 0; i < tanks.length; i++) {
       if(tanks[i].id == socket.id){

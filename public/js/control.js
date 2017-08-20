@@ -27,7 +27,7 @@ function keyHold(k) {
 }
 
 function keyDown(k) {
-  if (k == 27) {
+  if (k == 27 && !pause.deathScreen.dead) {
     pause.togglePause();
   }
   if(pause.paused){
