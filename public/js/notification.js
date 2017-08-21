@@ -8,7 +8,7 @@ function showNotifications() {
 }
 
 function Notification(t) {
-  this.w = width/3;
+  this.w = width/2;
   this.h = 40;
   this.x = width/2;
   this.y = -this.h/2;

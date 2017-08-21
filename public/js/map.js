@@ -47,8 +47,7 @@ function Wall(x1, y1, x2, y2) {
   }
 
   this.tankColliding = function (vector) {
-    var hit = collideLineRect(this.x1, this.y1, this.x2, this.y2,
-      vector.x - tank.w/2 - this.thickness/2, vector.y - tank.h/2 - this.thickness/2, tank.w + this.thickness/2, tank.h + this.thickness/2);
+    var hit = collideLineCircle(this.x1, this.y1, this.x2, this.y2, vector.x, vector.y, tank.h);
     return hit;
   }
 
@@ -73,8 +72,8 @@ function Minimap() {
     rectMode(CORNER);
     rect(0, 0, width, height);
     noFill();
-    stroke(150);
-    strokeWeight(25);
+    stroke(120);
+    strokeWeight(20);
     for (var i = 0; i < walls.length; i++) {
       line(walls[i].x1, walls[i].y1, walls[i].x2, walls[i].y2);
     }

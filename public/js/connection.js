@@ -1,28 +1,10 @@
 var socket = io(window.location.href);
 
-setInterval(sync, 38);
-function sync() {
-  var data = {
-    x: tank.pos.x,
-    y: tank.pos.y,
-    dir: tank.dir,
-    gunDir: tank.gunDir,
-    id: tank.id,
-    col: tank.colour,
-    paused: pause.paused,
-    health: tank.health,
-    name: tank.name,
-  }
-  socket.emit('sync', data);
+function onLoad() {
+  setInterval(sync, 38);
+  setInterval(syncAmmo, 1000);
+  socket.emit('name', tank.name);
 }
-
-// socket.emit()
-
-socket.on("initial-update", function (id) {
-  setTimeout(function () {
-    tank.id = id
-  }, 100);
-})
 
 socket.on("update", function (tanks_array) {
   for (var i = 0; i < tanks_array.length; i++) {
@@ -45,6 +27,10 @@ socket.on("update", function (tanks_array) {
     }
   }
 });
+
+socket.on('id', function (id) {
+  tank.id = id;
+})
 
 socket.on('new_map', function (data) {
   pause.mapEditor.newMap(data);
@@ -73,16 +59,6 @@ socket.on('remove', function (id) {
   }
 });
 
-setInterval(function () {
-  var data = {
-    mine: tank.weaponManager.landmineAmount,
-    blast: tank.weaponManager.blastAmount,
-    bomb: tank.weaponManager.bombAmount,
-    name: tank.name
-  }
-  socket.emit('ammoSync', data);
-}, 1000);
-
 socket.on('ammo', function (data) {
   console.log(data);
   tank.weaponManager.landmineAmount = data.mine;
@@ -90,7 +66,30 @@ socket.on('ammo', function (data) {
   tank.weaponManager.bombAmount = data.bomb;
 });
 
+function sync() {
+  var data = {
+    x: tank.pos.x,
+    y: tank.pos.y,
+    dir: tank.dir,
+    gunDir: tank.gunDir,
+    id: tank.id,
+    col: tank.colour,
+    paused: pause.paused,
+    health: tank.health,
+    name: tank.name,
+  }
+  socket.emit('sync', data);
+}
 
+function syncAmmo() {
+  var data = {
+    mine: tank.weaponManager.landmineAmount,
+    blast: tank.weaponManager.blastAmount,
+    bomb: tank.weaponManager.bombAmount,
+    name: tank.name
+  }
+  socket.emit('ammoSync', data);
+}
 
 // FORCE REFRESH ALL USERS
 function refresh() {

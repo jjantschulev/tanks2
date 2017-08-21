@@ -27,6 +27,8 @@ function WeaponManager() {
       fill(this.landmineColour);
       rect(rectSize*2, i*rectSize, rectSize, rectSize);
     }
+
+    this.limitWeaponAmount();
   }
 
   this.showWeapons = function () {
@@ -113,6 +115,18 @@ function WeaponManager() {
     }else{
       tank.pos.x += (d) * sin(direction);
       tank.pos.y -= (d) * cos(direction);
+    }
+  }
+
+  this.limitWeaponAmount = function () {
+    if(this.landmineAmount > 10){
+      this.landmineAmount = 10;
+    }
+    if(this.bombAmount > 10){
+      this.bombAmount = 10;
+    }
+    if(this.blastAmount > 10){
+      this.blastAmount = 10;
     }
   }
 }

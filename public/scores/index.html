@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>tanks.io scores</title>
+    <link rel="stylesheet" href="scores.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+  </head>
+  <body>
+    <h1>TANKS.IO Leaderboard.</h1>
+    <h3><i>may the best be acknowledged</i></h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th onclick="sortByWon()">Won</th>
+          <th onclick="sortByLost()">Lost</th>
+          <th onclick="sortByDif()">Overall</th>
+        </tr>
+      </thead>
+      <tbody id="scores">
+      </tbody>
+    </table>
+
+    <script src="/js/lib/socket.io.js" charset="utf-8"></script>
+    <script src="scores.js" charset="utf-8"></script>
+  </body>
+</html>

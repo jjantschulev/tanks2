@@ -23,7 +23,7 @@ function Tank() {
   this.w = 25.5;
   this.h = 30;
 
-  this.id = "";
+  this.id = '';
 
   this.colour = Cookies.get('tank_colour');
   if (this.colour == undefined) {
@@ -36,12 +36,17 @@ function Tank() {
   this.health = 100;
 
   this.name = Cookies.get('name');
+  this.generateName = function () {
+    var nouns = ['email', 'letter', 'parcel', 'snake', 'grass', 'gravel', 'squirrel', 'doctor', 'teacher', 'developer', 'cook', 'bus', 'skeleton', 'jumpy-thing', 'cat', 'dog', 'monster', 'duck', 'politician', 'car', 'auto', 'truck', 'rocket', 'fly', 'leech', 'apple', 'book', 'frog', 'spam', 'eggs', 'rabbit', 'elephant', 'rock', 'horse', 'robot', 'avocado', 'salad', 'bread', 'shoe', 'donkey', 'mouse', 'spinach', 'german', 'french', 'italian', 'beats', 'japanese', 'american', 'tree', 'forest', 'piano', 'computer', 'wall', 'fred', 'bob', 'richard', 'beef', 'potato', 'tomato'];
+    var verbs = ['annoying', 'exciting', 'boring', 'sophisticated', 'educated', 'lame', 'deadly', 'comical', 'undefined', 'young', 'old', 'middle-aged', 'radical', 'putrid', 'beautiful', 'primitive', 'animalistic', 'relaxing', 'superb', 'rude', 'ruthless', 'relentless', 'racist', 'clever', 'dumb', 'interesting', 'silly', 'wild', 'partying', 'green', 'blue', 'red', 'orange', 'brown', 'purple', 'fat', 'quick', 'slow', 'yummy', 'electric', 'charged', 'sad', 'stuuupid', 'cool', 'uncool', 'amazing', 'phat', 'loud', 'soft', 'dead', 'alive', 'smart', 'stinking', 'clean', 'large', 'miniscule', 'vegetarian', 'beef-eating', 'loving', 'hateful', 'mediocre'];
+    var name = '-' + verbs[Math.floor(random(verbs.length))]
+      + '-' + verbs[Math.floor(random(verbs.length))]
+      + '-' + nouns[Math.floor(random(nouns.length))] + '-';
+    console.log(nouns.length * verbs.length * verbs.length);
+    return name;
+  }
   if (this.name == undefined) {
-    this.name = prompt("What's you name");
-    while(this.name == ''){
-      this.name = prompt("What's you name");
-    }
-    Cookies.set('name', this.name);
+    this.name = this.generateName();
   }
 
   //Weaponry
@@ -177,6 +182,12 @@ function Tank() {
     this.gunImage = loadImage('./assets/' + this.colour + '_gun.png');
   }
   this.loadImages(this.colour);
+
+  this.changeName = function (name) {
+    this.name = name;
+    Cookies.set('name', name);
+    window.location.reload();
+  }
 }
 
 
@@ -238,5 +249,4 @@ function EnemyTank() {
     this.gunImage = loadImage('./assets/' + this.colour + '_gun.png');
   }
   this.loadImages(this.colour);
-
 }

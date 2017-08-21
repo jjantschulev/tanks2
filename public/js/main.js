@@ -6,6 +6,7 @@ function setup() {
   view = new View();
   minimap = new Minimap();
   pause = new Pause();
+  onLoad();
 }
 
 function draw() {

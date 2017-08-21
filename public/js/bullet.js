@@ -5,10 +5,6 @@ function showBullets() {
     bullets[i].show();
     bullets[i].update();
   }
-  // for (var i = bullets.length-1; i >= 0; i--) {
-  //   bullets[i].show();
-  //   bullets[i].update();
-  // }
 }
 
 function Bullet(x, y, dir, name, type, col) {

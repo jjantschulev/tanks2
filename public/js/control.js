@@ -72,6 +72,10 @@ function keyDown(k) {
     if (k == 66) {
       tank.weaponManager.dropBlast();
     }
+
+    if (k == 67) {
+      tank.gun.toggleTrackMouse();
+    }
   }
 }
 
