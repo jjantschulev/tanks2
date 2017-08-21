@@ -15,6 +15,9 @@ io = socket_io(server);
 // VARIABLES
 var tanks = [];
 var map = [];
+var scores = [];
+var ammo = [];
+
 
 setInterval(function () {
   for (var i = 0; i < tanks.length; i++) {
@@ -34,8 +37,17 @@ io.on('connection', function (socket) {
     name: 'anonym',
     health: 100
   });
-  socket.emit("initial-update", socket.id);
+  socket.emit("initial-update", socket.id, ammo);
   socket.emit('new_map', map);
+
+  setTimeout(function () {
+    for (var i = 0; i < tanks.length; i++) {
+      if (tanks[i].id == socket.id) {
+        var a = loadAmmo(tanks[i].name);
+        socket.emit('ammo', a);
+      }
+    }
+  }, 500);
 
   socket.on('sync', function (data) {
     for (var i = 0; i < tanks.length; i++) {
@@ -71,7 +83,11 @@ io.on('connection', function (socket) {
 
   socket.on('refresh', function () {
     socket.broadcast.emit('refresh');
-  })
+  });
+
+  socket.on('ammoSync', function (data) {
+    saveAmmo(data);
+  });
 
   socket.on('disconnect', function () {
     for (var i = 0; i < tanks.length; i++) {
@@ -82,3 +98,40 @@ io.on('connection', function (socket) {
     }
   });
 })
+
+function saveAmmo(data) {
+  console.log(data);
+  for (var i = 0; i < ammo.length; i++) {
+    if (data.name == ammo[i].name) {
+      ammo[i].mine = data.mine;
+      ammo[i].blast = data.blast;
+      ammo[i].bomb = data.bomb;
+    }
+  }
+}
+
+function loadAmmo(name) {
+  var hasFound = false;
+  var returnObject;
+  for (var i = 0; i < ammo.length; i++) {
+    if(ammo[i].name == name){
+      returnObject = ammo[i]
+      hasFound = true;
+    }
+  }
+  if(!hasFound){
+    returnObject = {
+      mine: 4,
+      blast: 4,
+      bomb: 4,
+      name: name,
+    }
+    ammo.push(returnObject);
+  }
+  console.log(returnObject);
+  return returnObject;
+}
+
+function saveJSON(filename, data) {
+
+}

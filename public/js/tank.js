@@ -154,9 +154,15 @@ function Tank() {
   this.kill = function (name) {
     notifications.push(new Notification('You killed ' + name));
     this.health = 100;
-    this.weaponManager.landmineAmount += 2;
-    this.weaponManager.bombAmount += 2;
-    this.weaponManager.blastAmount += 2;
+    if(name != tank.name){
+      this.weaponManager.landmineAmount += 2;
+      this.weaponManager.bombAmount += 2;
+      this.weaponManager.blastAmount += 2;
+    } else {
+      this.weaponManager.landmineAmount -= 1;
+      this.weaponManager.bombAmount = 1;
+      this.weaponManager.blastAmount -= 1;
+    }
   }
 
   this.removeHealth = function (amount) {

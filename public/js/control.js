@@ -1,7 +1,7 @@
 function keyHold(k) {
   // Tank Movement
   if (k == 87) {
-    tank.speed = 2.2;
+    tank.speed = 2.0;
   }
   if (k == 83) {
     tank.speed = -1.7;

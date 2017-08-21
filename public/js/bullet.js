@@ -24,7 +24,7 @@ function Bullet(x, y, dir, name, type, col) {
     this.damage = 2.5;
   }else if (type == 2) {
     this.r = 8;
-    this.damage = 15;
+    this.damage = 25;
   }
 
   this.update = function () {
@@ -100,7 +100,7 @@ function Gun() {
   this.type = 1;
   this.reload1 = 0;
   this.reload2 = 0;
-  this.trackMouseActive = false;
+  this.trackMouseActive = true;
 
   this.shoot = function () {
     if(this.reload1 <= 0 && this.type == 1){
@@ -143,17 +143,16 @@ function Gun() {
     }else{
       this.trackMouseActive = true;
     }
-    return this.trackMouseActive;
+    console.log(this.trackMouseActive);
   }
 
   this.trackMouse = function () {
-    fill('white');
     if((view.getRealMousePoints().y - tank.pos.y) < 0){
       tank.gunDir = -atan((view.getRealMousePoints().x - tank.pos.x)/(view.getRealMousePoints().y - tank.pos.y)) - tank.dir;
     }else {
       tank.gunDir = PI-atan((view.getRealMousePoints().x - tank.pos.x)/(view.getRealMousePoints().y - tank.pos.y)) - tank.dir;
     }
-    if (mouseIsPressed) {
+    if (mouseIsPressed && !pause.paused) {
       this.shoot();
     }
   }

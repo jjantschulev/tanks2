@@ -16,6 +16,8 @@ function sync() {
   socket.emit('sync', data);
 }
 
+// socket.emit()
+
 socket.on("initial-update", function (id) {
   setTimeout(function () {
     tank.id = id
@@ -71,6 +73,26 @@ socket.on('remove', function (id) {
   }
 });
 
+setInterval(function () {
+  var data = {
+    mine: tank.weaponManager.landmineAmount,
+    blast: tank.weaponManager.blastAmount,
+    bomb: tank.weaponManager.bombAmount,
+    name: tank.name
+  }
+  socket.emit('ammoSync', data);
+}, 1000);
+
+socket.on('ammo', function (data) {
+  console.log(data);
+  tank.weaponManager.landmineAmount = data.mine;
+  tank.weaponManager.blastAmount = data.blast;
+  tank.weaponManager.bombAmount = data.bomb;
+});
+
+
+
+// FORCE REFRESH ALL USERS
 function refresh() {
   socket.emit('refresh');
   window.location.reload(true);

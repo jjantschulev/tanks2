@@ -5,6 +5,7 @@ function MapEditor() {
   this.eraser = false;
   this.menu = new MapEditorMenu();
   this.syncedWalls = [];
+  this.showMenu = true;
 
   this.show = function () {
     noStroke();
@@ -38,7 +39,9 @@ function MapEditor() {
       line(mouseX - 10, mouseY - 10, mouseX + 10, mouseY + 10);
       line(mouseX + 10, mouseY - 10, mouseX - 10, mouseY + 10);
     }
-    this.menu.show();
+    if (this.showMenu) {
+      this.menu.show();
+    }
   }
 
   this.changeMode = function () {
