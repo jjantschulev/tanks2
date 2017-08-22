@@ -2,6 +2,7 @@ function WeaponManager() {
   this.landmines = [];
   this.bombs = [];
   this.blasts = [];
+  this.healthPackets = [];
 
   this.landmineAmount = 0;
   this.bombAmount = 0;
@@ -40,12 +41,16 @@ function WeaponManager() {
       this.landmines[i].show();
       this.landmines[i].update();
     }
+    for (var i = this.healthPackets.length-1; i >= 0; i--) {
+      this.healthPackets[i].show();
+      this.healthPackets[i].update();
+    }
     for (var i = this.blasts.length-1; i >= 0; i--) {
       this.blasts[i].update();
     }
   }
 
-  this.dropWeapon = function (data) {
+  this.addWeapon = function (data) {
     if(data.type == 'landmine'){
       this.landmines.push(new Landmine(data.x, data.y, data.name, data.col));
     }
@@ -55,49 +60,44 @@ function WeaponManager() {
     if(data.type == 'blast'){
       this.blasts.push(new Blast(data.x, data.y, data.name));
     }
+    if(data.type == 'healthPacket'){
+      this.healthPackets.push(new HealthPacket(data.x, data.y, data.name, data.col));
+    }
   }
 
-  this.dropLandmine = function () {
-    if(this.landmineAmount > 0){
-      var data = {
-        x: tank.pos.x,
-        y: tank.pos.y,
-        name: tank.name,
-        col: tank.colour,
-        type: 'landmine'
-      }
+  this.dropWeapon = function (weaponType) {
+    var data = {
+      x: tank.pos.x,
+      y: tank.pos.y,
+      name: tank.name,
+      col: tank.colour,
+      type: weaponType
+    }
+    if(this.landmineAmount > 0 && data.type == 'landmine'){
       socket.emit('weapon', data);
       this.landmines.push(new Landmine(data.x, data.y, data.name, data.col));
       this.landmineAmount--;
     }
-  }
-  this.dropBomb = function () {
-    if(this.bombAmount > 0){
-      var data = {
-        x: tank.pos.x,
-        y: tank.pos.y,
-        name: tank.name,
-        col: tank.colour,
-        type: 'bomb'
-      }
+    if(this.bombAmount > 0 && data.type == 'bomb'){
       socket.emit('weapon', data);
       this.bombs.push(new Bomb(data.x, data.y, data.name));
       this.bombAmount--;
     }
-  }
-  this.dropBlast = function () {
-    if(this.blastAmount > 0){
-      var data = {
-        x: tank.pos.x,
-        y: tank.pos.y,
-        name: tank.name,
-        col: tank.colour,
-        type: 'blast'
-      }
+    if(this.blastAmount > 0 && data.type == 'blast'){
       socket.emit('weapon', data);
       this.blasts.push(new Blast(data.x, data.y, data.name));
       this.blastAmount--;
     }
+    if(data.type == 'healthPacket'){
+      var hp = new HealthPacket(data.x, data.y, data.name, data.col);
+      if(hp.place()){
+        socket.emit('weapon', data);
+        this.healthPackets.push(hp);
+      } else {
+        notify('not enough health', 100, tank.colour, width/2);
+      }
+    }
+
   }
 
   this.pushTank = function (x, y, d, direction) {
@@ -187,6 +187,58 @@ function Landmine(x, y, owner, col) {
   }
 }
 
+function HealthPacket(x, y, owner, col) {
+  this.x = x;
+  this.y = y;
+  this.owner = owner;
+  this.colour = col;
+  this.healthAmount = 15;
+  this.timer = 0;
+
+  this.place = function () {
+    if(tank.health > this.healthAmount + 5){
+      tank.removeHealth(this.healthAmount);
+      return true;
+    }else{
+      return false;
+    }
+  }
+
+  this.update = function () {
+    this.timer ++;
+    if (this.timer == 600) {
+      this.owner = "";
+    }
+    if (this.healthAmount < 40) {
+      this.healthAmount += 0.004;
+    }
+    if(tank.name != this.owner /* && tank.colour == this.colour */){
+      if(dist(tank.pos.x, tank.pos.y, this.x, this.y) < 15){
+        tank.health += this.healthAmount;
+        tank.weaponManager.healthPackets.splice(tank.weaponManager.healthPackets.indexOf(this), 1);
+        return;
+      }
+    }
+    for (var i = 0; i < tanks.length; i++) {
+      if(tanks[i].id != tank.id && this.owner != tanks[i].name /* && tanks[i].colour == this.colour */){
+        if(dist(tanks[i].pos.x, tanks[i].pos.y, this.x, this.y) < 15){
+          tank.weaponManager.healthPackets.splice(tank.weaponManager.healthPackets.indexOf(this), 1);
+          return;
+        }
+      }
+    }
+  }
+
+  this.show = function () {
+    noStroke();
+    fill(this.colour);
+    rectMode(CENTER);
+    var l = map(this.healthAmount, 20, 50, 10, 30);
+    rect(this.x, this.y, l, l/3, 10);
+    rect(this.x, this.y, l/3, l, 10);
+  }
+}
+
 function Bomb(x, y, owner) {
   this.x = x;
   this.y = y;
@@ -220,6 +272,13 @@ function Bomb(x, y, owner) {
       tank.removeHealth(100-distance);
       tank.weaponManager.pushTank(this.x, this.y, 100);
       tank.checkDeath(this.owner);
+    }
+    for (var i = tank.weaponManager.landmines.length-1; i >= 0; i--) {
+      var d = dist(tank.weaponManager.landmines[i].x, tank.weaponManager.landmines[i].y, this.x, this.y);
+      if (d < 100) {
+        explosions.push(new Explosion(tank.weaponManager.landmines[i].x, tank.weaponManager.landmines[i].y, 200, tank.weaponManager.landmineColour, 50));
+        tank.weaponManager.landmines.splice(i, 1);
+      }
     }
     explosions.push(new Explosion(this.x, this.y, 200, tank.weaponManager.bombColour, 50));
   }

@@ -24,9 +24,16 @@ function keyHold(k) {
   if (k == 32) {
     tank.gun.shoot();
   }
+  if (k == 190) {
+    tank.gun.shoot(2);
+  }
+  if (k == 188) {
+    tank.gun.shoot(1);
+  }
 }
 
 function keyDown(k) {
+  // console.log(k);
   if (k == 27 && !pause.deathScreen.dead) {
     pause.togglePause();
   }
@@ -56,21 +63,21 @@ function keyDown(k) {
       minimap.toggleDisplay();
     }
     // Gun Mode Change
-    if (k == 49) {
-      tank.gun.type = 1;
-    }
-    if (k == 50) {
-      tank.gun.type = 2;
+    if (k == 9) {
+      tank.gun.toggleType();
     }
     // Add weapons
     if (k == 77) {
-      tank.weaponManager.dropBomb();
+      tank.weaponManager.dropWeapon('bomb');
     }
     if (k == 78) {
-      tank.weaponManager.dropLandmine();
+      tank.weaponManager.dropWeapon('landmine');
     }
     if (k == 66) {
-      tank.weaponManager.dropBlast();
+      tank.weaponManager.dropWeapon('blast');
+    }
+    if (k == 72) {
+      tank.weaponManager.dropWeapon('healthPacket');
     }
 
     if (k == 67) {
@@ -101,6 +108,9 @@ window.addEventListener('keydown', function () {
     keys.push(event.keyCode);
   }
   keyDown(event.keyCode);
+  if(event.keyCode == 9){
+    event.preventDefault();
+  }
 });
 window.addEventListener('keyup', function () {
   for (var i = 0; i < keys.length; i++) {

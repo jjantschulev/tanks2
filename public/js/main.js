@@ -7,6 +7,16 @@ function setup() {
   minimap = new Minimap();
   pause = new Pause();
   onLoad();
+
+  //Prevent Right Click Menu
+  var canvas = document.querySelector('#defaultCanvas0');
+  canvas.oncontextmenu = function (e) {
+    e.preventDefault();
+  };
+  var win = document.querySelector('#window');
+  win.oncontextmenu = function (e) {
+    e.preventDefault();
+  }
 }
 
 function draw() {

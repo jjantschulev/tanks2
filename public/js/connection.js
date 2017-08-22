@@ -12,6 +12,11 @@ socket.on("update", function (tanks_array) {
       var newTank = new EnemyTank();
       newTank.id = tanks_array[i].id;
       newTank.loadImages(tanks_array[i].col);
+      if(tanks_array[i].name != tank.name){
+        notify(tanks_array[i].name + ' joined the game', 130, tank.colour, width/2);
+      }else{
+        notify('connected succesfully', 100, tank.colour, width/2);
+      }
       tanks.push(newTank);
     }else{
       tanks[i].pos.x = tanks_array[i].x;
@@ -41,7 +46,7 @@ socket.on('bullet', function (bulletData) {
 });
 
 socket.on('weapon', function (data) {
-  tank.weaponManager.dropWeapon(data);
+  tank.weaponManager.addWeapon(data);
 })
 
 socket.on('death', function (deathData) {
@@ -54,13 +59,13 @@ socket.on('death', function (deathData) {
 socket.on('remove', function (id) {
   for (var i = tanks.length-1; i >= 0; i--) {
     if(tanks[i].id == id){
+      notify(tanks[i].name + ' left the game', 130, tank.colour, width/2);
       tanks.splice(i, 1);
     }
   }
 });
 
 socket.on('ammo', function (data) {
-  console.log(data);
   tank.weaponManager.landmineAmount = data.mine;
   tank.weaponManager.blastAmount = data.blast;
   tank.weaponManager.bombAmount = data.bomb;

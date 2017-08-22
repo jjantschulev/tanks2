@@ -1,22 +1,28 @@
 var notifications = []
 
 function showNotifications() {
-  for (var i = 0; i < notifications.length; i++) {
+  for (var i = notifications.length-1; i >= 0; i--) {
     notifications[i].show();
     notifications[i].update();
   }
 }
 
-function Notification(t) {
-  this.w = width/2;
+function notify(t, time, col, w) {
+  notifications.unshift(new Notification(t, time, col, w));
+}
+
+function Notification(t, time, col, w) {
+  this.w = w;
   this.h = 40;
   this.x = width/2;
   this.y = -this.h/2;
   this.text = t;
-  this.timer = 200;
+  this.timer = time;
+  this.timerLength = time;
+  this.colour = col;
 
   this.show = function () {
-    fill(tank.colour);
+    fill(this.colour);
     noStroke();
     rectMode(CENTER);
     rect(this.x, this.y, this.w, this.h);
@@ -29,11 +35,11 @@ function Notification(t) {
 
   this.update = function () {
     this.timer --;
-    if (this.timer > 180) {
-      this.y = map(this.timer, 200, 180, -this.h/2, this.h/2);
+    if (this.timer > this.timerLength - 15) {
+      this.y = map(this.timer, this.timerLength, this.timerLength-15, -this.h/2, this.h/2);
     }
-    if (this.timer < 20) {
-      this.y = map(this.timer, 0, 20, -this.h/2, this.h/2);
+    if (this.timer < 15) {
+      this.y = map(this.timer, 0, 15, -this.h/2, this.h/2);
     }
     if (this.timer <= 0) {
       notifications.splice(notifications.indexOf(this), 1);

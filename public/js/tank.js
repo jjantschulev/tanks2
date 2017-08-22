@@ -37,12 +37,12 @@ function Tank() {
 
   this.name = Cookies.get('name');
   this.generateName = function () {
-    var nouns = ['email', 'letter', 'parcel', 'snake', 'grass', 'gravel', 'squirrel', 'doctor', 'teacher', 'developer', 'cook', 'bus', 'skeleton', 'jumpy-thing', 'cat', 'dog', 'monster', 'duck', 'politician', 'car', 'auto', 'truck', 'rocket', 'fly', 'leech', 'apple', 'book', 'frog', 'spam', 'eggs', 'rabbit', 'elephant', 'rock', 'horse', 'robot', 'avocado', 'salad', 'bread', 'shoe', 'donkey', 'mouse', 'spinach', 'german', 'french', 'italian', 'beats', 'japanese', 'american', 'tree', 'forest', 'piano', 'computer', 'wall', 'fred', 'bob', 'richard', 'beef', 'potato', 'tomato'];
-    var verbs = ['annoying', 'exciting', 'boring', 'sophisticated', 'educated', 'lame', 'deadly', 'comical', 'undefined', 'young', 'old', 'middle-aged', 'radical', 'putrid', 'beautiful', 'primitive', 'animalistic', 'relaxing', 'superb', 'rude', 'ruthless', 'relentless', 'racist', 'clever', 'dumb', 'interesting', 'silly', 'wild', 'partying', 'green', 'blue', 'red', 'orange', 'brown', 'purple', 'fat', 'quick', 'slow', 'yummy', 'electric', 'charged', 'sad', 'stuuupid', 'cool', 'uncool', 'amazing', 'phat', 'loud', 'soft', 'dead', 'alive', 'smart', 'stinking', 'clean', 'large', 'miniscule', 'vegetarian', 'beef-eating', 'loving', 'hateful', 'mediocre'];
-    var name = '-' + verbs[Math.floor(random(verbs.length))]
-      + '-' + verbs[Math.floor(random(verbs.length))]
+    var nouns = ['fairy', 'lad', 'sebastian', 'beau', 'email', 'letter', 'parcel', 'snake', 'grass', 'gravel', 'squirrel', 'doctor', 'teacher', 'developer', 'cook', 'bus', 'skeleton', 'jumpy-thing', 'cat', 'dog', 'monster', 'duck', 'politician', 'car', 'auto', 'truck', 'rocket', 'fly', 'leech', 'apple', 'book', 'frog', 'spam', 'eggs', 'rabbit', 'elephant', 'rock', 'horse', 'robot', 'avocado', 'salad', 'bread', 'shoe', 'donkey', 'mouse', 'spinach', 'german', 'french', 'italian', 'beats', 'japanese', 'american', 'tree', 'forest', 'piano', 'computer', 'wall', 'fred', 'bob', 'richard', 'beef', 'potato', 'tomato'];
+    var adjectives = ['crunchy', 'bouyant', 'engorged', 'fancyful', 'convoluted', 'speedy', 'old', 'eletrified', 'corrupt', 'thick', 'black', 'asian', 'insane', 'annoying', 'exciting', 'boring', 'sophisticated', 'educated', 'lame', 'deadly', 'comical', 'undefined', 'young', 'old', 'middle-aged', 'radical', 'putrid', 'beautiful', 'primitive', 'animalistic', 'relaxing', 'superb', 'rude', 'ruthless', 'relentless', 'racist', 'clever', 'dumb', 'interesting', 'silly', 'wild', 'partying', 'green', 'blue', 'red', 'orange', 'brown', 'purple', 'fat', 'quick', 'slow', 'yummy', 'electric', 'charged', 'sad', 'stuuupid', 'cool', 'uncool', 'amazing', 'phat', 'loud', 'soft', 'dead', 'alive', 'smart', 'stinking', 'clean', 'large', 'miniscule', 'vegetarian', 'beef-eating', 'loving', 'hateful', 'mediocre'];
+    var name = '-' + adjectives[Math.floor(random(adjectives.length))]
+      + '-' + adjectives[Math.floor(random(adjectives.length))]
       + '-' + nouns[Math.floor(random(nouns.length))] + '-';
-    console.log(nouns.length * verbs.length * verbs.length);
+    console.log(nouns.length * adjectives.length * adjectives.length);
     return name;
   }
   if (this.name == undefined) {
@@ -73,6 +73,10 @@ function Tank() {
     this.dirVel = 0;
     this.gunDirVel = 0;
 
+    if(this.health > 300){
+      this.health = 300;
+    }
+
     // UPDATE WEAPONRY
     this.gun.update();
   }
@@ -87,12 +91,17 @@ function Tank() {
     noStroke();
     rectMode(CENTER);
     rect(0, -30, map(this.health, 0, 100, 0, 30), 1.6);
-
+    if(this.health > 280){
+      rect(-map(this.health, 0, 100, 0, 30)/2, -30, 1.6, 3.8, 100);
+      rect(map(this.health, 0, 100, 0, 30)/2, -30, 1.6, 3.8, 100);
+    }
     // SHOW NAME
     fill(120);
     textAlign(CENTER, CENTER);
     textSize(8);
     text(this.name, 0, -36);
+
+    this.gun.showReloadTimers();
 
     // SHOW TANK
     rotate(this.dir);
@@ -157,7 +166,7 @@ function Tank() {
   }
 
   this.kill = function (name) {
-    notifications.push(new Notification('You killed ' + name));
+    notify('You killed ' + name, 200, this.colour, width/2);
     this.health = 100;
     if(name != tank.name){
       this.weaponManager.landmineAmount += 2;
@@ -186,6 +195,11 @@ function Tank() {
   this.changeName = function (name) {
     this.name = name;
     Cookies.set('name', name);
+    window.location.reload();
+  }
+
+  this.removeName = function () {
+    Cookies.remove('name');
     window.location.reload();
   }
 }
