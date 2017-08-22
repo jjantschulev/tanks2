@@ -61,7 +61,14 @@ function WeaponManager() {
       this.blasts.push(new Blast(data.x, data.y, data.name));
     }
     if(data.type == 'healthPacket'){
-      this.healthPackets.push(new HealthPacket(data.x, data.y, data.name, data.col));
+      this.healthPackets.push(new HealthPacket(data.x, data.y, data.name, data.col, data.id));
+    }
+    if(data.type == 'healthPacketRemove'){
+      for (var i = 0; i < this.healthPackets.length; i++) {
+        if(this.healthPackets[i].id == data.id){
+          this.healthPackets.splice(i, 1);
+        }
+      }
     }
   }
 
@@ -89,7 +96,8 @@ function WeaponManager() {
       this.blastAmount--;
     }
     if(data.type == 'healthPacket'){
-      var hp = new HealthPacket(data.x, data.y, data.name, data.col);
+      data.id = generateId();
+      var hp = new HealthPacket(data.x, data.y, data.name, data.col, data.id);
       if(hp.place()){
         socket.emit('weapon', data);
         this.healthPackets.push(hp);
@@ -98,6 +106,22 @@ function WeaponManager() {
       }
     }
 
+  }
+
+  this.healthPacketButton = function () {
+    var onHP = false;
+    var hp = null;
+    for (var i = 0; i < this.healthPackets.length; i++) {
+      if(dist(this.healthPackets[i].x, this.healthPackets[i].y, tank.pos.x, tank.pos.y) < 15) {
+        onHP = true;
+        hp = this.healthPackets[i];
+      }
+    }
+    if (onHP && hp != null) {
+      hp.pickUp();
+    }else{
+      this.dropWeapon('healthPacket');
+    }
   }
 
   this.pushTank = function (x, y, d, direction) {
@@ -187,13 +211,14 @@ function Landmine(x, y, owner, col) {
   }
 }
 
-function HealthPacket(x, y, owner, col) {
+function HealthPacket(x, y, owner, col, id) {
   this.x = x;
   this.y = y;
   this.owner = owner;
   this.colour = col;
   this.healthAmount = 15;
   this.timer = 0;
+  this.id = id;
 
   this.place = function () {
     if(tank.health > this.healthAmount + 5){
@@ -212,21 +237,33 @@ function HealthPacket(x, y, owner, col) {
     if (this.healthAmount < 40) {
       this.healthAmount += 0.004;
     }
-    if(tank.name != this.owner /* && tank.colour == this.colour */){
-      if(dist(tank.pos.x, tank.pos.y, this.x, this.y) < 15){
-        tank.health += this.healthAmount;
-        tank.weaponManager.healthPackets.splice(tank.weaponManager.healthPackets.indexOf(this), 1);
-        return;
-      }
+    // if(tank.name != this.owner /* && tank.colour == this.colour */){
+    //   if(dist(tank.pos.x, tank.pos.y, this.x, this.y) < 15){
+    //     tank.health += this.healthAmount;
+    //     tank.weaponManager.healthPackets.splice(tank.weaponManager.healthPackets.indexOf(this), 1);
+    //     return;
+    //   }
+    // }
+    // for (var i = 0; i < tanks.length; i++) {
+    //   if(tanks[i].id != tank.id && this.owner != tanks[i].name /* && tanks[i].colour == this.colour */){
+    //     if(dist(tanks[i].pos.x, tanks[i].pos.y, this.x, this.y) < 15){
+    //       tank.weaponManager.healthPackets.splice(tank.weaponManager.healthPackets.indexOf(this), 1);
+    //       return;
+    //     }
+    //   }
+    // }
+  }
+
+  this.pickUp = function () {
+    notify(Math.round(this.healthAmount) + ' HP added to tank', 130, 200, width/2);
+    tank.health += this.healthAmount;
+    tank.weaponManager.healthPackets.splice(tank.weaponManager.healthPackets.indexOf(this), 1);
+    var data = {
+      type : 'healthPacketRemove',
+      id : this.id,
     }
-    for (var i = 0; i < tanks.length; i++) {
-      if(tanks[i].id != tank.id && this.owner != tanks[i].name /* && tanks[i].colour == this.colour */){
-        if(dist(tanks[i].pos.x, tanks[i].pos.y, this.x, this.y) < 15){
-          tank.weaponManager.healthPackets.splice(tank.weaponManager.healthPackets.indexOf(this), 1);
-          return;
-        }
-      }
-    }
+    socket.emit('weapon', data);
+    return;
   }
 
   this.show = function () {
@@ -306,4 +343,13 @@ function Blast(x, y, owner) {
     explosions.push(new Explosion(this.x, this.y, 300, tank.weaponManager.blastColour, 50));
     tank.weaponManager.blasts.splice(tank.weaponManager.blasts.indexOf(this), 1);
   }
+}
+
+function generateId() {
+  var letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+  var randomID = '';
+  for (var i = 0; i < 100; i++) {
+    randomID += letters[Math.floor(random(letters.length))];
+  }
+  return randomID;
 }

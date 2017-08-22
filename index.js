@@ -6,7 +6,9 @@ var fs = require('fs');
 
 //EXPRESS SERVER
 var app = express();
-var server = app.listen(PORT);
+var server = app.listen(PORT, function () {
+  console.log('tanks 2.0 running on port ' + PORT);
+});
 app.use(express.static('public'));
 
 // SOCKET.IO
@@ -32,10 +34,6 @@ setInterval(function () {
 io.on('connection', function (socket) {
 
   socket.on('name', function (userName) {
-    socket.emit('new_map', map);
-    socket.emit('ammo', loadAmmo(userName));
-    socket.emit('id', socket.id);
-
     tanks.push({
       id: socket.id,
       x:0,
@@ -47,7 +45,9 @@ io.on('connection', function (socket) {
       name: userName,
       health: 100
     });
-
+    socket.emit('new_map', map);
+    socket.emit('ammo', loadAmmo(userName));
+    socket.emit('id', socket.id);
   });
 
   socket.on('sync', function (data) {
@@ -141,6 +141,7 @@ function saveAmmo(data) {
       ammo[i].mine = data.mine;
       ammo[i].blast = data.blast;
       ammo[i].bomb = data.bomb;
+      ammo[i].health = data.health;
     }
   }
   saveJSON('ammo', ammo);
@@ -160,6 +161,7 @@ function loadAmmo(name) {
       mine: 4,
       blast: 4,
       bomb: 4,
+      health: 100,
       name: name,
     }
     if (name.charAt(name.length-1) != '-' && name.charAt(1) != '-') {

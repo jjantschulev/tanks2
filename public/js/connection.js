@@ -69,6 +69,7 @@ socket.on('ammo', function (data) {
   tank.weaponManager.landmineAmount = data.mine;
   tank.weaponManager.blastAmount = data.blast;
   tank.weaponManager.bombAmount = data.bomb;
+  tank.health = data.health;
 });
 
 function sync() {
@@ -91,6 +92,7 @@ function syncAmmo() {
     mine: tank.weaponManager.landmineAmount,
     blast: tank.weaponManager.blastAmount,
     bomb: tank.weaponManager.bombAmount,
+    health: tank.health,
     name: tank.name
   }
   socket.emit('ammoSync', data);

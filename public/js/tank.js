@@ -167,7 +167,7 @@ function Tank() {
 
   this.kill = function (name) {
     notify('You killed ' + name, 200, this.colour, width/2);
-    this.health = 100;
+    this.health += 60;
     if(name != tank.name){
       this.weaponManager.landmineAmount += 2;
       this.weaponManager.bombAmount += 2;

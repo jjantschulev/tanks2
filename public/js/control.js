@@ -77,7 +77,7 @@ function keyDown(k) {
       tank.weaponManager.dropWeapon('blast');
     }
     if (k == 72) {
-      tank.weaponManager.dropWeapon('healthPacket');
+      tank.weaponManager.healthPacketButton();
     }
 
     if (k == 67) {
