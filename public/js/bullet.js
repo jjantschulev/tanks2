@@ -40,9 +40,18 @@ function Bullet(x, y, dir, name, type, col) {
         return true;
       }
     }
+    // splice and apply damage to gunners
+    for (var i = tank.weaponManager.gunners.length - 1; i >= 0; i--) {
+      if (collideCircleCircle(this.x, this.y, this.r, tank.weaponManager.gunners[i].x, tank.weaponManager.gunners[i].y, tank.weaponManager.gunners[i].w)) {
+        explosions.push(new Explosion(this.x, this.y, this.r * 6, this.col, 30));
+        tank.weaponManager.gunners[i].hitByBullet(this);
+        bullets.splice(bullets.indexOf(this), 1);
+        return true;
+      }
+    }
     // Splice and apply damage if hitting tank
     if(this.name != tank.name){
-      if (collideRectCircle(tank.pos.x - tank.w/2, tank.pos.y - tank.h/2, tank.w, tank.h, this.x, this.y, this.r/2)) {
+      if (collideRectCircle(tank.pos.x - tank.w/2, tank.pos.y - tank.h/2, tank.w, tank.h, this.x, this.y, this.r)) {
         if(teams){
           if(this.col != tank.colour){
             this.hit();
@@ -57,7 +66,7 @@ function Bullet(x, y, dir, name, type, col) {
     // Splice if hitting other tank
     for (var i = 0; i < tanks.length; i++) {
       if (tanks[i].id != tank.id && this.name != tanks[i].name && !tanks[i].paused) {
-        if (collideRectCircle(tanks[i].pos.x - tanks[i].w/2, tanks[i].pos.y - tanks[i].h/2, tanks[i].w, tanks[i].h, this.x, this.y, this.r/2)) {
+        if (collideRectCircle(tanks[i].pos.x - tanks[i].w/2, tanks[i].pos.y - tanks[i].h/2, tanks[i].w, tanks[i].h, this.x, this.y, this.r)) {
           if (teams && this.col == tanks[i].colour) {
             return false;
           }

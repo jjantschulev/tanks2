@@ -34,6 +34,7 @@ function Tank() {
   }
 
   this.health = 100;
+  this.maxHealth = 150;
 
   this.name = Cookies.get('name');
   this.generateName = function () {
@@ -48,6 +49,7 @@ function Tank() {
   if (this.name == undefined) {
     this.name = this.generateName();
   }
+  this.displayName = this.generateName();
 
   //Weaponry
   this.gun = new Gun();
@@ -73,8 +75,8 @@ function Tank() {
     this.dirVel = 0;
     this.gunDirVel = 0;
 
-    if(this.health > 300){
-      this.health = 300;
+    if(this.health > this.maxHealth){
+      this.health = this.maxHealth;
     }
 
     // UPDATE WEAPONRY
@@ -91,7 +93,7 @@ function Tank() {
     noStroke();
     rectMode(CENTER);
     rect(0, -30, map(this.health, 0, 100, 0, 30), 1.6);
-    if(this.health > 280){
+    if(this.health > this.maxHealth - 20){
       rect(-map(this.health, 0, 100, 0, 30)/2, -30, 1.6, 3.8, 100);
       rect(map(this.health, 0, 100, 0, 30)/2, -30, 1.6, 3.8, 100);
     }
@@ -167,7 +169,7 @@ function Tank() {
 
   this.kill = function (name) {
     notify('You killed ' + name, 200, this.colour, width/2);
-    this.health += 60;
+    this.health += 50;
     if(name != tank.name){
       this.weaponManager.landmineAmount += 2;
       this.weaponManager.bombAmount += 2;

@@ -24,10 +24,10 @@ function keyHold(k) {
   if (k == 32) {
     tank.gun.shoot();
   }
-  if (k == 190) {
+  if (k == 188) {
     tank.gun.shoot(2);
   }
-  if (k == 188) {
+  if (k == 190) {
     tank.gun.shoot(1);
   }
 }
@@ -76,8 +76,11 @@ function keyDown(k) {
     if (k == 66) {
       tank.weaponManager.dropWeapon('blast');
     }
+    if (k == 86) {
+      tank.weaponManager.dropWeapon('gunner');
+    }
     if (k == 72) {
-      tank.weaponManager.healthPacketButton();
+      tank.weaponManager.dropWeapon('healthPacket');
     }
 
     if (k == 67) {
@@ -94,6 +97,8 @@ function mousePressed() {
   if(pause.paused){
     pause.mouseClick();
   }
+  // tank.weaponManager.gunners.push(new Gunner(view.getRealMousePoints().x, view.getRealMousePoints().y));
+  // particleEffects.push(new ParticleEffect(tank.pos.x, tank.pos.y, tank.colour));
 }
 
 var keys = [];

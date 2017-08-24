@@ -19,6 +19,7 @@ var tanks = [];
 var map = loadJSON('map');
 var scores = loadJSON('scores');
 var ammo = loadJSON('ammo');
+var weapons = loadJSON('weapons');
 
 
 setInterval(function () {
@@ -48,6 +49,7 @@ io.on('connection', function (socket) {
     socket.emit('new_map', map);
     socket.emit('ammo', loadAmmo(userName));
     socket.emit('id', socket.id);
+    socket.emit('weapons', weapons);
   });
 
   socket.on('sync', function (data) {
@@ -77,6 +79,17 @@ io.on('connection', function (socket) {
 
   socket.on('weapon', function (data) {
     socket.broadcast.emit('weapon', data);
+    if (data.type == "landmine" || data.type == "healthPacket" || data.type == "gunner") {
+      weapons.push(data);
+    }
+    if (data.type == "healthPacketRemove" || data.type == "landmineRemove" || data.type == "gunnerRemove") {
+      for (var i = weapons.length-1; i >= 0; i--) {
+        if (weapons[i].id == data.id) {
+          weapons.splice(i, 1);
+        }
+      }
+    }
+    saveJSON('weapons', weapons);
   });
 
   socket.on('death', function (deathData) {

@@ -15,7 +15,7 @@ socket.on("update", function (tanks_array) {
       if(tanks_array[i].name != tank.name){
         notify(tanks_array[i].name + ' joined the game', 130, tank.colour, width/2);
       }else{
-        notify('connected succesfully', 100, tank.colour, width/2);
+        notify('connected succesfully as \'' + tank.name + "\'", 200, tank.colour, width/2);
       }
       tanks.push(newTank);
     }else{
@@ -47,6 +47,12 @@ socket.on('bullet', function (bulletData) {
 
 socket.on('weapon', function (data) {
   tank.weaponManager.addWeapon(data);
+});
+
+socket.on('weapons', function (data) {
+  for (var i = 0; i < data.length; i++) {
+    tank.weaponManager.addWeapon(data[i]);
+  }
 })
 
 socket.on('death', function (deathData) {
