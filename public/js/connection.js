@@ -60,6 +60,11 @@ socket.on('death', function (deathData) {
   if(deathData.killerName == tank.name){
     tank.kill(deathData.victimName);
   }
+  console.log(deathData.killerName.substr(deathData.killerName.indexOf('_')-1) + " vs: " + tank.colour);
+  if (deathData.killerName.substr(0, deathData.killerName.indexOf('_')) == tank.colour){
+    tank.teamKill(deathData.victimName);
+    console.log('teamKill');
+  }
 });
 
 socket.on('remove', function (id) {

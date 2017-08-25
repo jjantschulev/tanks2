@@ -93,20 +93,24 @@ function ColorSelect() {
   }
 
   this.mouseClick = function () {
+    var newColour = "";
     if(collidePointRect(mouseX, mouseY, 0, 0, width/2, height/2)){
-      tank.loadImages('green');
+      newColour = "green";
     }
     if(collidePointRect(mouseX, mouseY, 0, height/2, width/2, height/2)){
-      tank.loadImages('red');
+      newColour = "red";
     }
     if(collidePointRect(mouseX, mouseY, width/2, 0, width/2, height/2)){
-      tank.loadImages('yellow');
+      newColour = "yellow";
     }
     if(collidePointRect(mouseX, mouseY, width/2, height/2, width/2, height/2)){
-      tank.loadImages('blue');
+      newColour = "blue";
     }
-    this.toggleColorSelect();
-    Cookies.set('tank_colour', tank.colour);
+    if(team.allowColour(newColour)){
+      tank.loadImages(newColour);
+      this.toggleColorSelect();
+      Cookies.set('tank_colour', tank.colour);
+    }
   }
 
   this.toggleColorSelect = function () {

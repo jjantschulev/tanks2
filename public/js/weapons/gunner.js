@@ -55,7 +55,7 @@ function Gunner(x, y, colour, name, id) {
       dir: this.dir,
       type: 1,
       col: this.colour,
-      name: this.owner
+      name: this.colour + "_gunner"
     }
     bullets.push(new Bullet(bulletData.x, bulletData.y, bulletData.dir, bulletData.name, bulletData.type, bulletData.col));
     this.health -= 0.1;

@@ -11,6 +11,10 @@ function notify(t, time, col, w) {
   notifications.unshift(new Notification(t, time, col, w));
 }
 
+function simpleNotify(text) {
+  notify(text, 150, 150, width - width/3);
+}
+
 function Notification(t, time, col, w) {
   this.w = w;
   this.h = 40;

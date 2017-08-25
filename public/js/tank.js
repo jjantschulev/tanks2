@@ -36,19 +36,10 @@ function Tank() {
   this.maxHealth = 150;
 
   this.name = Cookies.get('name');
-  this.generateName = function () {
-    var nouns = ['avogadro', 'fairy', 'lad', 'sebastian', 'beau', 'email', 'letter', 'parcel', 'snake', 'grass', 'gravel', 'squirrel', 'doctor', 'teacher', 'developer', 'cook', 'bus', 'skeleton', 'jumpy-thing', 'cat', 'dog', 'monster', 'duck', 'politician', 'car', 'auto', 'truck', 'rocket', 'fly', 'leech', 'apple', 'book', 'frog', 'spam', 'eggs', 'rabbit', 'elephant', 'rock', 'horse', 'robot', 'avocado', 'salad', 'bread', 'shoe', 'donkey', 'mouse', 'spinach', 'german', 'french', 'italian', 'beats', 'japanese', 'american', 'tree', 'forest', 'piano', 'computer', 'wall', 'fred', 'bob', 'richard', 'beef', 'potato', 'tomato'];
-    var adjectives = ['crunchy', 'bouyant', 'engorged', 'fancyful', 'convoluted', 'speedy', 'old', 'eletrified', 'corrupt', 'thick', 'black', 'asian', 'insane', 'annoying', 'exciting', 'boring', 'sophisticated', 'educated', 'lame', 'deadly', 'comical', 'undefined', 'young', 'old', 'middle-aged', 'radical', 'putrid', 'beautiful', 'primitive', 'animalistic', 'relaxing', 'superb', 'rude', 'ruthless', 'relentless', 'racist', 'clever', 'dumb', 'interesting', 'silly', 'wild', 'partying', 'green', 'blue', 'red', 'orange', 'brown', 'purple', 'fat', 'quick', 'slow', 'yummy', 'electric', 'charged', 'sad', 'stuuupid', 'cool', 'uncool', 'amazing', 'phat', 'loud', 'soft', 'dead', 'alive', 'smart', 'stinking', 'clean', 'large', 'miniscule', 'vegetarian', 'beef-eating', 'loving', 'hateful', 'mediocre'];
-    var name = '-' + adjectives[Math.floor(random(adjectives.length))]
-      + '-' + adjectives[Math.floor(random(adjectives.length))]
-      + '-' + nouns[Math.floor(random(nouns.length))] + '-';
-    console.log(nouns.length * adjectives.length * adjectives.length);
-    return name;
-  }
   if (this.name == undefined) {
-    this.name = this.generateName();
+    this.name = generateName();
   }
-  this.displayName = this.generateName();
+  this.displayName = generateName();
 
   //Weaponry
   this.gun = new Gun();
@@ -174,10 +165,15 @@ function Tank() {
       this.weaponManager.bombAmount += 2;
       this.weaponManager.blastAmount += 2;
     } else {
-      this.weaponManager.landmineAmount -= 1;
-      this.weaponManager.bombAmount = 1;
-      this.weaponManager.blastAmount -= 1;
+      this.weaponManager.landmineAmount -= 2;
+      this.weaponManager.bombAmount -= 2;
+      this.weaponManager.blastAmount -= 2;
     }
+  }
+
+  this.teamKill = function(name) {
+    notify('Your team gunner killed ' + name, 200, this.colour, width - width/3);
+    this.health += 30;
   }
 
   this.removeHealth = function (amount) {
@@ -264,4 +260,14 @@ function EnemyTank() {
     this.gunImage = loadImage('./assets/' + this.colour + '_gun.png');
   }
   this.loadImages(this.colour);
+}
+
+function generateName() {
+  var nouns = ['avogadro', 'fairy', 'lad', 'sebastian', 'beau', 'email', 'letter', 'parcel', 'snake', 'grass', 'gravel', 'squirrel', 'doctor', 'teacher', 'developer', 'cook', 'bus', 'skeleton', 'jumpy-thing', 'cat', 'dog', 'monster', 'duck', 'politician', 'car', 'auto', 'truck', 'rocket', 'fly', 'leech', 'apple', 'book', 'frog', 'spam', 'eggs', 'rabbit', 'elephant', 'rock', 'horse', 'robot', 'avocado', 'salad', 'bread', 'shoe', 'donkey', 'mouse', 'spinach', 'german', 'french', 'italian', 'beats', 'japanese', 'american', 'tree', 'forest', 'piano', 'computer', 'wall', 'fred', 'bob', 'richard', 'beef', 'potato', 'tomato'];
+  var adjectives = ['crunchy', 'bouyant', 'engorged', 'fancyful', 'convoluted', 'speedy', 'old', 'eletrified', 'corrupt', 'thick', 'black', 'asian', 'insane', 'annoying', 'exciting', 'boring', 'sophisticated', 'educated', 'lame', 'deadly', 'comical', 'undefined', 'young', 'old', 'middle-aged', 'radical', 'putrid', 'beautiful', 'primitive', 'animalistic', 'relaxing', 'superb', 'rude', 'ruthless', 'relentless', 'racist', 'clever', 'dumb', 'interesting', 'silly', 'wild', 'partying', 'green', 'blue', 'red', 'orange', 'brown', 'purple', 'fat', 'quick', 'slow', 'yummy', 'electric', 'charged', 'sad', 'stuuupid', 'cool', 'uncool', 'amazing', 'phat', 'loud', 'soft', 'dead', 'alive', 'smart', 'stinking', 'clean', 'large', 'miniscule', 'vegetarian', 'beef-eating', 'loving', 'hateful', 'mediocre'];
+  var name = '-' + adjectives[Math.floor(random(adjectives.length))]
+    + '-' + adjectives[Math.floor(random(adjectives.length))]
+    + '-' + nouns[Math.floor(random(nouns.length))] + '-';
+  console.log(nouns.length * adjectives.length * adjectives.length);
+  return name;
 }
