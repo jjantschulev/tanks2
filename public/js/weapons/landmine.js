@@ -37,3 +37,6 @@ function Landmine(x, y, owner, col, id) {
     tank.weaponManager.landmines.splice(tank.weaponManager.landmines.indexOf(this), 1);
   }
 }
+
+
+

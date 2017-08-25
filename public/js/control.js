@@ -24,10 +24,10 @@ function keyHold(k) {
   if (k == 32) {
     tank.gun.shoot();
   }
-  if (k == 188) {
+  if (k == 190) {
     tank.gun.shoot(2);
   }
-  if (k == 190) {
+  if (k == 188) {
     tank.gun.shoot(1);
   }
 }
@@ -86,6 +86,11 @@ function keyDown(k) {
     if (k == 67) {
       tank.gun.toggleTrackMouse();
     }
+
+    if (k == 48) {
+      tank.gun.toggleAi();
+    }
+
   }
 }
 

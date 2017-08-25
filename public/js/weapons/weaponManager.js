@@ -133,11 +133,11 @@ function WeaponManager() {
         // Dropping gunner here
         data.id = generateId();
         var newGunner = new Gunner(data.x, data.y, data.col, data.name, data.id);
-        if(newGunner.place()){
-          socket.emit('weapon', data);
-          this.gunners.push(newGunner);
-        } else {
-          notify('not enough health to place gunner!', 100, tank.colour, width);
+        if (team.allowGunner(newGunner)) {
+          if(newGunner.place()){
+            socket.emit('weapon', data);
+            this.gunners.push(newGunner);
+          }
         }
       }
     }

@@ -167,6 +167,7 @@ function MapEditorMenu() {
     }
   }
 
+
   this.buttonLogic = function (buttonIndex) {
     switch (buttonIndex) {
       case 0:
@@ -189,5 +190,4 @@ function MapEditorMenu() {
         break;
     }
   }
-
 }
