@@ -8,11 +8,11 @@ function showNotifications() {
 }
 
 function notify(t, time, col, w) {
-  notifications.unshift(new Notification(t, time, col, w));
+  notifications.unshift(new Notification(t, time, col, width));
 }
 
 function simpleNotify(text) {
-  notify(text, 150, 150, width - width/3);
+  notify(text, 150, 150, width);
 }
 
 function Notification(t, time, col, w) {

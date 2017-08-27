@@ -24,11 +24,17 @@ function keyHold(k) {
   if (k == 32) {
     tank.gun.shoot();
   }
-  if (k == 190) {
-    tank.gun.shoot(2);
-  }
-  if (k == 188) {
-    tank.gun.shoot(1);
+  if(tank.name == "Jordan") {
+    if (k == 188) {
+      tank.gun.shoot(2);
+    }
+  }else{
+    if (k == 190) {
+      tank.gun.shoot(2);
+    }
+    if (k == 188) {
+      tank.gun.shoot(1);
+    }
   }
 }
 
@@ -54,8 +60,8 @@ function keyDown(k) {
       if (k == 32) {
         pause.mapEditor.mouseClick();
       }
-      if (k == 76) {
-        pause.mapEditor.loadLines();
+      if (k == 85) {
+        pause.mapEditor.undo();
       }
     }
   }else{ // not paused:
@@ -81,6 +87,10 @@ function keyDown(k) {
     }
     if (k == 72) {
       tank.weaponManager.dropWeapon('healthPacket');
+    }
+
+    if (k == 80) {
+      tank.setSpawnPoint();
     }
 
     if (k == 67) {

@@ -14,11 +14,6 @@ function MapEditor() {
     stroke(100);
     strokeWeight(15);
     for (var j = 0; j < this.allWalls.length; j++) {
-      if (this.allWalls[j].length == 1) {
-        fill(100);
-        noStroke();
-        ellipse(this.allWalls[j][0].x, this.allWalls[j][0].y, 15, 15);
-      }
       for (var i = 0; i < this.allWalls[j].length-1; i++) {
         line(this.allWalls[j][i].x, this.allWalls[j][i].y, this.allWalls[j][i+1].x, this.allWalls[j][i+1].y);
       }
@@ -46,6 +41,7 @@ function MapEditor() {
 
   this.changeMode = function () {
       if(this.active){
+        this.currentWall = [];
         this.active = false;
       }else{
         this.loadLines();
@@ -53,8 +49,14 @@ function MapEditor() {
       }
   }
 
-  this.addLine = function () {
-    this.allWalls.push(this.currentWall);
+  this.addLine = function () { 
+    if(this.eraser){
+      this.menu.buttons[3].active = false;
+      this.eraser = false;
+    }
+    if(this.currentWall.length > 1){
+      this.allWalls.push(this.currentWall);
+    }
     this.currentWall = [];
   }
 
@@ -66,24 +68,24 @@ function MapEditor() {
   }
 
   this.removePoint = function () {
-    for (var i = 0; i < this.allWalls.length; i++) {
+    for (var i = this.allWalls.length-1; i >= 0; i--) {
       for (var j = 0; j < this.allWalls[i].length; j++) {
         if(dist(this.allWalls[i][j].x, this.allWalls[i][j].y, mouseX, mouseY) < 10){
-          var newArrayLess = [];
-          var newArrayMore = [];
-          for (var k = 0; k < j; k++){
-            newArrayLess.push(this.allWalls[i][k]);
-          }
-          for (var l = j+1; l < this.allWalls[i].length; l++) {
-            newArrayMore.push(this.allWalls[i][l]);
+          if(this.allWalls[i].length > 2){
+            var newArrayLess = this.allWalls[i].slice(0, j);
+            var newArrayMore = this.allWalls[i].slice(j+1,this.allWalls[i].length);
+            this.allWalls.push(newArrayLess);
+            this.allWalls.push(newArrayMore);
           }
           this.allWalls.splice(i, 1);
-          this.allWalls.push(newArrayLess);
-          this.allWalls.push(newArrayMore);
-          break;
         }
       }
     }
+  }
+
+  this.undo = function() {
+    this.addLine();
+    this.allWalls.splice(-1, 1);
   }
 
   this.clearAll = function () {
@@ -104,12 +106,17 @@ function MapEditor() {
   }
 
   this.toggleEraser = function () {
-    this.addLine();
     if(this.eraser){
       this.eraser = false;
+      this.menu.buttons[3].active = false;
     }else {
+      this.menu.buttons[3].active = true;
       this.eraser = true;
     }
+    if(this.currentWall.length > 1){
+      this.allWalls.push(this.currentWall);
+    }
+    this.currentWall = [];
   }
 
   this.saveMap = function () {
@@ -132,8 +139,10 @@ function MapEditor() {
   this.createWallsFromArray = function (wallData) {
     walls = [];
     for (var j = 0; j < wallData.length; j++) {
-      for (var i = 0; i < wallData[j].length-1; i++) {
-        walls.push(new Wall(wallData[j][i].x, wallData[j][i].y, wallData[j][i+1].x, wallData[j][i+1].y));
+      if(wallData[j].length > 1){
+        for (var i = 0; i < wallData[j].length-1; i++) {
+          walls.push(new Wall(wallData[j][i].x, wallData[j][i].y, wallData[j][i+1].x, wallData[j][i+1].y));
+        }
       }
     }
   }
@@ -149,7 +158,7 @@ function MapEditorMenu() {
   this.buttons.push(new Button(this.x, this.y + 1 * this.r, this.r, 'Exit', 12))
   this.buttons.push(new Button(this.x, this.y + 2 * this.r, this.r, 'Clear', 12))
   this.buttons.push(new Button(this.x, this.y + 3 * this.r, this.r, 'Eraser', 12))
-  this.buttons.push(new Button(this.x, this.y + 4 * this.r, this.r, 'Load', 12))
+  this.buttons.push(new Button(this.x, this.y + 4 * this.r, this.r, 'Undo', 12))
   this.buttons.push(new Button(this.x, this.y + 5 * this.r, this.r, 'Add Line', 12))
 
   this.show = function () {
@@ -183,7 +192,7 @@ function MapEditorMenu() {
         pause.mapEditor.toggleEraser();
         break;
       case 4:
-        pause.mapEditor.loadLines();
+        pause.mapEditor.undo();
         break;
       case 5:
         pause.mapEditor.addLine();

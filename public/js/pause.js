@@ -1,7 +1,7 @@
 var pause;
 
 function Pause() {
-  this.paused = false;
+  this.paused = true;
   this.buttons = [];
   this.buttons.push(new Button(1*width/6, 2*height/3, 200, 'Map Editor', 24));
   this.buttons.push(new Button(3*width/6, 2*height/3, 200, 'Resume', 24));
@@ -167,6 +167,7 @@ function Button(x, y, r, displayText, textHeight) {
   this.r = r;
   this.text = displayText;
   this.textHeight = textHeight;
+  this.active = false;
 
   this.show = function () {
     this.effects();
@@ -186,8 +187,16 @@ function Button(x, y, r, displayText, textHeight) {
     }
   }
 
+  this.toggleActive = function() {
+    if(this.active){
+      this.active = false;
+    }else{
+      this.active = true;
+    }
+  }
+
   this.effects = function () {
-    if(this.detectPress()){
+    if(this.detectPress() || this.active){
       fill(tank.colour);
     } else {
       fill(120);

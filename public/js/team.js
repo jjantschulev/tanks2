@@ -6,32 +6,20 @@ function Team() {
   this.allowColour = function(col) {
     // colours is format: | r | g | b | y |
     var colourNames = ['red', 'green', 'blue', 'yellow'];
-    var colours = [0, 0, 0, 0];
+    var colourInts = [0, 0, 0, 0];
     for (var i = tanks.length - 1; i >= 0; i--) {
       if(tank.id != tanks[i].id){
-        if(tanks[i].colour == 'red'){
-          colours[0]++;
-        }
-        if(tanks[i].colour == 'yellow'){
-          colours[3]++;
-        }
-        if(tanks[i].colour == 'blue'){
-          colours[2]++;
-        }
-        if(tanks[i].colour == 'green'){
-          colours[1]++;
-        }
+        colourInts = this.colourToInt(tanks[i].colour, colourInts);
       }
     }
-
-    var max = Math.max(colours[0], colours[1], colours[2], colours[3]);
-    if (max == 0) {
-      max = 1;
-    }
-
-    for (var i = colours.length - 1; i >= 0; i--) {
+    var sortedInts = colourInts.slice();
+    sortedInts.sort(function(a, b) {
+      return b - a;
+    });
+    var difference = sortedInts[0] - sortedInts[1];
+    for (var i = colourInts.length - 1; i >= 0; i--) {
       if (col == colourNames[i]) {
-        if (colours[i] == max) {
+        if (colourInts[i] == sortedInts[0] && difference > 0) {
           notify("Too many people on " + col + " team", 150, 255, width);
           return false;
         }else{
@@ -40,6 +28,23 @@ function Team() {
       }
     }
 
+  }
+
+  this.colourToInt = function(col, array) {
+    var colourInts = array;
+    if(col == 'red'){
+      colourInts[0]++;
+    }
+    if(col == 'yellow'){
+      colourInts[3]++;
+    }
+    if(col == 'blue'){
+      colourInts[2]++;
+    }
+    if(col == 'green'){
+      colourInts[1]++;
+    }
+    return colourInts;
   }
 
   this.allowGunner = function(g) {

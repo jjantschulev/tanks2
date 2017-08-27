@@ -58,14 +58,15 @@ function Gunner(x, y, colour, name, id) {
       name: this.colour + "_gunner"
     }
     bullets.push(new Bullet(bulletData.x, bulletData.y, bulletData.dir, bulletData.name, bulletData.type, bulletData.col));
-    this.health -= 0.1;
-
     // socket.emit('bullet', bulletData);
   }
 
   this.trackTank = function () {
     var ct = this.getClosestTank();
     if(ct == null){
+      if(this.health < 120 - 0.08){
+        this.health += 0.04;
+      }
       return;
     }
 
@@ -139,7 +140,6 @@ function Gunner(x, y, colour, name, id) {
         socket.emit('weapon', data);
         particleEffects.push(new ParticleEffect(this.x, this.y, this.colour));
         tank.weaponManager.gunners.splice(tank.weaponManager.gunners.indexOf(this), 1);
-        return true;
       }
       return true;
     }
@@ -154,8 +154,8 @@ function Gunner(x, y, colour, name, id) {
     }
 
     if (!inRange) {
-      if (tank.health > 100) {
-        tank.removeHealth(100);
+      if (tank.health > 120) {
+        tank.removeHealth(120);
         return true;
       } else {
         notify('not enough health to place gunner!', 100, tank.colour, width);

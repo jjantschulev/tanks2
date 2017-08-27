@@ -1,9 +1,32 @@
 var socket = io(window.location.href);
+var connected = false;
+var timeDisconnected = 0;
 
 function onLoad() {
   setInterval(sync, 38);
   setInterval(syncAmmo, 1000);
   socket.emit('name', tank.name);
+}
+
+function showDisconnectedInfo() {
+  if(!connected){
+    timeDisconnected++;
+    fill(0);
+    noStroke();
+    rect(0, 0, width, height);
+    fill(255, 0, 0);
+    textSize(50);
+    textAlign(CENTER, CENTER);
+    if(timeDisconnected < 300){
+      text("Please wait, Connecting...", width/2, height/2);
+    }else if(timeDisconnected < 600){
+      text("Error Connecting. Please Wait...", width/2, height/2);
+    }else{
+      text("Cannot connect to server!", width/2, height/2);
+    }
+  }else{
+    timeDisconnected = 0;
+  }
 }
 
 socket.on("update", function (tanks_array) {
@@ -16,8 +39,11 @@ socket.on("update", function (tanks_array) {
         notify(tanks_array[i].name + ' joined the game', 130, tank.colour, width/2);
       }else{
         notify('connected succesfully as \'' + tank.name + "\'", 200, tank.colour, width/2);
+        setTimeout(tank.setColour, 180);
       }
       tanks.push(newTank);
+      connected = true;
+      pause.paused = false;
     }else{
       tanks[i].pos.x = tanks_array[i].x;
       tanks[i].pos.y = tanks_array[i].y;
@@ -60,10 +86,8 @@ socket.on('death', function (deathData) {
   if(deathData.killerName == tank.name){
     tank.kill(deathData.victimName);
   }
-  console.log(deathData.killerName.substr(deathData.killerName.indexOf('_')-1) + " vs: " + tank.colour);
   if (deathData.killerName.substr(0, deathData.killerName.indexOf('_')) == tank.colour){
     tank.teamKill(deathData.victimName);
-    console.log('teamKill');
   }
 });
 
@@ -75,6 +99,11 @@ socket.on('remove', function (id) {
     }
   }
 });
+
+socket.on('disconnect', function() {
+  connected = false;
+  pause.paused = true;
+})
 
 socket.on('ammo', function (data) {
   tank.weaponManager.landmineAmount = data.mine;

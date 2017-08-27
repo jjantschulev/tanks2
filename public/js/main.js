@@ -21,15 +21,6 @@ function setup() {
 function draw() {
   background(0);
 
-  // Blocked Text
-  // if (tank.name == "") {
-  //   textSize(100);
-  //   fill('red');
-  //   textAlign(CENTER, CENTER);
-  //   text("Blocked!", width/2, height/2);
-  //   return;
-  // }
-
   if(!pause.paused){
     for (var i = 0; i < keys.length; i++) {
       keyHold(keys[i]);
@@ -51,5 +42,6 @@ function draw() {
   tank.weaponManager.showInfo();
 
   pause.use();
+  showDisconnectedInfo();
   showNotifications();
 }

@@ -11,6 +11,7 @@ function showTanks() {
 
 function Tank() {
   this.pos = createVector(random(width), random(height));
+  this.spawn = undefined;
   this.previousPos = this.pos.copy();
   this.viewPos = this.pos.copy();
   this.dir = 0;
@@ -83,7 +84,7 @@ function Tank() {
     noStroke();
     rectMode(CENTER);
     rect(0, -30, map(this.health, 0, 100, 0, 30), 1.6);
-    if(this.health > this.maxHealth - 20){
+    if(this.health > this.maxHealth - 25){
       rect(-map(this.health, 0, 100, 0, 30)/2, -30, 1.6, 3.8, 100);
       rect(map(this.health, 0, 100, 0, 30)/2, -30, 1.6, 3.8, 100);
     }
@@ -146,7 +147,11 @@ function Tank() {
     }
     socket.emit('death', deathData);
     this.health = 100;
-    this.pos.set(random(width), random(height));
+    if(this.spawn == undefined){
+      this.pos.set(random(width), random(height));
+    }else{
+      this.pos.set(this.spawn);
+    }
     this.previousPos.set(this.pos);
     pause.deathScreen.toggleDeathScreen(name);
   }
@@ -199,6 +204,25 @@ function Tank() {
     Cookies.remove('name');
     window.location.reload();
   }
+
+  this.setColour = function() {
+    var colourAllowed = team.allowColour(tank.colour);
+    if(colourAllowed){
+      return;
+    }else{
+      var colours = ['red', 'green', 'yellow', 'blue'];
+      while (!colourAllowed) {
+        col = colours[Math.floor(random(4))];
+        colourAllowed = team.allowColour(col);
+      }
+      tank.loadImages(col);
+    }
+  }
+
+  this.setSpawnPoint = function() {
+    simpleNotify("Spawn point set here");
+    this.spawn = createVector(this.pos.x, this.pos.y);
+  }
 }
 
 
@@ -218,6 +242,7 @@ function EnemyTank() {
   this.paused = false;
 
   this.health = 100;
+  this.maxHealth = 150;
   this.name = 'other';
 
   this.show = function () {
@@ -239,6 +264,10 @@ function EnemyTank() {
     noStroke();
     rectMode(CENTER);
     rect(0, -30, map(this.health, 0, 100, 0, 30), 1.6);
+    if(this.health > this.maxHealth - 25){
+      rect(-map(this.health, 0, 100, 0, 30)/2, -30, 1.6, 3.8, 100);
+      rect(map(this.health, 0, 100, 0, 30)/2, -30, 1.6, 3.8, 100);
+    }
 
     // SHOW NAME
     fill(120);
