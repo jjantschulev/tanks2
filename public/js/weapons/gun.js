@@ -2,6 +2,10 @@ function Gun() {
   this.type = 1;
   this.reload1 = 0;
   this.reload2 = 0;
+  this.machineGunBullets = 50;
+
+  this.shooting = false;
+
   this.trackMouseActive = true;
   this.useAiAim = false;
 
@@ -12,6 +16,11 @@ function Gun() {
     }
     if(this.reload1 <= 0 && bulletType == 1){
       this.reload1 = 6;
+      if(this.machineGunBullets <= 0){
+        return;
+      }else{
+        this.machineGunBullets-=1;
+      }
     } else if(this.reload2 <= 0 && bulletType == 2){
       this.reload2 = 120;
     }else{
@@ -38,13 +47,18 @@ function Gun() {
   this.update = function () {
     this.reload1 --;
     this.reload2 --;
-
     if(this.trackMouseActive){
       this.trackMouse();
     }
     if(this.useAiAim && tank.name == 'Jordan'){
       this.aiAim();
     }
+    if(!this.shooting){
+      if(this.machineGunBullets < 50){
+        this.machineGunBullets += 0.2;
+      }
+    }
+    this.shooting = false;
   }
 
   this.toggleType = function () {
@@ -73,6 +87,7 @@ function Gun() {
     if (mouseIsPressed && !pause.paused) {
       if(mouseButton == LEFT) {
         this.shoot(1);
+        this.shooting = true;
       }else if (mouseButton == RIGHT) {
         this.shoot(2);
       }
@@ -86,6 +101,12 @@ function Gun() {
       noStroke();
       rectMode(CENTER);
       rect(0, -25, map(this.reload2, 0, 120, 0, 25), 1.4);
+    }
+    if(this.machineGunBullets > 0){
+      fill(150);
+      noStroke();
+      rectMode(CENTER);
+      rect(0, -23, map(this.machineGunBullets, 0, 50, 0, 25), 1.4);
     }
   }
 

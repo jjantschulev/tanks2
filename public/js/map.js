@@ -13,7 +13,6 @@ function View() {
     this.y = lerp(this.y, tank.pos.y, 0.08);
     this.x = constrain(this.x, width/2/this.zoom, width - width/2/this.zoom);
     this.y = constrain(this.y, height/2/this.zoom, height - height/2/this.zoom);
-    // this.zoom = lerp(this.zoom, 1.1 - 0.2*(car.speed/10.8516614), 0.05);
     scale(this.zoom);
     translate(-this.x, -this.y);
   }

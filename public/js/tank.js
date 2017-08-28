@@ -11,7 +11,10 @@ function showTanks() {
 
 function Tank() {
   this.pos = createVector(random(width), random(height));
-  this.spawn = undefined;
+  this.spawn = Cookies.getJSON('spawn');
+  if(this.spawn != undefined){
+    this.pos.set(this.spawn.x, this.spawn.y);
+  }
   this.previousPos = this.pos.copy();
   this.viewPos = this.pos.copy();
   this.dir = 0;
@@ -35,6 +38,8 @@ function Tank() {
 
   this.health = 100;
   this.maxHealth = 150;
+
+  this.coins = 0;
 
   this.name = Cookies.get('name');
   if (this.name == undefined) {
@@ -150,7 +155,7 @@ function Tank() {
     if(this.spawn == undefined){
       this.pos.set(random(width), random(height));
     }else{
-      this.pos.set(this.spawn);
+      this.pos.set(this.spawn.x, this.spawn.y);
     }
     this.previousPos.set(this.pos);
     pause.deathScreen.toggleDeathScreen(name);
@@ -164,11 +169,30 @@ function Tank() {
 
   this.kill = function (name) {
     notify('You killed ' + name, 200, this.colour, width/2);
-    this.health += 50;
     if(name != tank.name){
-      this.weaponManager.landmineAmount += 2;
-      this.weaponManager.bombAmount += 2;
-      this.weaponManager.blastAmount += 2;
+      switch (team.getTeamPlayers(this.colour)) {
+        case 1:
+          this.health += 70;
+          this.coins += 100;
+          this.weaponManager.landmineAmount += 3;
+          this.weaponManager.bombAmount += 3;
+          this.weaponManager.blastAmount += 3;
+          break;
+        case 2:
+          this.health += 50;
+          this.coins += 80;
+          this.weaponManager.landmineAmount += 2;
+          this.weaponManager.bombAmount += 2;
+          this.weaponManager.blastAmount += 2;
+          break;
+        default:
+          this.health += 30;
+          this.coins += 60;
+          this.weaponManager.landmineAmount += 1;
+          this.weaponManager.bombAmount += 1;
+          this.weaponManager.blastAmount += 1;
+          break;
+      }
     } else {
       this.weaponManager.landmineAmount -= 2;
       this.weaponManager.bombAmount -= 2;
@@ -221,10 +245,10 @@ function Tank() {
 
   this.setSpawnPoint = function() {
     simpleNotify("Spawn point set here");
-    this.spawn = createVector(this.pos.x, this.pos.y);
+    Cookies.set('spawn', {x: this.pos.x, y: this.pos.y});
+    this.spawn = {x: this.pos.x, y: this.pos.y};
   }
 }
-
 
 function EnemyTank() {
   this.pos = createVector(random(width), random(height));

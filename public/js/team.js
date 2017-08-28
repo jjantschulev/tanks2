@@ -64,4 +64,34 @@ function Team() {
       return true;
     }
   }
+
+  this.allowHealthPacket = function(hp) {
+    var col = hp.colour;
+    var count = 0;
+
+    for (var i = tank.weaponManager.healthPackets.length - 1; i >= 0; i--) {
+      if(tank.weaponManager.healthPackets[i].colour == col){
+        count ++;
+      }
+    }
+
+    if(count >= 10){
+      notify("too many "+ hp.colour +" health packets on the field", 150, hp.colour, width - width/3);
+      return false;
+    }else{
+      return true;
+    }
+  }
+
+
+  this.getTeamPlayers = function (col) {
+    var count = 0;
+    for (var i = 0; i < tanks.length; i++) {
+      if(tanks[i].colour == col){
+        count++;
+      }
+    }
+    return count;
+  }
+
 }

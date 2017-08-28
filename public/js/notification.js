@@ -8,7 +8,7 @@ function showNotifications() {
 }
 
 function notify(t, time, col, w) {
-  notifications.unshift(new Notification(t, time, col, width));
+  notifications.unshift(new Notification(t, time, col, width - width/4));
 }
 
 function simpleNotify(text) {

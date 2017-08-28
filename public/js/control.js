@@ -23,17 +23,21 @@ function keyHold(k) {
   // Gun Shooting
   if (k == 32) {
     tank.gun.shoot();
+    tank.gun.shooting = true;
   }
   if(tank.name == "Jordan") {
     if (k == 188) {
+      tank.gun.shooting = true;
       tank.gun.shoot(2);
     }
   }else{
     if (k == 190) {
+      tank.gun.shooting = true;
       tank.gun.shoot(2);
     }
     if (k == 188) {
       tank.gun.shoot(1);
+      tank.gun.shooting = true;
     }
   }
 }

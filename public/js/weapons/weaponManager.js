@@ -30,6 +30,9 @@ function WeaponManager() {
       rect(rectSize*2, i*rectSize, rectSize, rectSize);
     }
 
+    fill(255, 200, 100);
+    // rect(width - rectSize, 0, rectSize, map(tank.coins, 0, 1000, 0, 100));
+
     this.limitWeaponAmount();
   }
 
@@ -155,18 +158,17 @@ function WeaponManager() {
         // Dropping health packet here
         data.id = generateId();
         var hp = new HealthPacket(data.x, data.y, data.name, data.col, data.id);
-        if(hp.place()){
-          socket.emit('weapon', data);
-          this.healthPackets.push(hp);
-        } else {
-          notify('not enough health', 100, tank.colour, width/2);
+        if (team.allowHealthPacket(hp)) {
+          if(hp.place()){
+            socket.emit('weapon', data);
+            this.healthPackets.push(hp);
+          } else {
+            notify('not enough health', 100, tank.colour, width/2);
+          }
         }
       }
     }
 
-  }
-
-  this.healthPacketButton = function () {
   }
 
   this.pushTank = function (x, y, d, direction) {
