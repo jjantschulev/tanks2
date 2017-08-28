@@ -173,24 +173,15 @@ function Tank() {
       switch (team.getTeamPlayers(this.colour)) {
         case 1:
           this.health += 70;
-          this.coins += 100;
-          this.weaponManager.landmineAmount += 3;
-          this.weaponManager.bombAmount += 3;
-          this.weaponManager.blastAmount += 3;
+          this.coins += 120;
           break;
         case 2:
           this.health += 50;
-          this.coins += 80;
-          this.weaponManager.landmineAmount += 2;
-          this.weaponManager.bombAmount += 2;
-          this.weaponManager.blastAmount += 2;
+          this.coins += 100;
           break;
         default:
           this.health += 30;
-          this.coins += 60;
-          this.weaponManager.landmineAmount += 1;
-          this.weaponManager.bombAmount += 1;
-          this.weaponManager.blastAmount += 1;
+          this.coins += 80;
           break;
       }
     } else {

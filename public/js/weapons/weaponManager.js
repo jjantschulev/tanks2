@@ -9,6 +9,11 @@ function WeaponManager() {
   this.bombAmount = 0;
   this.blastAmount = 0;
 
+  this.blastPrice = 30;
+  this.bombPrice = 50;
+  this.landminePrice = 80;
+  this.gunnerPrice = 250;
+  
   this.landmineColour = color(0, 190, 255);
   this.bombColour = color(255, 180, 0);
   this.blastColour = color(15, 255, 150);

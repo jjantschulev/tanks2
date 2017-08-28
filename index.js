@@ -155,6 +155,7 @@ function saveAmmo(data) {
       ammo[i].blast = data.blast;
       ammo[i].bomb = data.bomb;
       ammo[i].health = data.health;
+      ammo[i].coins = data.coins;
     }
   }
   saveJSON('ammo', ammo);
@@ -176,6 +177,7 @@ function loadAmmo(name) {
       bomb: 4,
       health: 100,
       name: name,
+      coins: 150,
     }
     if (name.charAt(name.length-1) != '-' && name.charAt(1) != '-') {
       ammo.push(returnObject);
