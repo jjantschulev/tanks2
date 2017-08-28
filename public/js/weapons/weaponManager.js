@@ -8,6 +8,7 @@ function WeaponManager() {
   this.landmineAmount = 0;
   this.bombAmount = 0;
   this.blastAmount = 0;
+  this.gunnerAmount = 10;
 
   this.blastPrice = 30;
   this.bombPrice = 50;
@@ -17,6 +18,7 @@ function WeaponManager() {
   this.landmineColour = color(0, 190, 255);
   this.bombColour = color(255, 180, 0);
   this.blastColour = color(15, 255, 150);
+  this.gunnerColour = color(200, 0, 255);
 
   this.showInfo = function () {
     var rectSize = 6;
@@ -33,6 +35,10 @@ function WeaponManager() {
     for (var i = 0; i < this.landmineAmount; i++) {
       fill(this.landmineColour);
       rect(rectSize*2, i*rectSize, rectSize, rectSize);
+    }
+    for (var i = 0; i < this.gunnerAmount; i++) {
+      fill(this.gunnerColour);
+      rect(rectSize*3, i*rectSize, rectSize, rectSize);
     }
 
     fill(255, 200, 100);
@@ -139,12 +145,15 @@ function WeaponManager() {
         g.pickUp();
       }else{
         // Dropping gunner here
-        data.id = generateId();
-        var newGunner = new Gunner(data.x, data.y, data.col, data.name, data.id);
-        if (team.allowGunner(newGunner)) {
-          if(newGunner.place()){
-            socket.emit('weapon', data);
-            this.gunners.push(newGunner);
+        if(this.gunnerAmount > 0){
+          data.id = generateId();
+          var newGunner = new Gunner(data.x, data.y, data.col, data.name, data.id);
+          if (team.allowGunner(newGunner)) {
+            if(newGunner.place()){
+              socket.emit('weapon', data);
+              this.gunners.push(newGunner);
+              this.gunnerAmount--;              
+            }
           }
         }
       }
@@ -203,6 +212,9 @@ function WeaponManager() {
     }
     if(this.blastAmount > 10){
       this.blastAmount = 10;
+    }
+    if(this.gunnerAmount > 10){
+      this.gunnerAmount = 10;
     }
   }
 }

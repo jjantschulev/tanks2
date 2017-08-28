@@ -154,13 +154,7 @@ function Gunner(x, y, colour, name, id) {
     }
 
     if (!inRange) {
-      if (tank.health > 120) {
-        tank.removeHealth(120);
-        return true;
-      } else {
-        notify('not enough health to place gunner!', 100, tank.colour, width);
-        return false;
-      }
+      return true;
     } else {
       notify('too close to other gunner!', 100, tank.colour, width);
       return false;
@@ -169,8 +163,9 @@ function Gunner(x, y, colour, name, id) {
 
   this.pickUp = function() {
     if(this.owner == tank.name && this.colour == tank.colour){
-      tank.health += this.health;
-      notify("picked up gunner with " + Math.round(this.health) + " hp", 150, this.colour, width);
+      var coinAmount = map(this.health, 0, 120, 0, 250);
+      tank.coins += coinAmount;
+      notify("picked up gunner with " + Math.round(coinAmount) + " coins", 150, this.colour, width);
 
       var data = {
         id : this.id,

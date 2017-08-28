@@ -152,6 +152,7 @@ function saveAmmo(data) {
   for (var i = 0; i < ammo.length; i++) {
     if (data.name == ammo[i].name) {
       ammo[i].mine = data.mine;
+      ammo[i].gunner = data.gunner;
       ammo[i].blast = data.blast;
       ammo[i].bomb = data.bomb;
       ammo[i].health = data.health;
@@ -175,6 +176,7 @@ function loadAmmo(name) {
       mine: 4,
       blast: 4,
       bomb: 4,
+      gunner: 0,
       health: 100,
       name: name,
       coins: 150,

@@ -148,7 +148,10 @@ function Shop() {
             }
             break;
           case 4:
-            simpleNotify('this does not work yet');
+            if (tank.coins - tank.weaponManager.gunnerPrice >= 0 && tank.weaponManager.gunnerAmount < 10) {
+              tank.coins -= tank.weaponManager.gunnerPrice;
+              tank.weaponManager.gunnerAmount++;
+            }
             break;
           default:
             break;
