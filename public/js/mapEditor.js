@@ -42,9 +42,11 @@ function MapEditor() {
   this.changeMode = function () {
       if(this.active){
         this.currentWall = [];
+        pause.onHomeScreen = true;        
         this.active = false;
       }else{
         this.loadLines();
+        pause.onHomeScreen = false;        
         this.active = true;
       }
   }

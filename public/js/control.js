@@ -25,30 +25,23 @@ function keyHold(k) {
     tank.gun.shoot();
     tank.gun.shooting = true;
   }
-  if(tank.name == "Jordan") {
-    if (k == 188) {
-      tank.gun.shooting = true;
-      tank.gun.shoot(2);
-    }
-  }else{
-    if (k == 190) {
-      tank.gun.shooting = true;
-      tank.gun.shoot(2);
-    }
-    if (k == 188) {
-      tank.gun.shoot(1);
-      tank.gun.shooting = true;
-    }
+  if (k == 190) {
+    tank.gun.shooting = true;
+    tank.gun.shoot(2);
+  }
+  if (k == 188) {
+    tank.gun.shoot(1);
+    tank.gun.shooting = true;
   }
 }
 
 function keyDown(k) {
   // console.log(k);
-  if (k == 27 && !pause.deathScreen.dead) {
+  if (k == 27 && !pause.deathScreen.dead && pause.onHomeScreen) {
     pause.togglePause();
   }
-  if(pause.paused){
-    if(pause.mapEditor.active){
+  if (pause.paused) {
+    if (pause.mapEditor.active) {
       if (k == 65) {
         pause.mapEditor.addLine();
       }
@@ -68,8 +61,8 @@ function keyDown(k) {
         pause.mapEditor.undo();
       }
     }
-  }else{ // not paused:
-    if (k == 220){
+  } else { // not paused:
+    if (k == 220) {
       minimap.toggleDisplay();
     }
     // Gun Mode Change
@@ -96,11 +89,6 @@ function keyDown(k) {
     if (k == 80) {
       tank.setSpawnPoint();
     }
-
-    if (k == 67) {
-      tank.gun.toggleTrackMouse();
-    }
-
     if (k == 48) {
       tank.gun.toggleAi();
     }
@@ -113,7 +101,7 @@ function keyUp(k) {
 }
 
 function mousePressed() {
-  if(pause.paused){
+  if (pause.paused) {
     pause.mouseClick();
   }
   // tank.weaponManager.gunners.push(new Gunner(view.getRealMousePoints().x, view.getRealMousePoints().y));
@@ -132,7 +120,7 @@ window.addEventListener('keydown', function () {
     keys.push(event.keyCode);
   }
   keyDown(event.keyCode);
-  if(event.keyCode == 9){
+  if (event.keyCode == 9) {
     event.preventDefault();
   }
 });

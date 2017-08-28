@@ -2,10 +2,13 @@ var pause;
 
 function Pause() {
   this.paused = true;
+  this.onHomeScreen = true;
   this.buttons = [];
-  this.buttons.push(new Button(1 * width / 6, 2 * height / 3, 200, 'Map Editor', 24));
-  this.buttons.push(new Button(3 * width / 6, 2 * height / 3, 200, 'Shop', 24));
-  this.buttons.push(new Button(5 * width / 6, 2 * height / 3, 200, 'Change Colour', 24));
+  this.buttons.push(new Button(1 * width / 10, 2 * height / 3, 160, 'Map Editor', 20));
+  this.buttons.push(new Button(3 * width / 10, 2 * height / 3, 160, 'Shop', 20));
+  this.buttons.push(new Button(5 * width / 10, 2 * height / 3, 160, 'Resume', 20));
+  this.buttons.push(new Button(7 * width / 10, 2 * height / 3, 160, 'Change Gun \n Control', 20));
+  this.buttons.push(new Button(9 * width / 10, 2 * height / 3, 160, 'Change Colour', 20));
 
   this.mapEditor = new MapEditor();
   this.colorSelect = new ColorSelect();
@@ -65,6 +68,12 @@ function Pause() {
           if (this.buttons[i].text == 'Map Editor') {
             this.mapEditor.changeMode();
           }
+          if (this.buttons[i].text == 'Resume') {
+            this.togglePause();
+          }
+          if (this.buttons[i].text == 'Change Gun \n Control') {
+            tank.gun.toggleTrackMouse();
+          }
           if (this.buttons[i].text == 'Shop') {
             this.shop.toggle();
           }
@@ -91,10 +100,16 @@ function Shop() {
   this.active = false;
   this.buttons = [];
   this.buttons.push(new Button(80, 60, 60, 'Back', 17));
-  this.buttons.push(new Button(1 * width / 8, 2 * height / 6, 180, 'LANDMINE \n ' + tank.weaponManager.landminePrice + ' coins', 20));
-  this.buttons.push(new Button(3 * width / 8, 2 * height / 6, 180, 'BOMB \n ' + tank.weaponManager.bombPrice + ' coins', 20));
-  this.buttons.push(new Button(5 * width / 8, 2 * height / 6, 180, 'BLAST \n ' + tank.weaponManager.blastPrice + ' coins', 20));
-  this.buttons.push(new Button(7 * width / 8, 2 * height / 6, 180, 'GUNNER \n ' + tank.weaponManager.gunnerPrice + ' coins', 20));
+  this.buttons.push(new Button(1 * width / 8, 400, 180, 'LANDMINE \n ' + tank.weaponManager.landminePrice + ' coins', 20));
+  this.buttons.push(new Button(3 * width / 8, 400, 180, 'BOMB \n ' + tank.weaponManager.bombPrice + ' coins', 20));
+  this.buttons.push(new Button(5 * width / 8, 400, 180, 'BLAST \n ' + tank.weaponManager.blastPrice + ' coins', 20));
+  this.buttons.push(new Button(7 * width / 8, 400, 180, 'GUNNER \n ' + tank.weaponManager.gunnerPrice + ' coins', 20));
+
+
+  this.buttons.push(new Button(1 * width / 8, 800, 180, 'LANDMINE \n ' + tank.weaponManager.landminePrice + ' coins', 20));
+  this.buttons.push(new Button(3 * width / 8, 800, 180, 'BOMB \n ' + tank.weaponManager.bombPrice + ' coins', 20));
+  this.buttons.push(new Button(5 * width / 8, 800, 180, 'BLAST \n ' + tank.weaponManager.blastPrice + ' coins', 20));
+  this.buttons.push(new Button(7 * width / 8, 800, 180, 'GUNNER \n ' + tank.weaponManager.gunnerPrice + ' coins', 20));
 
 
   this.show = function () {
@@ -114,6 +129,11 @@ function Shop() {
     textSize(30);
     text('coins: ' + tank.coins, width - 40, 60);
 
+    //Buy and sell text
+    textAlign(CENTER);
+    text('Buy', width / 2, 250);
+    text('Sell', width / 2, 650);
+
     for (var i = 0; i < this.buttons.length; i++) {
       this.buttons[i].show();
     }
@@ -126,9 +146,12 @@ function Shop() {
       var b = this.buttons[i];
       if (b.detectPress()) {
         switch (i) {
+          //Back button
           case 0:
             this.toggle();
             break;
+
+          // Buying Stuff
           case 1:
             if (tank.coins - tank.weaponManager.landminePrice >= 0 && tank.weaponManager.landmineAmount < 10) {
               tank.coins -= tank.weaponManager.landminePrice;
@@ -153,6 +176,32 @@ function Shop() {
               tank.weaponManager.gunnerAmount++;
             }
             break;
+
+          // Selling stuff
+          case 5:
+            if (tank.weaponManager.landmineAmount > 0) {
+              tank.coins += tank.weaponManager.landminePrice;
+              tank.weaponManager.landmineAmount--;
+            }
+            break;
+          case 6:
+            if (tank.weaponManager.bombAmount > 0) {
+              tank.coins += tank.weaponManager.bombPrice;
+              tank.weaponManager.bombAmount--;
+            }
+            break;
+          case 7:
+            if (tank.weaponManager.blastAmount > 0) {
+              tank.coins += tank.weaponManager.blastPrice;
+              tank.weaponManager.blastAmount--;
+            }
+            break;
+          case 8:
+            if (tank.weaponManager.gunnerAmount > 0) {
+              tank.coins += tank.weaponManager.gunnerPrice;
+              tank.weaponManager.gunnerAmount--;
+            }
+            break;
           default:
             break;
         }
@@ -162,8 +211,10 @@ function Shop() {
 
   this.toggle = function () {
     if (this.active) {
+      pause.onHomeScreen = true;
       this.active = false;
     } else {
+      pause.onHomeScreen = false;
       this.active = true;
     }
   }
@@ -172,6 +223,7 @@ function Shop() {
 function ColorSelect() {
   this.colours = ['#10802E', '#E40C19', '#CE9621', '#3614A5'];
   this.active = false;
+  this.backButton = new Button(60, 60, 80, 'Back', 20);
 
   this.show = function () {
     fill(this.colours[0]);
@@ -182,9 +234,14 @@ function ColorSelect() {
     rect(width / 2, 0, width / 2, height / 2);
     fill(this.colours[3]);
     rect(width / 2, height / 2, width / 2, height / 2);
+    this.backButton.show();
   }
 
   this.mouseClick = function () {
+    if (this.backButton.detectPress()) {
+      this.toggleColorSelect();
+      return;
+    }
     var newColour = "";
     if (collidePointRect(mouseX, mouseY, 0, 0, width / 2, height / 2)) {
       newColour = "green";
@@ -207,8 +264,10 @@ function ColorSelect() {
 
   this.toggleColorSelect = function () {
     if (this.active) {
+      pause.onHomeScreen = true;
       this.active = false;
     } else {
+      pause.onHomeScreen = false;
       this.active = true;
     }
   }
