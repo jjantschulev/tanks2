@@ -61,7 +61,7 @@ function Gun() {
     if (this.trackMouseActive) {
       this.trackMouse();
     }
-    if (this.useAiAim && tank.name == 'Jordan') {
+    if (this.useAiAim) {
       this.aiAim();
     }
     if (!this.shooting) {
