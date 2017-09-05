@@ -152,33 +152,7 @@ function Gun() {
   }
 
   this.aiAim = function () {
-    var closestTank = null;
-    var distanceToTank = Infinity;
-    for (var i = 0; i < tanks.length; i++) {
-      if (tanks[i].id != tank.id && tanks[i].colour != tank.colour && !tanks[i].paused) {
-        var distance = dist(tanks[i].pos.x, tanks[i].pos.y, tank.pos.x, tank.pos.y);
-        if (distance < distanceToTank) {
-          distanceToTank = distance;
-          closestTank = {
-            x: tanks[i].pos.x,
-            y: tanks[i].pos.y
-          }
-        }
-      }
-    }
-
-    for (var i = 0; i < tank.weaponManager.gunners.length; i++) {
-      if (tank.weaponManager.gunners[i].colour != tank.colour) {
-        var distance = dist(tank.weaponManager.gunners[i].x, tank.weaponManager.gunners[i].y, tank.pos.x, tank.pos.y);
-        if (distance < distanceToTank) {
-          distanceToTank = distance;
-          closestTank = {
-            x: tank.weaponManager.gunners[i].x,
-            y: tank.weaponManager.gunners[i].y
-          }
-        }
-      }
-    }
+    var closestTank = team.getClosestTank();
     if (closestTank != null) {
       this.trackPoint(closestTank.x, closestTank.y);
     }

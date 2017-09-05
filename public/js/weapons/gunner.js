@@ -2,7 +2,7 @@ function Gunner(x, y, colour, name, id) {
   this.x = x;
   this.y = y;
   this.colour = colour;
-  this.image = loadImage("./assets/"+this.colour+"_gunner.png")
+  this.image = loadImage("./assets/" + this.colour + "_gunner.png")
   this.owner = name;
   this.id = id;
   this.health = 120;
@@ -15,7 +15,7 @@ function Gunner(x, y, colour, name, id) {
   this.reload = 0;
 
   this.update = function () {
-    this.reload --;
+    this.reload--;
     this.trackTank();
   }
 
@@ -45,13 +45,13 @@ function Gunner(x, y, colour, name, id) {
 
   this.shoot = function () {
     if (this.reload <= 0) {
-      this.reload = 9;
-    }else{
+      this.reload = 6;
+    } else {
       return;
     }
     var bulletData = {
-      x: this.x + 20*sin(this.dir),
-      y: this.y - 20*cos(this.dir),
+      x: this.x + 20 * sin(this.dir),
+      y: this.y - 20 * cos(this.dir),
       dir: this.dir,
       type: 1,
       col: this.colour,
@@ -63,8 +63,8 @@ function Gunner(x, y, colour, name, id) {
 
   this.trackTank = function () {
     var ct = this.getClosestTank();
-    if(ct == null){
-      if(this.health < 120 - 0.08){
+    if (ct == null) {
+      if (this.health < 120 - 0.08) {
         this.health += 0.04;
       }
       return;
@@ -72,16 +72,16 @@ function Gunner(x, y, colour, name, id) {
 
     var targetDir;
     var currentDir = this.dir;
-    if((ct.y - this.y) < 0){
-      targetDir = -atan((ct.x - this.x)/(ct.y - this.y));
-    }else {
-      targetDir = PI-atan((ct.x - this.x)/(ct.y - this.y));
+    if ((ct.y - this.y) < 0) {
+      targetDir = -atan((ct.x - this.x) / (ct.y - this.y));
+    } else {
+      targetDir = PI - atan((ct.x - this.x) / (ct.y - this.y));
     }
 
     var vel = targetDir - currentDir;
     if (vel > PI) {
       currentDir += TWO_PI;
-    }else if (vel < -PI) {
+    } else if (vel < -PI) {
       currentDir -= TWO_PI;
     }
     vel = targetDir - currentDir;
@@ -107,9 +107,9 @@ function Gunner(x, y, colour, name, id) {
       }
     }
     for (var i = tank.weaponManager.gunners.length - 1; i >= 0; i--) {
-      if(tank.weaponManager.gunners[i].colour != this.colour && this.id != tank.weaponManager.gunners[i].id){
+      if (tank.weaponManager.gunners[i].colour != this.colour && this.id != tank.weaponManager.gunners[i].id) {
         var newDist = dist(this.x, this.y, tank.weaponManager.gunners[i].x, tank.weaponManager.gunners[i].y);
-        if(newDist < distance){
+        if (newDist < distance) {
           distance = newDist;
           closestEnemy = {
             x: tank.weaponManager.gunners[i].x,
@@ -129,13 +129,13 @@ function Gunner(x, y, colour, name, id) {
     if (b.col != this.colour) {
       this.health -= b.damage;
       if (this.health <= 0) {
-        if(b.name == tank.name){
+        if (b.name == tank.name) {
           tank.health += 40;
-          notify("You destoyed " + this.owner + "'s gunner", 150, this.colour, width - width/3)
+          notify("You destoyed " + this.owner + "'s gunner", 150, this.colour, width - width / 3)
         }
         var data = {
-          id : this.id,
-          type : "gunnerRemove",
+          id: this.id,
+          type: "gunnerRemove",
         }
         socket.emit('weapon', data);
         particleEffects.push(new ParticleEffect(this.x, this.y, this.colour));
@@ -145,10 +145,10 @@ function Gunner(x, y, colour, name, id) {
     }
   }
 
-  this.place = function() {
+  this.place = function () {
     var inRange = false;
     for (var i = tank.weaponManager.gunners.length - 1; i >= 0; i--) {
-      if(dist(tank.weaponManager.gunners[i].x, tank.weaponManager.gunners[i].y, this.x, this.y) < this.range - this.range / 3){
+      if (dist(tank.weaponManager.gunners[i].x, tank.weaponManager.gunners[i].y, this.x, this.y) < this.range - this.range / 3) {
         inRange = true;
       }
     }
@@ -161,15 +161,15 @@ function Gunner(x, y, colour, name, id) {
     }
   }
 
-  this.pickUp = function() {
-    if(this.owner == tank.name && this.colour == tank.colour){
-      var coinAmount = map(this.health, 0, 120, 0, 250);
+  this.pickUp = function () {
+    if (this.owner == tank.name && this.colour == tank.colour) {
+      var coinAmount = map(this.health, 0, 120, 0, tank.weaponManager.gunnerPrice);
       tank.coins += coinAmount;
       notify("picked up gunner with " + Math.round(coinAmount) + " coins", 150, this.colour, width);
 
       var data = {
-        id : this.id,
-        type : "gunnerRemove",
+        id: this.id,
+        type: "gunnerRemove",
       }
       socket.emit('weapon', data);
       particleEffects.push(new ParticleEffect(this.x, this.y, this.colour));

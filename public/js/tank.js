@@ -3,7 +3,7 @@ var tanks = [];
 
 function showTanks() {
   for (var i = 0; i < tanks.length; i++) {
-    if(tanks[i].id != tank.id){
+    if (tanks[i].id != tank.id) {
       tanks[i].show();
     }
   }
@@ -12,7 +12,7 @@ function showTanks() {
 function Tank() {
   this.pos = createVector(random(width), random(height));
   this.spawn = Cookies.getJSON('spawn');
-  if(this.spawn != undefined){
+  if (this.spawn != undefined) {
     this.pos.set(this.spawn.x, this.spawn.y);
   }
   this.previousPos = this.pos.copy();
@@ -22,6 +22,7 @@ function Tank() {
   this.speed = 0;
   this.dirVel = 0;
   this.gunDirVel = 0;
+  this.useAi = false;
 
   this.w = 25.5;
   this.h = 30;
@@ -50,6 +51,7 @@ function Tank() {
   //Weaponry
   this.gun = new Gun();
   this.weaponManager = new WeaponManager();
+  this.ai = new AI();
 
   this.update = function () {
     // UPDATE VARIABLES
@@ -57,7 +59,7 @@ function Tank() {
     this.pos.y -= this.speed * cos(this.dir);
     this.dir += this.dirVel;
     this.gunDir += this.gunDirVel;
-    this.respawnTimer --;
+    this.respawnTimer--;
 
     // SMOOTHEN TANK MOVEMENT
     this.viewPos.x = lerp(this.viewPos.x, this.pos.x, 0.6);
@@ -70,13 +72,17 @@ function Tank() {
     this.speed = 0;
     this.dirVel = 0;
     this.gunDirVel = 0;
+    tank.useAi = false;
 
-    if(this.health > this.maxHealth){
+    if (this.health > this.maxHealth) {
       this.health = this.maxHealth;
     }
 
     // UPDATE WEAPONRY
     this.gun.update();
+    if (this.useAi) {
+      this.ai.update();
+    }
   }
 
   this.show = function () {
@@ -89,9 +95,9 @@ function Tank() {
     noStroke();
     rectMode(CENTER);
     rect(0, -30, map(this.health, 0, 100, 0, 30), 1.6);
-    if(this.health > this.maxHealth - 25){
-      rect(-map(this.health, 0, 100, 0, 30)/2, -30, 1.6, 3.8, 100);
-      rect(map(this.health, 0, 100, 0, 30)/2, -30, 1.6, 3.8, 100);
+    if (this.health > this.maxHealth - 25) {
+      rect(-map(this.health, 0, 100, 0, 30) / 2, -30, 1.6, 3.8, 100);
+      rect(map(this.health, 0, 100, 0, 30) / 2, -30, 1.6, 3.8, 100);
     }
     // SHOW NAME
     fill(120);
@@ -105,8 +111,11 @@ function Tank() {
     rotate(this.dir);
     image(this.image, 0, 0, this.w, this.h);
     rotate(this.gunDir);
-    image(this.gunImage, 0, -this.w/4, this.w, this.h);
+    image(this.gunImage, 0, -this.w / 4, this.w, this.h);
     pop();
+    if (this.useAi) {
+      this.ai.show();
+    }
   }
 
   this.collisions = function () {
@@ -115,25 +124,27 @@ function Tank() {
 
     var hit = false;
     for (var i = 0; i < walls.length; i++) {
-      if(walls[i].tankColliding(this.pos)){
+      if (walls[i].tankColliding(this.pos)) {
         hit = true;
       }
     }
+
+    this.ai.colliding = hit;
 
     if (hit) {
       this.pos.set(this.previousPos);
       var phit = false;
       for (var i = 0; i < walls.length; i++) {
-        if(walls[i].tankColliding(this.previousPos)){
+        if (walls[i].tankColliding(this.previousPos)) {
           phit = true;
         }
       }
       while (phit) {
         this.previousPos.set(random(width), random(height));
         for (var i = 0; i < walls.length; i++) {
-          if(walls[i].tankColliding(this.previousPos)){
+          if (walls[i].tankColliding(this.previousPos)) {
             phit = true;
-          }else{
+          } else {
             phit = false;
           }
         }
@@ -152,9 +163,9 @@ function Tank() {
     }
     socket.emit('death', deathData);
     this.health = 100;
-    if(this.spawn == undefined){
+    if (this.spawn == undefined) {
       this.pos.set(random(width), random(height));
-    }else{
+    } else {
       this.pos.set(this.spawn.x, this.spawn.y);
     }
     this.previousPos.set(this.pos);
@@ -162,14 +173,14 @@ function Tank() {
   }
 
   this.checkDeath = function (name) {
-    if(this.health <= 0){
+    if (this.health <= 0) {
       this.death(name);
     }
   }
 
   this.kill = function (name) {
-    notify('You killed ' + name, 200, this.colour, width/2);
-    if(name != tank.name){
+    notify('You killed ' + name, 200, this.colour, width / 2);
+    if (name != tank.name) {
       switch (team.getTeamPlayers(this.colour)) {
         case 1:
           this.health += 70;
@@ -191,13 +202,13 @@ function Tank() {
     }
   }
 
-  this.teamKill = function(name) {
-    notify('Your team gunner killed ' + name, 200, this.colour, width - width/3);
+  this.teamKill = function (name) {
+    notify('Your team gunner killed ' + name, 200, this.colour, width - width / 3);
     this.health += 30;
   }
 
   this.removeHealth = function (amount) {
-    if(!pause.paused){
+    if (!pause.paused) {
       this.health -= amount;
     }
   }
@@ -220,11 +231,11 @@ function Tank() {
     window.location.reload();
   }
 
-  this.setColour = function() {
+  this.setColour = function () {
     var colourAllowed = team.allowColour(tank.colour);
-    if(colourAllowed){
+    if (colourAllowed) {
       return;
-    }else{
+    } else {
       var colours = ['red', 'green', 'yellow', 'blue'];
       while (!colourAllowed) {
         col = colours[Math.floor(random(4))];
@@ -234,10 +245,10 @@ function Tank() {
     }
   }
 
-  this.setSpawnPoint = function() {
+  this.setSpawnPoint = function () {
     simpleNotify("Spawn point set here");
-    Cookies.set('spawn', {x: this.pos.x, y: this.pos.y});
-    this.spawn = {x: this.pos.x, y: this.pos.y};
+    Cookies.set('spawn', { x: this.pos.x, y: this.pos.y });
+    this.spawn = { x: this.pos.x, y: this.pos.y };
   }
 }
 
@@ -261,7 +272,7 @@ function EnemyTank() {
   this.name = 'other';
 
   this.show = function () {
-    if(this.paused){
+    if (this.paused) {
       return;
     }
     push();
@@ -279,9 +290,9 @@ function EnemyTank() {
     noStroke();
     rectMode(CENTER);
     rect(0, -30, map(this.health, 0, 100, 0, 30), 1.6);
-    if(this.health > this.maxHealth - 25){
-      rect(-map(this.health, 0, 100, 0, 30)/2, -30, 1.6, 3.8, 100);
-      rect(map(this.health, 0, 100, 0, 30)/2, -30, 1.6, 3.8, 100);
+    if (this.health > this.maxHealth - 25) {
+      rect(-map(this.health, 0, 100, 0, 30) / 2, -30, 1.6, 3.8, 100);
+      rect(map(this.health, 0, 100, 0, 30) / 2, -30, 1.6, 3.8, 100);
     }
 
     // SHOW NAME
@@ -294,7 +305,7 @@ function EnemyTank() {
     rotate(this.viewDir);
     image(this.image, 0, 0, this.w, this.h);
     rotate(this.viewGunDir);
-    image(this.gunImage, 0, -this.w/4, this.w, this.h);
+    image(this.gunImage, 0, -this.w / 4, this.w, this.h);
     pop();
   }
 

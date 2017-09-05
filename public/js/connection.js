@@ -9,7 +9,7 @@ function onLoad() {
 }
 
 function showDisconnectedInfo() {
-  if(!connected){
+  if (!connected) {
     timeDisconnected++;
     fill(0);
     noStroke();
@@ -17,40 +17,40 @@ function showDisconnectedInfo() {
     fill(255, 0, 0);
     textSize(50);
     textAlign(CENTER, CENTER);
-    if(timeDisconnected < 300){
-      text("Please wait, Connecting...", width/2, height/2);
-    }else if(timeDisconnected < 600){
-      text("Error Connecting. Please Wait...", width/2, height/2);
-    }else{
-      text("Cannot connect to server!", width/2, height/2);
+    if (timeDisconnected < 300) {
+      text("Please wait, Connecting...", width / 2, height / 2);
+    } else if (timeDisconnected < 600) {
+      text("Error Connecting. Please Wait...", width / 2, height / 2);
+    } else {
+      text("Cannot connect to server!", width / 2, height / 2);
     }
-  }else{
+  } else {
     timeDisconnected = 0;
   }
 }
 
 socket.on("update", function (tanks_array) {
   for (var i = 0; i < tanks_array.length; i++) {
-    if(tanks[i] == null){
+    if (tanks[i] == null) {
       var newTank = new EnemyTank();
       newTank.id = tanks_array[i].id;
       newTank.loadImages(tanks_array[i].col);
-      if(tanks_array[i].name != tank.name){
-        notify(tanks_array[i].name + ' joined the game', 130, tank.colour, width/2);
-      }else{
-        notify('connected succesfully as \'' + tank.name + "\'", 200, tank.colour, width/2);
+      if (tanks_array[i].name != tank.name) {
+        notify(tanks_array[i].name + ' joined the game', 130, tank.colour, width / 2);
+      } else {
+        notify('connected succesfully as \'' + tank.name + "\'", 200, tank.colour, width / 2);
         setTimeout(tank.setColour, 180);
       }
       tanks.push(newTank);
       connected = true;
       pause.paused = false;
-    }else{
+    } else {
       tanks[i].pos.x = tanks_array[i].x;
       tanks[i].pos.y = tanks_array[i].y;
       tanks[i].gunDir = tanks_array[i].gunDir;
       tanks[i].dir = tanks_array[i].dir;
       tanks[i].paused = tanks_array[i].paused;
-      if(tanks[i].colour != tanks_array[i].col){
+      if (tanks[i].colour != tanks_array[i].col) {
         tanks[i].loadImages(tanks_array[i].col);
       }
       tanks[i].name = tanks_array[i].name;
@@ -83,24 +83,24 @@ socket.on('weapons', function (data) {
 
 socket.on('death', function (deathData) {
   gifExplosions.push(new GifExplosion(deathData.victimX, deathData.victimY));
-  if(deathData.killerName == tank.name){
+  if (deathData.killerName == tank.name) {
     tank.kill(deathData.victimName);
   }
-  if (deathData.killerName.substr(0, deathData.killerName.indexOf('_')) == tank.colour){
+  if (deathData.killerName.substr(0, deathData.killerName.indexOf('_')) == tank.colour) {
     tank.teamKill(deathData.victimName);
   }
 });
 
 socket.on('remove', function (id) {
-  for (var i = tanks.length-1; i >= 0; i--) {
-    if(tanks[i].id == id){
-      notify(tanks[i].name + ' left the game', 130, tank.colour, width/2);
+  for (var i = tanks.length - 1; i >= 0; i--) {
+    if (tanks[i].id == id) {
+      notify(tanks[i].name + ' left the game', 130, tank.colour, width / 2);
       tanks.splice(i, 1);
     }
   }
 });
 
-socket.on('disconnect', function() {
+socket.on('disconnect', function () {
   connected = false;
   pause.paused = true;
 })
