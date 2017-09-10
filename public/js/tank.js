@@ -119,8 +119,8 @@ function Tank() {
   }
 
   this.collisions = function () {
-    this.pos.x = constrain(this.pos.x, 0, width);
-    this.pos.y = constrain(this.pos.y, 0, height);
+    this.pos.x = constrain(this.pos.x, -fullWidth / 2, fullWidth / 2);
+    this.pos.y = constrain(this.pos.y, -fullHeight / 2, fullHeight / 2);
 
     var hit = false;
     for (var i = 0; i < walls.length; i++) {

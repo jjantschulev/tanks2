@@ -1,3 +1,6 @@
+var fullWidth = 2000,
+  fullHeight = 2000;
+
 function setup() {
   createCanvas(1000, 1000);
   team = new Team();
@@ -21,7 +24,7 @@ function setup() {
 function draw() {
   background(0);
 
-  if(!pause.paused){
+  if (!pause.paused) {
     for (var i = 0; i < keys.length; i++) {
       keyHold(keys[i]);
     }

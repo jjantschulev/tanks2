@@ -8,19 +8,19 @@ function View() {
   this.y = 0;
 
   this.update = function () {
-    translate(width/2, height/2);
+    translate(width / 2, height / 2);
     this.x = lerp(this.x, tank.pos.x, 0.08);
     this.y = lerp(this.y, tank.pos.y, 0.08);
-    this.x = constrain(this.x, width/2/this.zoom, width - width/2/this.zoom);
-    this.y = constrain(this.y, height/2/this.zoom, height - height/2/this.zoom);
+    this.x = constrain(this.x, -fullWidth / 2 + width / 2 / this.zoom, fullWidth / 2 - width / 2 / this.zoom);
+    this.y = constrain(this.y, -fullHeight / 2 + height / 2 / this.zoom, fullHeight / 2 - height / 2 / this.zoom);
     scale(this.zoom);
     translate(-this.x, -this.y);
   }
 
   this.getRealMousePoints = function () {
     var mdata = {
-      x: map(mouseX, 0, width, this.x - width/this.zoom/2, this.x + width/this.zoom/2),
-      y: map(mouseY, 0, height, this.y - height/this.zoom/2, this.y + height/this.zoom/2),
+      x: map(mouseX, 0, width, this.x - width / this.zoom / 2, this.x + width / this.zoom / 2),
+      y: map(mouseY, 0, height, this.y - height / this.zoom / 2, this.y + height / this.zoom / 2),
     }
     return mdata;
   }
@@ -59,28 +59,45 @@ function Wall(x1, y1, x2, y2) {
 function Minimap() {
   this.display = true;
   this.show = function () {
-    if(!this.display){
+    if (!this.display) {
       return;
     }
     push();
     translate(0, height);
     scale(0.14);
     translate(0, -height);
+
+    // show rectangle
     fill(30, 180);
     noStroke();
     rectMode(CORNER);
     rect(0, 0, width, height);
+
+    var tx = constrain(tank.pos.x, -fullWidth / 2 + width / 2, fullWidth / 2 - width / 2);
+    var ty = constrain(tank.pos.y, -fullWidth / 2 + width / 2, fullWidth / 2 - width / 2);
+
+    translate(width / 2 - tx, height / 2 - ty);
+
+    // show map contents
     noFill();
     stroke(120);
     strokeWeight(20);
     for (var i = 0; i < walls.length; i++) {
-      line(walls[i].x1, walls[i].y1, walls[i].x2, walls[i].y2);
+      if (abs(walls[i].x1 - tx) < width / 2 || abs(walls[i].x2 - tx) < width / 2) {
+        if (abs(walls[i].y1 - ty) < height / 2 || abs(walls[i].y2 - ty) < height / 2) {
+          line(walls[i].x1, walls[i].y1, walls[i].x2, walls[i].y2);
+        }
+      }
     }
     noStroke();
     for (var i = 0; i < tanks.length; i++) {
-      if(tanks[i].id != tank.id && !tanks[i].paused){
-        fill(tanks[i].colour);
-        ellipse(tanks[i].pos.x, tanks[i].pos.y, 40, 40);
+      if (tanks[i].id != tank.id && !tanks[i].paused) {
+        if (abs(tanks[i].pos.x - tx) < width / 2) {
+          if (abs(tanks[i].pos.y - ty) < height / 2) {
+            fill(tanks[i].colour);
+            ellipse(tanks[i].pos.x, tanks[i].pos.y, 40, 40);
+          }
+        }
       }
     }
     fill(tank.colour);
@@ -89,9 +106,9 @@ function Minimap() {
   }
 
   this.toggleDisplay = function () {
-    if(this.display){
+    if (this.display) {
       this.display = false;
-    }else{
+    } else {
       this.display = true;
     }
   }

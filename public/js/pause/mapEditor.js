@@ -7,56 +7,72 @@ function MapEditor() {
   this.syncedWalls = [];
   this.showMenu = true;
 
+  this.viewScale = width / fullWidth;
+
   this.show = function () {
+    push()
+    translate(width / 2, height / 2);
+    scale(this.viewScale);
     noStroke();
     fill(20);
-    rect(0, 0, width, height);
+    rect(-fullWidth / 2, -fullHeight / 2, fullWidth, fullHeight);
     stroke(100);
     strokeWeight(15);
     for (var j = 0; j < this.allWalls.length; j++) {
-      for (var i = 0; i < this.allWalls[j].length-1; i++) {
-        line(this.allWalls[j][i].x, this.allWalls[j][i].y, this.allWalls[j][i+1].x, this.allWalls[j][i+1].y);
+      for (var i = 0; i < this.allWalls[j].length - 1; i++) {
+        line(this.allWalls[j][i].x, this.allWalls[j][i].y, this.allWalls[j][i + 1].x, this.allWalls[j][i + 1].y);
       }
     }
     stroke(140);
     fill(140);
-    if(this.currentWall.length == 1){
+    if (this.currentWall.length == 1) {
       noStroke();
       ellipse(this.currentWall[0].x, this.currentWall[0].y, 15, 15);
     }
-    for (var i = 0; i < this.currentWall.length-1; i++) {
-      line(this.currentWall[i].x, this.currentWall[i].y, this.currentWall[i+1].x, this.currentWall[i+1].y);
+    for (var i = 0; i < this.currentWall.length - 1; i++) {
+      line(this.currentWall[i].x, this.currentWall[i].y, this.currentWall[i + 1].x, this.currentWall[i + 1].y);
     }
 
     if (this.eraser) {
       stroke(255, 0, 0);
       strokeWeight(3);
-      line(mouseX - 10, mouseY - 10, mouseX + 10, mouseY + 10);
-      line(mouseX + 10, mouseY - 10, mouseX - 10, mouseY + 10);
+      line(this.grmp().x - 10, this.grmp().y - 10, this.grmp().x + 10, this.grmp().y + 10);
+      line(this.grmp().x + 10, this.grmp().y - 10, this.grmp().x - 10, this.grmp().y + 10);
     }
+
+    pop();
+
+
     if (this.showMenu) {
       this.menu.show();
     }
   }
 
-  this.changeMode = function () {
-      if(this.active){
-        this.currentWall = [];
-        pause.onHomeScreen = true;        
-        this.active = false;
-      }else{
-        this.loadLines();
-        pause.onHomeScreen = false;        
-        this.active = true;
-      }
+  this.grmp = function () {
+    return {
+      x: mouseX / (this.viewScale) - width / 1,
+      y: mouseY / (this.viewScale) - height / 1
+    }
   }
 
-  this.addLine = function () { 
-    if(this.eraser){
+  this.changeMode = function () {
+    if (this.active) {
+      this.currentWall = [];
+      pause.onHomeScreen = true;
+      this.active = false;
+    } else {
+      this.loadLines();
+      pause.onHomeScreen = false;
+      this.active = true;
+    }
+  }
+
+  this.addLine = function () {
+    if (this.eraser) {
       this.menu.buttons[3].active = false;
       this.eraser = false;
     }
-    if(this.currentWall.length > 1){
+    if (this.currentWall.length > 1) {
       this.allWalls.push(this.currentWall);
     }
     this.currentWall = [];
@@ -64,18 +80,18 @@ function MapEditor() {
 
   this.addPoint = function () {
     this.currentWall.push({
-      x: mouseX,
-      y: mouseY
+      x: this.grmp().x,
+      y: this.grmp().y
     });
   }
 
   this.removePoint = function () {
-    for (var i = this.allWalls.length-1; i >= 0; i--) {
+    for (var i = this.allWalls.length - 1; i >= 0; i--) {
       for (var j = 0; j < this.allWalls[i].length; j++) {
-        if(dist(this.allWalls[i][j].x, this.allWalls[i][j].y, mouseX, mouseY) < 10){
-          if(this.allWalls[i].length > 2){
+        if (dist(this.allWalls[i][j].x, this.allWalls[i][j].y, this.grmp().x, this.grmp().y) < 10) {
+          if (this.allWalls[i].length > 2) {
             var newArrayLess = this.allWalls[i].slice(0, j);
-            var newArrayMore = this.allWalls[i].slice(j+1,this.allWalls[i].length);
+            var newArrayMore = this.allWalls[i].slice(j + 1, this.allWalls[i].length);
             this.allWalls.push(newArrayLess);
             this.allWalls.push(newArrayMore);
           }
@@ -85,7 +101,7 @@ function MapEditor() {
     }
   }
 
-  this.undo = function() {
+  this.undo = function () {
     this.addLine();
     this.allWalls.splice(-1, 1);
   }
@@ -99,23 +115,23 @@ function MapEditor() {
   this.mouseClick = function () {
     var buttonClicked = this.menu.mouseClick();
     if (!buttonClicked) {
-      if(this.eraser){
+      if (this.eraser) {
         this.removePoint();
-      }else {
+      } else {
         this.addPoint();
       }
     }
   }
 
   this.toggleEraser = function () {
-    if(this.eraser){
+    if (this.eraser) {
       this.eraser = false;
       this.menu.buttons[3].active = false;
-    }else {
+    } else {
       this.menu.buttons[3].active = true;
       this.eraser = true;
     }
-    if(this.currentWall.length > 1){
+    if (this.currentWall.length > 1) {
       this.allWalls.push(this.currentWall);
     }
     this.currentWall = [];
@@ -141,9 +157,9 @@ function MapEditor() {
   this.createWallsFromArray = function (wallData) {
     walls = [];
     for (var j = 0; j < wallData.length; j++) {
-      if(wallData[j].length > 1){
-        for (var i = 0; i < wallData[j].length-1; i++) {
-          walls.push(new Wall(wallData[j][i].x, wallData[j][i].y, wallData[j][i+1].x, wallData[j][i+1].y));
+      if (wallData[j].length > 1) {
+        for (var i = 0; i < wallData[j].length - 1; i++) {
+          walls.push(new Wall(wallData[j][i].x, wallData[j][i].y, wallData[j][i + 1].x, wallData[j][i + 1].y));
         }
       }
     }
@@ -152,8 +168,8 @@ function MapEditor() {
 
 function MapEditorMenu() {
   this.r = 60;
-  this.x = width - this.r/2;
-  this.y = this.r/2;
+  this.x = width - this.r / 2;
+  this.y = this.r / 2;
 
   this.buttons = [];
   this.buttons.push(new Button(this.x, this.y + 0 * this.r, this.r, 'Save', 12))
@@ -171,7 +187,7 @@ function MapEditorMenu() {
 
   this.mouseClick = function () {
     for (var i = 0; i < this.buttons.length; i++) {
-      if(this.buttons[i].detectPress()){
+      if (this.buttons[i].detectPress()) {
         this.buttonLogic(i);
         return true;
       }
