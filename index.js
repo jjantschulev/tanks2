@@ -37,10 +37,10 @@ io.on('connection', function (socket) {
   socket.on('name', function (userName) {
     tanks.push({
       id: socket.id,
-      x:0,
-      y:0,
-      dir:0,
-      gunDir:0,
+      x: 0,
+      y: 0,
+      dir: 0,
+      gunDir: 0,
       col: "yellow",
       paused: false,
       name: userName,
@@ -54,7 +54,7 @@ io.on('connection', function (socket) {
 
   socket.on('sync', function (data) {
     for (var i = 0; i < tanks.length; i++) {
-      if(tanks[i].id == data.id){
+      if (tanks[i].id == data.id) {
         tanks[i].x = data.x;
         tanks[i].y = data.y;
         tanks[i].dir = data.dir;
@@ -67,7 +67,11 @@ io.on('connection', function (socket) {
     }
   });
 
-  socket.on('new_map', function (data) {
+  socket.on('new_map', function (dataWalls, dataWaters) {
+    var data = {
+      walls: dataWalls,
+      waters: dataWaters
+    }
     map = data;
     socket.broadcast.emit('new_map', map);
     saveJSON('map', map);
@@ -83,7 +87,7 @@ io.on('connection', function (socket) {
       weapons.push(data);
     }
     if (data.type == "healthPacketRemove" || data.type == "landmineRemove" || data.type == "gunnerRemove") {
-      for (var i = weapons.length-1; i >= 0; i--) {
+      for (var i = weapons.length - 1; i >= 0; i--) {
         if (weapons[i].id == data.id) {
           weapons.splice(i, 1);
         }
@@ -110,7 +114,7 @@ io.on('connection', function (socket) {
     }
 
     if (!foundKillerMatch) {
-      if (deathData.killerName.charAt(deathData.killerName.length-1) != '-' && deathData.killerName.charAt(1) != '-') {
+      if (deathData.killerName.charAt(deathData.killerName.length - 1) != '-' && deathData.killerName.charAt(1) != '-') {
         scores.push({
           name: deathData.killerName,
           won: 1,
@@ -119,7 +123,7 @@ io.on('connection', function (socket) {
       }
     }
     if (!foundVictimMatch) {
-      if (deathData.victimName.charAt(deathData.victimName.length-1) != '-' && deathData.victimName.charAt(1) != '-') {
+      if (deathData.victimName.charAt(deathData.victimName.length - 1) != '-' && deathData.victimName.charAt(1) != '-') {
         scores.push({
           name: deathData.victimName,
           won: 0,
@@ -140,7 +144,7 @@ io.on('connection', function (socket) {
 
   socket.on('disconnect', function () {
     for (var i = 0; i < tanks.length; i++) {
-      if(tanks[i].id == socket.id){
+      if (tanks[i].id == socket.id) {
         socket.broadcast.emit('remove', tanks[i].id);
         tanks.splice(i, 1);
       }
@@ -166,12 +170,12 @@ function loadAmmo(name) {
   var hasFound = false;
   var returnObject;
   for (var i = 0; i < ammo.length; i++) {
-    if(ammo[i].name == name){
+    if (ammo[i].name == name) {
       returnObject = ammo[i]
       hasFound = true;
     }
   }
-  if(!hasFound){
+  if (!hasFound) {
     returnObject = {
       mine: 4,
       blast: 4,
@@ -181,7 +185,7 @@ function loadAmmo(name) {
       name: name,
       coins: 150,
     }
-    if (name.charAt(name.length-1) != '-' && name.charAt(1) != '-') {
+    if (name.charAt(name.length - 1) != '-' && name.charAt(1) != '-') {
       ammo.push(returnObject);
     }
   }
@@ -190,12 +194,12 @@ function loadAmmo(name) {
 
 function saveJSON(filename, data) {
   dataToWrite = JSON.stringify(data);
-  fs.writeFile('./data/'+filename+'.json', dataToWrite, function(err) {
-    if(err){return console.log(err);}
+  fs.writeFile('./data/' + filename + '.json', dataToWrite, function (err) {
+    if (err) { return console.log(err); }
   });
 }
 
 function loadJSON(filename) {
-  var object = JSON.parse(fs.readFileSync('./data/'+filename+'.json', 'utf8'));
+  var object = JSON.parse(fs.readFileSync('./data/' + filename + '.json', 'utf8'));
   return object;
 }

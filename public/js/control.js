@@ -68,6 +68,9 @@ function keyDown(k) {
       if (k == 85) {
         pause.mapEditor.undo();
       }
+      if (k == 87) {
+        pause.mapEditor.toggleWater();
+      }
     }
   } else { // not paused:
     if (k == 220) {

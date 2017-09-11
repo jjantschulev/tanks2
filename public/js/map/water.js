@@ -18,7 +18,7 @@ function Water(x1, y1, x2, y2) {
 
   this.show = function () {
     stroke(0, 0, 255);
-    this.width = 40 * map(noise(this.rOff), 0, 1, 0.7, 1.3);
+    this.width = 35 * map(noise(this.rOff), 0, 1, 1, 1.3);
     strokeWeight(this.width);
     line(this.x1, this.y1, this.x2, this.y2);
     this.rOff += 0.01;
@@ -32,7 +32,7 @@ function Water(x1, y1, x2, y2) {
   }
 
   this.tankColliding = function (vector) {
-    var hit = collideLineCircle(this.x1, this.y1, this.x2, this.y2, vector.x, vector.y, tank.h * 1.5);
+    var hit = collideLineCircle(this.x1, this.y1, this.x2, this.y2, vector.x, vector.y, tank.h * 1.2);
     return hit;
   }
 }

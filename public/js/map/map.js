@@ -83,6 +83,7 @@ function Minimap() {
     // show map contents
     noFill();
     stroke(0, 0, 255);
+    strokeWeight(35);
     for (var i = 0; i < waters.length; i++) {
       if (abs(waters[i].x1 - tx) < width / 2 / this.viewScale || abs(waters[i].x2 - tx) < width / 2 / this.viewScale) {
         if (abs(waters[i].y1 - ty) < height / 2 / this.viewScale || abs(waters[i].y2 - ty) < height / 2 / this.viewScale) {
@@ -92,7 +93,7 @@ function Minimap() {
       }
     }
     stroke(120);
-    strokeWeight(20);
+    strokeWeight(15);
     for (var i = 0; i < walls.length; i++) {
       if (abs(walls[i].x1 - tx) < width / 2 / this.viewScale || abs(walls[i].x2 - tx) < width / 2 / this.viewScale) {
         if (abs(walls[i].y1 - ty) < height / 2 / this.viewScale || abs(walls[i].y2 - ty) < height / 2 / this.viewScale) {

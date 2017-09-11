@@ -10,6 +10,7 @@ function MapEditor() {
 
   this.menu = new MapEditorMenu();
   this.syncedWalls = [];
+  this.syncedWaters = [];
   this.showMenu = true;
 
   this.viewScale = 1;
@@ -32,10 +33,33 @@ function MapEditor() {
     this.ty = constrain(this.ty, -fullHeight / 2 + height / 2 / this.viewScale, fullHeight / 2 - height / 2 / this.viewScale);
     translate(-this.tx, -this.ty);
 
+    //background:
     noStroke();
     fill(20);
     rect(-fullWidth / 2, -fullHeight / 2, fullWidth, fullHeight);
 
+
+    //show waters
+    stroke(50, 50, 255);
+    fill(50, 50, 255);
+    strokeWeight(35);
+    if (this.currentWater.length == 1) {
+      noStroke();
+      ellipse(this.currentWater[0].x, this.currentWater[0].y, 35, 35);
+    }
+    for (var i = 0; i < this.currentWater.length - 1; i++) {
+      line(this.currentWater[i].x, this.currentWater[i].y, this.currentWater[i + 1].x, this.currentWater[i + 1].y);
+    }
+
+
+    stroke(0, 0, 255);
+    for (var j = 0; j < this.allWaters.length; j++) {
+      for (var i = 0; i < this.allWaters[j].length - 1; i++) {
+        line(this.allWaters[j][i].x, this.allWaters[j][i].y, this.allWaters[j][i + 1].x, this.allWaters[j][i + 1].y);
+      }
+    }
+
+    //show walls
     stroke(100);
     strokeWeight(15);
     for (var j = 0; j < this.allWalls.length; j++) {
@@ -43,6 +67,7 @@ function MapEditor() {
         line(this.allWalls[j][i].x, this.allWalls[j][i].y, this.allWalls[j][i + 1].x, this.allWalls[j][i + 1].y);
       }
     }
+
     stroke(140);
     fill(140);
     if (this.currentWall.length == 1) {
@@ -52,6 +77,8 @@ function MapEditor() {
     for (var i = 0; i < this.currentWall.length - 1; i++) {
       line(this.currentWall[i].x, this.currentWall[i].y, this.currentWall[i + 1].x, this.currentWall[i + 1].y);
     }
+
+
 
     if (this.eraser) {
       stroke(255, 0, 0);
@@ -78,6 +105,7 @@ function MapEditor() {
   this.changeMode = function () {
     if (this.active) {
       this.currentWall = [];
+      this.currentWater = [];
       pause.onHomeScreen = true;
       this.active = false;
     } else {
@@ -96,10 +124,29 @@ function MapEditor() {
       this.allWalls.push(this.currentWall);
     }
     this.currentWall = [];
+    this.addWaterLine();
+  }
+
+  this.addWaterLine = function () {
+    if (this.eraser) {
+      this.menu.buttons[3].active = false;
+      this.eraser = false;
+    }
+    if (this.currentWater.length > 1) {
+      this.allWaters.push(this.currentWater);
+    }
+    this.currentWater = [];
   }
 
   this.addPoint = function () {
     this.currentWall.push({
+      x: this.grmp().x,
+      y: this.grmp().y
+    });
+  }
+
+  this.addWaterPoint = function () {
+    this.currentWater.push({
       x: this.grmp().x,
       y: this.grmp().y
     });
@@ -132,8 +179,9 @@ function MapEditor() {
 
   this.clearAll = function () {
     this.currentWall = [];
+    this.currentWater = [];
     this.allWalls = [];
-    this.eraser = false;
+    this.allWaters = [];
   }
 
   this.mouseClick = function () {
@@ -143,7 +191,7 @@ function MapEditor() {
         if (this.eraser) {
           this.removePoint();
         } else if (this.watering) {
-
+          this.addWaterPoint();
         } else {
           this.addPoint();
         }
@@ -162,24 +210,44 @@ function MapEditor() {
     if (this.currentWall.length > 1) {
       this.allWalls.push(this.currentWall);
     }
+    if (this.currentWater.length > 1) {
+      this.allWaters.push(this.currentWater);
+    }
     this.currentWall = [];
+    this.currentWater = [];
+  }
+
+  this.toggleWater = function () {
+    if (this.watering) {
+      this.watering = false;
+      this.menu.buttons[6].active = false;
+    } else {
+      this.menu.buttons[6].active = true;
+      this.watering = true;
+    }
   }
 
   this.saveMap = function () {
     this.addLine();
+    this.addWaterLine();
     this.syncedWalls = this.allWalls;
+    this.syncedWaters = this.allWaters;
     this.createWallsFromArray(this.allWalls);
-    socket.emit("new_map", this.allWalls);
+    this.createWatersFromArray(this.allWaters);
+    socket.emit("new_map", this.allWalls, this.allWaters);
     this.changeMode();
   }
 
-  this.newMap = function (data) {
-    this.syncedWalls = data;
-    this.createWallsFromArray(data);
+  this.newMap = function (dataWalls, dataWaters) {
+    this.syncedWalls = dataWalls;
+    this.syncedWaters = dataWaters;
+    this.createWallsFromArray(dataWalls);
+    this.createWatersFromArray(dataWaters)
   }
 
   this.loadLines = function () {
     this.allWalls = this.syncedWalls;
+    this.allWaters = this.syncedWaters;
   }
 
   this.createWallsFromArray = function (wallData) {
@@ -188,6 +256,17 @@ function MapEditor() {
       if (wallData[j].length > 1) {
         for (var i = 0; i < wallData[j].length - 1; i++) {
           walls.push(new Wall(wallData[j][i].x, wallData[j][i].y, wallData[j][i + 1].x, wallData[j][i + 1].y));
+        }
+      }
+    }
+  }
+
+  this.createWatersFromArray = function (waterData) {
+    waters = [];
+    for (var j = 0; j < waterData.length; j++) {
+      if (waterData[j].length > 1) {
+        for (var i = 0; i < waterData[j].length - 1; i++) {
+          waters.push(new Water(waterData[j][i].x, waterData[j][i].y, waterData[j][i + 1].x, waterData[j][i + 1].y));
         }
       }
     }
@@ -206,6 +285,7 @@ function MapEditorMenu() {
   this.buttons.push(new Button(this.x, this.y + 3 * this.r, this.r, 'Eraser', 12))
   this.buttons.push(new Button(this.x, this.y + 4 * this.r, this.r, 'Undo', 12))
   this.buttons.push(new Button(this.x, this.y + 5 * this.r, this.r, 'Add Line', 12))
+  this.buttons.push(new Button(this.x, this.y + 6 * this.r, this.r, 'Water', 12))
 
   this.show = function () {
     for (var i = 0; i < this.buttons.length; i++) {
@@ -242,6 +322,9 @@ function MapEditorMenu() {
         break;
       case 5:
         pause.mapEditor.addLine();
+        break;
+      case 6:
+        pause.mapEditor.toggleWater();
         break;
     }
   }

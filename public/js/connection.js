@@ -64,7 +64,7 @@ socket.on('id', function (id) {
 })
 
 socket.on('new_map', function (data) {
-  pause.mapEditor.newMap(data);
+  pause.mapEditor.newMap(data.walls, data.waters);
 });
 
 socket.on('bullet', function (bulletData) {

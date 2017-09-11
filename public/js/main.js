@@ -8,7 +8,6 @@ function setup() {
   view = new View();
   minimap = new Minimap();
   pause = new Pause();
-  waters.push(new Water(-200, 200, 200, -200));
   onLoad();
 
   //Prevent Right Click Menu
