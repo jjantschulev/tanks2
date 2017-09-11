@@ -10,7 +10,7 @@ function showTanks() {
 }
 
 function Tank() {
-  this.pos = createVector(random(width), random(height));
+  this.pos = createVector(random(-fullWidth / 2, fullWidth / 2), random(-fullHeight / 2, fullHeight / 2));
   this.spawn = Cookies.getJSON('spawn');
   if (this.spawn != undefined) {
     this.pos.set(this.spawn.x, this.spawn.y);
@@ -52,6 +52,8 @@ function Tank() {
   this.gun = new Gun();
   this.weaponManager = new WeaponManager();
   this.ai = new AI();
+  this.boostTimer = 0;
+  this.boostLength = 400;
 
   this.update = function () {
     // UPDATE VARIABLES
@@ -60,6 +62,7 @@ function Tank() {
     this.dir += this.dirVel;
     this.gunDir += this.gunDirVel;
     this.respawnTimer--;
+    this.boostTimer--;
 
     // SMOOTHEN TANK MOVEMENT
     this.viewPos.x = lerp(this.viewPos.x, this.pos.x, 0.6);
@@ -221,9 +224,13 @@ function Tank() {
   this.loadImages(this.colour);
 
   this.changeName = function (name) {
-    this.name = name;
-    Cookies.set('name', name);
-    window.location.reload();
+    if (name != null && name != undefined && name.length > 2) {
+      this.name = name;
+      Cookies.set('name', name);
+      window.location.reload();
+    } else {
+      simpleNotify('invalid name');
+    }
   }
 
   this.removeName = function () {

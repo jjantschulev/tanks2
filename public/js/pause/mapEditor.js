@@ -1,21 +1,41 @@
 function MapEditor() {
   this.currentWall = [];
   this.allWalls = [];
+  this.currentWater = [];
+  this.allWaters = [];
+
   this.active = false;
   this.eraser = false;
+  this.watering = false;
+
   this.menu = new MapEditorMenu();
   this.syncedWalls = [];
   this.showMenu = true;
 
-  this.viewScale = width / fullWidth;
+  this.viewScale = 1;
+  this.tx = 0;
+  this.ty = 0;
 
   this.show = function () {
+    // pan around
+    if (mouseIsPressed) {
+      if (mouseButton == RIGHT) {
+        this.tx += pmouseX - mouseX;
+        this.ty += pmouseY - mouseY;
+      }
+    }
+
     push()
     translate(width / 2, height / 2);
     scale(this.viewScale);
+    this.tx = constrain(this.tx, -fullWidth / 2 + width / 2 / this.viewScale, fullWidth / 2 - width / 2 / this.viewScale);
+    this.ty = constrain(this.ty, -fullHeight / 2 + height / 2 / this.viewScale, fullHeight / 2 - height / 2 / this.viewScale);
+    translate(-this.tx, -this.ty);
+
     noStroke();
     fill(20);
     rect(-fullWidth / 2, -fullHeight / 2, fullWidth, fullHeight);
+
     stroke(100);
     strokeWeight(15);
     for (var j = 0; j < this.allWalls.length; j++) {
@@ -50,8 +70,8 @@ function MapEditor() {
 
   this.grmp = function () {
     return {
-      x: mouseX / (this.viewScale) - width / 1,
-      y: mouseY / (this.viewScale) - height / 1
+      x: map(mouseX, 0, width, this.tx - width / this.viewScale / 2, this.tx + width / this.viewScale / 2),
+      y: map(mouseY, 0, height, this.ty - height / this.viewScale / 2, this.ty + height / this.viewScale / 2),
     }
   }
 
@@ -102,8 +122,12 @@ function MapEditor() {
   }
 
   this.undo = function () {
-    this.addLine();
-    this.allWalls.splice(-1, 1);
+    if (this.currentWall.length == 1) {
+      this.currentWall = [];
+    } else {
+      this.addLine();
+      this.allWalls.splice(-1, 1);
+    }
   }
 
   this.clearAll = function () {
@@ -113,12 +137,16 @@ function MapEditor() {
   }
 
   this.mouseClick = function () {
-    var buttonClicked = this.menu.mouseClick();
-    if (!buttonClicked) {
-      if (this.eraser) {
-        this.removePoint();
-      } else {
-        this.addPoint();
+    if (mouseButton == LEFT) {
+      var buttonClicked = this.menu.mouseClick();
+      if (!buttonClicked) {
+        if (this.eraser) {
+          this.removePoint();
+        } else if (this.watering) {
+
+        } else {
+          this.addPoint();
+        }
       }
     }
   }

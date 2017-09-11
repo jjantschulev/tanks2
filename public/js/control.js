@@ -1,10 +1,18 @@
 function keyHold(k) {
   // Tank Movement
   if (k == 87) {
-    tank.speed = 2.0;
+    if (tank.boostTimer >= 0) {
+      tank.speed = 4.0;
+    } else {
+      tank.speed = 2.0;
+    }
   }
   if (k == 83) {
-    tank.speed = -1.7;
+    if (tank.boostTimer >= 0) {
+      tank.speed = -3.5;
+    } else {
+      tank.speed = -1.7;
+    }
   }
   // Tank Rotation
   if (k == 65) {

@@ -7,7 +7,10 @@ function Pause() {
   this.buttons.push(new Button(1 * width / 10, 2 * height / 3, 160, 'Map Editor', 20));
   this.buttons.push(new Button(3 * width / 10, 2 * height / 3, 160, 'Shop', 20));
   this.buttons.push(new Button(5 * width / 10, 2 * height / 3, 160, 'Resume', 20));
-  this.buttons.push(new Button(7 * width / 10, 2 * height / 3, 160, 'Change Gun \n Control', 20));
+  this.buttons.push(new Button(7 * width / 10 - 43, 2 * height / 3 - 43, 70, 'Change \n Gun \n Control', 12));
+  this.buttons.push(new Button(7 * width / 10 + 43, 2 * height / 3 + 43, 70, 'Remove \n Name', 12));
+  this.buttons.push(new Button(7 * width / 10 - 43, 2 * height / 3 + 43, 70, 'Remove \n Spawn', 12));
+  this.buttons.push(new Button(7 * width / 10 + 43, 2 * height / 3 - 43, 70, 'Change \n Name', 12));
   this.buttons.push(new Button(9 * width / 10, 2 * height / 3, 160, 'Change Colour', 20));
 
   this.mapEditor = new MapEditor();
@@ -71,8 +74,18 @@ function Pause() {
           if (this.buttons[i].text == 'Resume') {
             this.togglePause();
           }
-          if (this.buttons[i].text == 'Change Gun \n Control') {
+          if (this.buttons[i].text == 'Change \n Gun \n Control') {
             tank.gun.toggleTrackMouse();
+          }
+          if (this.buttons[i].text == 'Change \n Name') {
+            var newName = prompt('Enter Your Name');
+            tank.changeName(newName);
+          }
+          if (this.buttons[i].text == 'Remove \n Name') {
+            tank.removeName();
+          }
+          if (this.buttons[i].text == 'Remove \n Spawn') {
+            Cookies.remove('spawn');
           }
           if (this.buttons[i].text == 'Shop') {
             this.shop.toggle();

@@ -4,15 +4,15 @@ var explosionGIF;
 var particleEffects = [];
 
 function showExplosions() {
-  for (var i = explosions.length-1; i >= 0; i--) {
+  for (var i = explosions.length - 1; i >= 0; i--) {
     explosions[i].show();
     explosions[i].update();
   }
-  for (var i = particleEffects.length-1; i >= 0; i--) {
+  for (var i = particleEffects.length - 1; i >= 0; i--) {
     particleEffects[i].show();
     particleEffects[i].update();
   }
-  for (var i = gifExplosions.length-1; i >= 0; i--) {
+  for (var i = gifExplosions.length - 1; i >= 0; i--) {
     gifExplosions[i].show();
     gifExplosions[i].update();
   }
@@ -25,15 +25,15 @@ function Explosion(x, y, size, col, time) {
   this.size = 0;
   this.sizeRate = size / this.timer;
   this.alpha = 180;
-  this.alphaRate = this.alpha/this.timer;
+  this.alphaRate = this.alpha / this.timer;
   this.col = color(col);
 
   this.update = function () {
     this.alpha -= this.alphaRate;
-    this.timer --;
+    this.timer--;
     this.size += this.sizeRate;
 
-    if(this.timer <= 0){
+    if (this.timer <= 0) {
       explosions.splice(explosions.indexOf(this), 1);
     }
   }
@@ -69,7 +69,7 @@ function ParticleEffect(x, y, col) {
   this.makeParticles();
   this.update = function () {
     this.alpha -= this.alphaRate;
-    this.timer --;
+    this.timer--;
     for (var i = 0; i < this.particles.length; i++) {
       this.particles[i].x += this.particles[i].speed * sin(this.particles[i].dir);
       this.particles[i].y -= this.particles[i].speed * cos(this.particles[i].dir);
@@ -96,8 +96,8 @@ function GifExplosion(x, y) {
   this.image = loadGif('./assets/explosion.gif');
 
   this.update = function () {
-    this.timer --;
-    if(this.timer <= 0){
+    this.timer--;
+    if (this.timer <= 0) {
       gifExplosions.splice(gifExplosions.indexOf(this), 1);
     }
   }

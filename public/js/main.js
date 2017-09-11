@@ -8,6 +8,7 @@ function setup() {
   view = new View();
   minimap = new Minimap();
   pause = new Pause();
+  waters.push(new Water(-200, 200, 200, -200));
   onLoad();
 
   //Prevent Right Click Menu
@@ -33,9 +34,10 @@ function draw() {
   push();
   view.update(); // zoom in onto tank
 
+  tank.weaponManager.showWeapons();
+  showWater();
   showBullets();
   showWalls();
-  tank.weaponManager.showWeapons();
   showTanks();
   tank.update();
   tank.show();

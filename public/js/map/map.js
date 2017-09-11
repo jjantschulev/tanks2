@@ -58,6 +58,7 @@ function Wall(x1, y1, x2, y2) {
 
 function Minimap() {
   this.display = true;
+  this.viewScale = width / fullWidth;
   this.show = function () {
     if (!this.display) {
       return;
@@ -73,27 +74,38 @@ function Minimap() {
     rectMode(CORNER);
     rect(0, 0, width, height);
 
-    var tx = constrain(tank.pos.x, -fullWidth / 2 + width / 2, fullWidth / 2 - width / 2);
-    var ty = constrain(tank.pos.y, -fullWidth / 2 + width / 2, fullWidth / 2 - width / 2);
+    translate(width / 2, height / 2);
+    var tx = constrain(tank.pos.x, -fullWidth / 2 + width / 2 / this.viewScale, fullWidth / 2 - width / 2 / this.viewScale);
+    var ty = constrain(tank.pos.y, -fullWidth / 2 + width / 2 / this.viewScale, fullWidth / 2 - width / 2 / this.viewScale);
 
-    translate(width / 2 - tx, height / 2 - ty);
-
+    scale(this.viewScale);
+    translate(-tx, -ty);
     // show map contents
     noFill();
+    stroke(0, 0, 255);
+    for (var i = 0; i < waters.length; i++) {
+      if (abs(waters[i].x1 - tx) < width / 2 / this.viewScale || abs(waters[i].x2 - tx) < width / 2 / this.viewScale) {
+        if (abs(waters[i].y1 - ty) < height / 2 / this.viewScale || abs(waters[i].y2 - ty) < height / 2 / this.viewScale) {
+          strokeWeight(waters[i].width);
+          line(waters[i].x1, waters[i].y1, waters[i].x2, waters[i].y2);
+        }
+      }
+    }
     stroke(120);
     strokeWeight(20);
     for (var i = 0; i < walls.length; i++) {
-      if (abs(walls[i].x1 - tx) < width / 2 || abs(walls[i].x2 - tx) < width / 2) {
-        if (abs(walls[i].y1 - ty) < height / 2 || abs(walls[i].y2 - ty) < height / 2) {
+      if (abs(walls[i].x1 - tx) < width / 2 / this.viewScale || abs(walls[i].x2 - tx) < width / 2 / this.viewScale) {
+        if (abs(walls[i].y1 - ty) < height / 2 / this.viewScale || abs(walls[i].y2 - ty) < height / 2 / this.viewScale) {
           line(walls[i].x1, walls[i].y1, walls[i].x2, walls[i].y2);
         }
       }
     }
+
     noStroke();
     for (var i = 0; i < tanks.length; i++) {
       if (tanks[i].id != tank.id && !tanks[i].paused) {
-        if (abs(tanks[i].pos.x - tx) < width / 2) {
-          if (abs(tanks[i].pos.y - ty) < height / 2) {
+        if (abs(tanks[i].pos.x - tx) < width / 2 / this.viewScale) {
+          if (abs(tanks[i].pos.y - ty) < height / 2 / this.viewScale) {
             fill(tanks[i].colour);
             ellipse(tanks[i].pos.x, tanks[i].pos.y, 40, 40);
           }

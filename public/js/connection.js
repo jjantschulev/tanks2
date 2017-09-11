@@ -36,7 +36,7 @@ socket.on("update", function (tanks_array) {
       newTank.id = tanks_array[i].id;
       newTank.loadImages(tanks_array[i].col);
       if (tanks_array[i].name != tank.name) {
-        notify(tanks_array[i].name + ' joined the game', 130, tank.colour, width / 2);
+        notify(tanks_array[i].name + ' joined the game', 130, tanks_array[i].col, width / 2);
       } else {
         notify('connected succesfully as \'' + tank.name + "\'", 200, tank.colour, width / 2);
         setTimeout(tank.setColour, 180);
