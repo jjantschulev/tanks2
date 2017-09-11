@@ -166,6 +166,20 @@ function MapEditor() {
         }
       }
     }
+
+    for (var i = this.allWaters.length - 1; i >= 0; i--) {
+      for (var j = 0; j < this.allWaters[i].length; j++) {
+        if (dist(this.allWaters[i][j].x, this.allWaters[i][j].y, this.grmp().x, this.grmp().y) < 10) {
+          if (this.allWaters[i].length > 2) {
+            var newArrayLess = this.allWaters[i].slice(0, j);
+            var newArrayMore = this.allWaters[i].slice(j + 1, this.allWaters[i].length);
+            this.allWaters.push(newArrayLess);
+            this.allWaters.push(newArrayMore);
+          }
+          this.allWaters.splice(i, 1);
+        }
+      }
+    }
   }
 
   this.undo = function () {
