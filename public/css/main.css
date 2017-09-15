@@ -10,6 +10,7 @@ canvas {
   top: calc(50% - 500px);
   left: calc(50% - 500px);
   outline: none;
+  cursor: crosshair;
 }
 
 #window {

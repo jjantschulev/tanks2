@@ -83,10 +83,10 @@ io.on('connection', function (socket) {
 
   socket.on('weapon', function (data) {
     socket.broadcast.emit('weapon', data);
-    if (data.type == "landmine" || data.type == "healthPacket" || data.type == "gunner") {
+    if (data.type == "landmine" || data.type == "healthPacket" || data.type == "gunner" || data.type == "bridge") {
       weapons.push(data);
     }
-    if (data.type == "healthPacketRemove" || data.type == "landmineRemove" || data.type == "gunnerRemove") {
+    if (data.type == "healthPacketRemove" || data.type == "landmineRemove" || data.type == "gunnerRemove" || data.type == "bridgeRemove") {
       for (var i = weapons.length - 1; i >= 0; i--) {
         if (weapons[i].id == data.id) {
           weapons.splice(i, 1);
@@ -157,6 +157,7 @@ function saveAmmo(data) {
     if (data.name == ammo[i].name) {
       ammo[i].mine = data.mine;
       ammo[i].gunner = data.gunner;
+      ammo[i].bridge = data.bridge;
       ammo[i].blast = data.blast;
       ammo[i].bomb = data.bomb;
       ammo[i].health = data.health;
@@ -181,6 +182,7 @@ function loadAmmo(name) {
       blast: 4,
       bomb: 4,
       gunner: 0,
+      bridge: 0,
       health: 100,
       name: name,
       coins: 150,

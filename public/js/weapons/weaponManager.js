@@ -4,21 +4,25 @@ function WeaponManager() {
   this.bombs = [];
   this.blasts = [];
   this.healthPackets = [];
+  this.bridges = [];
 
   this.landmineAmount = 0;
   this.bombAmount = 0;
   this.blastAmount = 0;
-  this.gunnerAmount = 10;
+  this.gunnerAmount = 0;
+  this.bridgeAmount = 10;
 
-  this.blastPrice = 30;
-  this.bombPrice = 50;
+  this.blastPrice = 60;
+  this.bombPrice = 80;
   this.landminePrice = 80;
-  this.gunnerPrice = 250;
+  this.gunnerPrice = 300;
+  this.bridgePrice = 300;
 
   this.landmineColour = color(0, 190, 255);
   this.bombColour = color(255, 180, 0);
   this.blastColour = color(15, 255, 150);
-  this.gunnerColour = color(200, 0, 255);
+  this.gunnerColour = color(255, 250, 50);
+  this.bridgeColour = color(255, 60, 40);
 
   this.showInfo = function () {
     var rectSize = 6;
@@ -39,6 +43,10 @@ function WeaponManager() {
     for (var i = 0; i < this.gunnerAmount; i++) {
       fill(this.gunnerColour);
       rect(rectSize * 3, i * rectSize, rectSize, rectSize);
+    }
+    for (var i = 0; i < this.bridgeAmount; i++) {
+      fill(this.bridgeColour);
+      rect(rectSize * 4, i * rectSize, rectSize, rectSize);
     }
 
     fill(255, 200, 100);
@@ -66,6 +74,10 @@ function WeaponManager() {
       this.gunners[i].show();
       this.gunners[i].update();
     }
+    for (var i = this.bridges.length - 1; i >= 0; i--) {
+      this.bridges[i].show();
+      this.bridges[i].update();
+    }
     for (var i = this.blasts.length - 1; i >= 0; i--) {
       this.blasts[i].update();
     }
@@ -86,6 +98,16 @@ function WeaponManager() {
     }
     if (data.type == 'gunner') {
       this.gunners.push(new Gunner(data.x, data.y, data.col, data.name, data.id));
+    }
+    if (data.type == 'bridge') {
+      this.bridges.push(new Bridge(data.x, data.y, data.a, data.col, data.id));
+    }
+    if (data.type == 'bridgeRemove') {
+      for (var i = this.bridges.length - 1; i >= 0; i--) {
+        if (this.bridges[i].id == data.id) {
+          this.bridges.splice(i, 1);
+        }
+      }
     }
     if (data.type == 'healthPacketRemove') {
       for (var i = this.healthPackets.length - 1; i >= 0; i--) {
@@ -129,6 +151,13 @@ function WeaponManager() {
       socket.emit('weapon', data);
       this.bombs.push(new Bomb(data.x, data.y, data.name));
       this.bombAmount--;
+    }
+    if (this.bridgeAmount > 0 && data.type == 'bridge') {
+      data.a = tank.dir
+      data.id = generateId();
+      socket.emit('weapon', data);
+      this.bridges.push(new Bridge(data.x, data.y, data.a, data.col, data.id));
+      this.bridgeAmount--;
     }
     if (this.blastAmount > 0 && data.type == 'blast') {
       tank.boostTimer = tank.boostLength;
@@ -218,6 +247,9 @@ function WeaponManager() {
     }
     if (this.gunnerAmount > 10) {
       this.gunnerAmount = 10;
+    }
+    if (this.bridgeAmount > 10) {
+      this.bridgeAmount = 10;
     }
   }
 }

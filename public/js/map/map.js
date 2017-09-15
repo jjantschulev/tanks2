@@ -82,7 +82,7 @@ function Minimap() {
     translate(-tx, -ty);
     // show map contents
     noFill();
-    stroke(0, 0, 255);
+    stroke(50, 150, 255);
     strokeWeight(35);
     for (var i = 0; i < waters.length; i++) {
       if (abs(waters[i].x1 - tx) < width / 2 / this.viewScale || abs(waters[i].x2 - tx) < width / 2 / this.viewScale) {

@@ -23,6 +23,7 @@ function Tank() {
   this.dirVel = 0;
   this.gunDirVel = 0;
   this.useAi = false;
+  this.speedMultiplyer = 1;
 
   this.w = 25.5;
   this.h = 30;
@@ -75,7 +76,12 @@ function Tank() {
     this.speed = 0;
     this.dirVel = 0;
     this.gunDirVel = 0;
-    tank.useAi = false;
+    this.useAi = false;
+    if (this.speedMultiplyer <= 0.9) {
+      this.speedMultiplyer += 0.1;
+    } else {
+      this.speedMultiplyer = 1;
+    }
 
     if (this.health > this.maxHealth) {
       this.health = this.maxHealth;
@@ -131,22 +137,25 @@ function Tank() {
         hit = true;
       }
     }
+    for (var i = 0; i < this.weaponManager.bridges.length; i++) {
+      if (this.weaponManager.bridges[i].colour != this.colour) {
+        if (this.weaponManager.bridges[i].colliding()) {
+          hit = true;
+        }
+      }
+    }
+    // 
 
     this.ai.colliding = hit;
 
     if (hit) {
       this.pos.set(this.previousPos);
-      var phit = false;
-      for (var i = 0; i < walls.length; i++) {
-        if (walls[i].tankColliding(this.previousPos)) {
-          phit = true;
-        }
-      }
+      var phit = true;
       while (phit) {
-        this.previousPos.set(random(width), random(height));
         for (var i = 0; i < walls.length; i++) {
           if (walls[i].tankColliding(this.previousPos)) {
             phit = true;
+            this.previousPos.set(random(width), random(height));
           } else {
             phit = false;
           }

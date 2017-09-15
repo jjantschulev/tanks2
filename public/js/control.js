@@ -2,31 +2,31 @@ function keyHold(k) {
   // Tank Movement
   if (k == 87) {
     if (tank.boostTimer >= 0) {
-      tank.speed = 4.0;
+      tank.speed = tank.speedMultiplyer * 4.0 * frameCompensate;
     } else {
-      tank.speed = 2.0;
+      tank.speed = tank.speedMultiplyer * 2.0 * frameCompensate;
     }
   }
   if (k == 83) {
     if (tank.boostTimer >= 0) {
-      tank.speed = -3.5;
+      tank.speed = tank.speedMultiplyer * -3.5 * frameCompensate;
     } else {
-      tank.speed = -1.7;
+      tank.speed = tank.speedMultiplyer * -1.7 * frameCompensate;
     }
   }
   // Tank Rotation
   if (k == 65) {
-    tank.dirVel = -0.06;
+    tank.dirVel = tank.speedMultiplyer * -0.06 * frameCompensate;
   }
   if (k == 68) {
-    tank.dirVel = 0.06;
+    tank.dirVel = tank.speedMultiplyer * 0.06 * frameCompensate;
   }
   // Gun Rotation
   if (k == 69 || k == 39) {
-    tank.gunDirVel = 0.04;
+    tank.gunDirVel = tank.speedMultiplyer * 0.04 * frameCompensate;
   }
   if (k == 81 || k == 37) {
-    tank.gunDirVel = -0.04;
+    tank.gunDirVel = tank.speedMultiplyer * -0.04 * frameCompensate;
   }
   // Gun Shooting
   if (k == 32) {
@@ -95,6 +95,9 @@ function keyDown(k) {
     }
     if (k == 72) {
       tank.weaponManager.dropWeapon('healthPacket');
+    }
+    if (k == 222) {
+      tank.weaponManager.dropWeapon('bridge');
     }
 
     if (k == 80) {

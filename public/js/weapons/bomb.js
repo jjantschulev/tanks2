@@ -18,8 +18,8 @@ function Bomb(x, y, owner) {
   }
 
   this.update = function () {
-    this.timer --;
-    if(this.timer <= 0){
+    this.timer--;
+    if (this.timer <= 0) {
       this.explode();
       tank.weaponManager.bombs.splice(tank.weaponManager.bombs.indexOf(this), 1);
     }
@@ -28,11 +28,19 @@ function Bomb(x, y, owner) {
   this.explode = function () {
     var distance = dist(tank.pos.x, tank.pos.y, this.x, this.y);
     if (distance < 100) {
-      tank.removeHealth(100-distance);
+      tank.removeHealth(100 - distance);
       tank.weaponManager.pushTank(this.x, this.y, 100);
       tank.checkDeath(this.owner);
     }
-    for (var i = tank.weaponManager.landmines.length-1; i >= 0; i--) {
+    for (var i = tank.weaponManager.bridges.length - 1; i >= 0; i--) {
+      var b = tank.weaponManager.bridges[i];
+      var distToBridge = dist(this.x, this.y, tank.weaponManager.bridges[i].x, tank.weaponManager.bridges[i].y);
+      if (distToBridge < 200) {
+        tank.weaponManager.bridges[i].health -= 200 - 2 * distToBridge;
+        tank.weaponManager.bridges[i].checkDeath();
+      }
+    }
+    for (var i = tank.weaponManager.landmines.length - 1; i >= 0; i--) {
       var d = dist(tank.weaponManager.landmines[i].x, tank.weaponManager.landmines[i].y, this.x, this.y);
       if (d < 100) {
         var data = {

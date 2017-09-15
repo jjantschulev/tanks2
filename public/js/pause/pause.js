@@ -212,8 +212,10 @@ function Button(x, y, r, displayText, textHeight) {
 
   this.show = function () {
     this.effects();
-    noStroke();
+    stroke(0);
+    strokeWeight(2);
     ellipse(this.x, this.y, this.r, this.r);
+    noStroke();
     fill(0);
     textSize(this.textHeight);
     textAlign(CENTER, CENTER);
@@ -240,7 +242,7 @@ function Button(x, y, r, displayText, textHeight) {
     if (this.detectPress() || this.active) {
       fill(tank.colour);
     } else {
-      fill(120);
+      fill(150);
     }
   }
 }

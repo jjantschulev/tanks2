@@ -14,18 +14,20 @@ function Bullet(x, y, dir, name, type, col) {
   this.name = name;
   this.col = col;
   this.type = type;
-  this.speed = 5;
+
   if (type == 1) {
     this.r = 4;
+    this.speed = 6;
     this.damage = 2.5;
   } else if (type == 2) {
     this.r = 8;
+    this.speed = 5;
     this.damage = 22;
   }
 
   this.update = function () {
-    this.x += this.speed * sin(this.dir);
-    this.y -= this.speed * cos(this.dir);
+    this.x += this.speed * sin(this.dir) * frameCompensate;
+    this.y -= this.speed * cos(this.dir) * frameCompensate;
     if (!this.collisions()) {
       this.deleteOffScreen();
     }
