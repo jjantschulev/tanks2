@@ -1,10 +1,13 @@
-var fullWidth = 2000,
-  fullHeight = 2000;
+var fullWidth = 1200,
+  fullHeight = 1200;
 
 var frameCompensate;
+var font;
 
 function setup() {
   createCanvas(1000, 1000);
+  font = loadFont("./assets/Raleway/Raleway-Regular.ttf");
+  textFont(font);
 
   team = new Team();
   tank = new Tank();
@@ -53,7 +56,7 @@ function draw() {
   showDisconnectedInfo();
   showNotifications();
 
-  showFrameRate();
+  // showFrameRate();
 }
 
 function showFrameRate() {

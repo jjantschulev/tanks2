@@ -32,7 +32,7 @@ function Tank() {
 
   this.colour = Cookies.get('tank_colour');
   if (this.colour == undefined) {
-    var colours = ['red', 'green', 'yellow', 'blue'];
+    var colours = ['seagreen', 'gold', 'firebrick', 'cornflowerblue'];
     var col = colours[Math.floor(random(4))];
     console.log(col);
     this.colour = col;
@@ -140,6 +140,10 @@ function Tank() {
     for (var i = 0; i < this.weaponManager.bridges.length; i++) {
       if (this.weaponManager.bridges[i].colour != this.colour) {
         if (this.weaponManager.bridges[i].colliding()) {
+          hit = true;
+        }
+      } else {
+        if (this.weaponManager.bridges[i].colliding() && !this.weaponManager.bridges[i].onRoad()) {
           hit = true;
         }
       }

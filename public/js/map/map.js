@@ -4,6 +4,7 @@ var walls = [];
 
 function View() {
   this.zoom = 2.6;
+  this.zoomed = false;
   this.x = 0;
   this.y = 0;
 
@@ -59,17 +60,19 @@ function Wall(x1, y1, x2, y2) {
 function Minimap() {
   this.display = true;
   this.viewScale = width / fullWidth;
+  this.size = 0.14;
+  this.alpha = 180;
   this.show = function () {
     if (!this.display) {
       return;
     }
     push();
     translate(0, height);
-    scale(0.14);
+    scale(this.size);
     translate(0, -height);
 
     // show rectangle
-    fill(30, 180);
+    fill(30, this.alpha);
     noStroke();
     rectMode(CORNER);
     rect(0, 0, width, height);
@@ -82,7 +85,7 @@ function Minimap() {
     translate(-tx, -ty);
     // show map contents
     noFill();
-    stroke(50, 150, 255);
+    stroke(0, 0, 140);
     strokeWeight(35);
     for (var i = 0; i < waters.length; i++) {
       if (abs(waters[i].x1 - tx) < width / 2 / this.viewScale || abs(waters[i].x2 - tx) < width / 2 / this.viewScale) {
@@ -116,13 +119,21 @@ function Minimap() {
     fill(tank.colour);
     ellipse(tank.pos.x, tank.pos.y, 40, 40);
     pop();
+
+    if (this.zoomed) {
+      this.size = 1;
+      this.alpha = 255;
+    } else {
+      this.size = 0.14;
+      this.alpha = 180;
+    }
   }
 
   this.toggleDisplay = function () {
-    if (this.display) {
-      this.display = false;
+    if (this.zoomed) {
+      this.zoomed = false;
     } else {
-      this.display = true;
+      this.zoomed = true;
     }
   }
 }

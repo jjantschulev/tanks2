@@ -36,7 +36,7 @@ function Bomb(x, y, owner) {
       var b = tank.weaponManager.bridges[i];
       var distToBridge = dist(this.x, this.y, tank.weaponManager.bridges[i].x, tank.weaponManager.bridges[i].y);
       if (distToBridge < 200) {
-        tank.weaponManager.bridges[i].health -= 200 - 2 * distToBridge;
+        tank.weaponManager.bridges[i].health -= 200 - distToBridge;
         tank.weaponManager.bridges[i].checkDeath();
       }
     }

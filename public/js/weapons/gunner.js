@@ -130,7 +130,8 @@ function Gunner(x, y, colour, name, id) {
       this.health -= b.damage;
       if (this.health <= 0) {
         if (b.name == tank.name) {
-          tank.health += 40;
+          tank.health += 30;
+          tank.coins += 40;
           notify("You destoyed " + this.owner + "'s gunner", 150, this.colour, width - width / 3)
         }
         var data = {

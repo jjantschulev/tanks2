@@ -17,7 +17,8 @@ function Water(x1, y1, x2, y2) {
 
 
   this.show = function () {
-    stroke(50, 150, 255);
+    stroke(0, 0, 140);
+    // stroke(50, 150, 255);
     this.width = 35 * map(noise(this.rOff), 0, 1, 1, 1.3);
     strokeWeight(this.width);
     line(this.x1, this.y1, this.x2, this.y2);

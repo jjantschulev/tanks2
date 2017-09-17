@@ -13,20 +13,13 @@ function Shop() {
     fill(0);
     noStroke();
     rect(0, 0, width, height);
-    fill(tank.colour);
-    rect(0, 0, width, 120)
 
     // Title
-    fill(0);
+    fill(tank.colour);
     textAlign(CENTER);
     textSize(60);
     text('Shop', width / 2, 60);
 
-    //Show Coins
-    textAlign(RIGHT);
-    textSize(30);
-    text('coins: ' + Math.round(tank.coins), width - 40, 60);
-    fill(tank.colour);
 
 
     for (var i = 0; i < this.items.length; i++) {
@@ -104,31 +97,31 @@ function Item(x, y, type) {
   this.mClick = function () {
     if (this.buyButton.detectPress()) {
       if (this.type == "Landmine") {
-        if (tank.coins - this.price >= 0 && tank.weaponManager.landmineAmount < 10) {
+        if (tank.coins - this.price >= 0 && tank.weaponManager.landmineAmount < tank.weaponManager.landmineLimit) {
           tank.weaponManager.landmineAmount++;
           tank.coins -= this.price;
         }
       }
       if (this.type == "Bomb") {
-        if (tank.coins - this.price >= 0 && tank.weaponManager.bombAmount < 10) {
+        if (tank.coins - this.price >= 0 && tank.weaponManager.bombAmount < tank.weaponManager.bombLimit) {
           tank.weaponManager.bombAmount++;
           tank.coins -= this.price;
         }
       }
       if (this.type == "Boost") {
-        if (tank.coins - this.price >= 0 && tank.weaponManager.blastAmount < 10) {
+        if (tank.coins - this.price >= 0 && tank.weaponManager.blastAmount < tank.weaponManager.blastLimit) {
           tank.weaponManager.blastAmount++;
           tank.coins -= this.price;
         }
       }
       if (this.type == "Gunner") {
-        if (tank.coins - this.price >= 0 && tank.weaponManager.gunnerAmount < 10) {
+        if (tank.coins - this.price >= 0 && tank.weaponManager.gunnerAmount < tank.weaponManager.gunnerLimit) {
           tank.weaponManager.gunnerAmount++;
           tank.coins -= this.price;
         }
       }
       if (this.type == "Bridge") {
-        if (tank.coins - this.price >= 0 && tank.weaponManager.bridgeAmount < 10) {
+        if (tank.coins - this.price >= 0 && tank.weaponManager.bridgeAmount < tank.weaponManager.bridgeLimit) {
           tank.weaponManager.bridgeAmount++;
           tank.coins -= this.price;
         }

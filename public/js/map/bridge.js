@@ -1,8 +1,12 @@
 function Bridge(x, y, a, col, id) {
-  this.x1 = x + 30 * sin(a)
-  this.y1 = y - 30 * cos(a)
-  this.x2 = x + 70 * sin(a)
-  this.y2 = y - 70 * cos(a)
+  this.x1 = x + 30 * sin(a);
+  this.y1 = y - 30 * cos(a);
+  this.x2 = x + 70 * sin(a);
+  this.y2 = y - 70 * cos(a);
+  this.road_x1 = x + 10 * sin(a);
+  this.road_y1 = y - 10 * cos(a);
+  this.road_x2 = x + 90 * sin(a);
+  this.road_y2 = y - 90 * cos(a);
 
   this.a = a;
   this.colour = col;
@@ -49,6 +53,11 @@ function Bridge(x, y, a, col, id) {
 
   this.colliding = function () {
     var hit = collideLineCircle(this.x1, this.y1, this.x2, this.y2, tank.pos.x, tank.pos.y, tank.h * 2);
+    return hit;
+  }
+
+  this.onRoad = function () {
+    var hit = collideLineCircle(this.road_x1, this.road_y1, this.road_x2, this.road_y2, tank.pos.x, tank.pos.y, tank.h * 0.99);
     return hit;
   }
 

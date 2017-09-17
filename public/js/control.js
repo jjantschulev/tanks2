@@ -96,7 +96,7 @@ function keyDown(k) {
     if (k == 72) {
       tank.weaponManager.dropWeapon('healthPacket');
     }
-    if (k == 222) {
+    if (k == 67) {
       tank.weaponManager.dropWeapon('bridge');
     }
 

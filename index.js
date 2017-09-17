@@ -1,4 +1,4 @@
-const PORT = 3333;
+const PORT = 5000;
 // IMPORTS
 var express = require('express');
 var socket_io = require('socket.io');
@@ -20,13 +20,39 @@ var map = loadJSON('map');
 var scores = loadJSON('scores');
 var ammo = loadJSON('ammo');
 var weapons = loadJSON('weapons');
-
+var width = 1200;
+var height = 1200;
 
 setInterval(function () {
   for (var i = 0; i < tanks.length; i++) {
     io.to(tanks[i].id).emit('update', tanks);
   }
 }, 38);
+
+setInterval(function () {
+  var coinCount = 0;
+
+  for (var j = 0; j < weapons.length; j++) {
+    if (weapons[j].type == "coin") {
+      coinCount++;
+    }
+  }
+  if (coinCount < 2) {
+    if (Math.random() < 0.2) {
+      var data = {
+        type: "coin",
+        x: Math.random() * width - width / 2,
+        y: Math.random() * height - height / 2,
+        id: generateId()
+      }
+      for (var i = 0; i < tanks.length; i++) {
+        io.to(tanks[i].id).emit("weapon", data);
+      }
+      weapons.push(data);
+      saveJSON("weapons", weapons);
+    }
+  }
+}, 1000);
 
 setInterval(function () {
   io.sockets.emit('update-scores', scores);
@@ -41,7 +67,7 @@ io.on('connection', function (socket) {
       y: 0,
       dir: 0,
       gunDir: 0,
-      col: "yellow",
+      col: "gold",
       paused: false,
       name: userName,
       health: 100
@@ -86,7 +112,7 @@ io.on('connection', function (socket) {
     if (data.type == "landmine" || data.type == "healthPacket" || data.type == "gunner" || data.type == "bridge") {
       weapons.push(data);
     }
-    if (data.type == "healthPacketRemove" || data.type == "landmineRemove" || data.type == "gunnerRemove" || data.type == "bridgeRemove") {
+    if (data.type == "healthPacketRemove" || data.type == "landmineRemove" || data.type == "gunnerRemove" || data.type == "bridgeRemove" || data.type == "coinRemove") {
       for (var i = weapons.length - 1; i >= 0; i--) {
         if (weapons[i].id == data.id) {
           weapons.splice(i, 1);
@@ -150,7 +176,7 @@ io.on('connection', function (socket) {
       }
     }
   });
-})
+});
 
 function saveAmmo(data) {
   for (var i = 0; i < ammo.length; i++) {
@@ -204,4 +230,15 @@ function saveJSON(filename, data) {
 function loadJSON(filename) {
   var object = JSON.parse(fs.readFileSync('./data/' + filename + '.json', 'utf8'));
   return object;
+}
+
+
+
+function generateId() {
+  var letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+  var randomID = '';
+  for (var i = 0; i < 100; i++) {
+    randomID += letters[Math.floor(Math.random() * letters.length)];
+  }
+  return randomID;
 }

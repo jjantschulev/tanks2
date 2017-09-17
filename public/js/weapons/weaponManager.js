@@ -1,16 +1,26 @@
 function WeaponManager() {
+  this.coinImage = loadImage("./assets/coin.png");
+
   this.landmines = [];
   this.gunners = [];
   this.bombs = [];
   this.blasts = [];
   this.healthPackets = [];
   this.bridges = [];
+  this.coins = [];
 
   this.landmineAmount = 0;
   this.bombAmount = 0;
   this.blastAmount = 0;
   this.gunnerAmount = 0;
-  this.bridgeAmount = 10;
+  this.bridgeAmount = 0;
+
+  this.landmineLimit = 100;
+  this.bombLimit = 100;
+  this.blastLimit = 100;
+  this.gunnerLimit = 100;
+  this.bridgeLimit = 100;
+
 
   this.blastPrice = 60;
   this.bombPrice = 80;
@@ -28,31 +38,26 @@ function WeaponManager() {
     var rectSize = 6;
     noStroke();
     rectMode(CORNER);
-    for (var i = 0; i < this.blastAmount; i++) {
-      fill(this.blastColour);
-      rect(rectSize * 0, i * rectSize, rectSize, rectSize);
-    }
-    for (var i = 0; i < this.bombAmount; i++) {
-      fill(this.bombColour);
-      rect(rectSize * 1, i * rectSize, rectSize, rectSize);
-    }
-    for (var i = 0; i < this.landmineAmount; i++) {
-      fill(this.landmineColour);
-      rect(rectSize * 2, i * rectSize, rectSize, rectSize);
-    }
-    for (var i = 0; i < this.gunnerAmount; i++) {
-      fill(this.gunnerColour);
-      rect(rectSize * 3, i * rectSize, rectSize, rectSize);
-    }
-    for (var i = 0; i < this.bridgeAmount; i++) {
-      fill(this.bridgeColour);
-      rect(rectSize * 4, i * rectSize, rectSize, rectSize);
-    }
-
-    fill(255, 200, 100);
-    // rect(width - rectSize, 0, rectSize, map(tank.coins, 0, 1000, 0, 100));
+    fill(this.blastColour);
+    rect(rectSize * 0, 0, rectSize, rectSize * this.blastAmount);
+    fill(this.bombColour);
+    rect(rectSize * 1, 0, rectSize, rectSize * this.bombAmount);
+    fill(this.landmineColour);
+    rect(rectSize * 2, 0, rectSize, rectSize * this.landmineAmount);
+    fill(this.gunnerColour);
+    rect(rectSize * 3, 0, rectSize, rectSize * this.gunnerAmount);
+    fill(this.bridgeColour);
+    rect(rectSize * 4, 0, rectSize, rectSize * this.bridgeAmount);
 
     showBoostTimer();
+
+    imageMode(CENTER);
+    image(this.coinImage, width - 17, 17, 30, 30);
+    textAlign(RIGHT);
+    fill('gold');
+    noStroke();
+    textSize(24);
+    text(tank.coins, width - 36, 18);
 
     this.limitWeaponAmount();
   }
@@ -78,6 +83,10 @@ function WeaponManager() {
       this.bridges[i].show();
       this.bridges[i].update();
     }
+    for (var i = this.coins.length - 1; i >= 0; i--) {
+      this.coins[i].show();
+      this.coins[i].update();
+    }
     for (var i = this.blasts.length - 1; i >= 0; i--) {
       this.blasts[i].update();
     }
@@ -99,6 +108,9 @@ function WeaponManager() {
     if (data.type == 'gunner') {
       this.gunners.push(new Gunner(data.x, data.y, data.col, data.name, data.id));
     }
+    if (data.type == 'coin') {
+      this.coins.push(new Coin(data.x, data.y, data.id));
+    }
     if (data.type == 'bridge') {
       this.bridges.push(new Bridge(data.x, data.y, data.a, data.col, data.id));
     }
@@ -106,6 +118,13 @@ function WeaponManager() {
       for (var i = this.bridges.length - 1; i >= 0; i--) {
         if (this.bridges[i].id == data.id) {
           this.bridges.splice(i, 1);
+        }
+      }
+    }
+    if (data.type == 'coinRemove') {
+      for (var i = this.coins.length - 1; i >= 0; i--) {
+        if (this.coins[i].id == data.id) {
+          this.coins.splice(i, 1);
         }
       }
     }
@@ -236,20 +255,30 @@ function WeaponManager() {
   }
 
   this.limitWeaponAmount = function () {
-    if (this.landmineAmount > 10) {
-      this.landmineAmount = 10;
+    if (this.landmineAmount > this.landmineLimit) {
+      this.landmineAmount = this.landmineLimit;
     }
-    if (this.bombAmount > 10) {
-      this.bombAmount = 10;
+    if (this.bombAmount > this.bombLimit) {
+      this.bombAmount = this.bombLimit;
     }
-    if (this.blastAmount > 10) {
-      this.blastAmount = 10;
+    if (this.blastAmount > this.blastLimit) {
+      this.blastAmount = this.blastLimit;
     }
-    if (this.gunnerAmount > 10) {
-      this.gunnerAmount = 10;
+    if (this.gunnerAmount > this.gunnerLimit) {
+      this.gunnerAmount = this.gunnerLimit;
     }
-    if (this.bridgeAmount > 10) {
-      this.bridgeAmount = 10;
+    if (this.bridgeAmount > this.bridgeLimit) {
+      this.bridgeAmount = this.bridgeLimit;
     }
   }
+}
+
+
+function generateId() {
+  var letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+  var randomID = '';
+  for (var i = 0; i < 100; i++) {
+    randomID += letters[Math.floor(random(letters.length))];
+  }
+  return randomID;
 }

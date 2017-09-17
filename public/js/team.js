@@ -5,7 +5,7 @@ function Team() {
 
   this.allowColour = function (col) {
     // colours is format: | r | g | b | y |
-    var colourNames = ['red', 'green', 'blue', 'yellow'];
+    var colourNames = ['seagreen', 'gold', 'firebrick', 'cornflowerblue'];
     var colourInts = [0, 0, 0, 0];
     for (var i = tanks.length - 1; i >= 0; i--) {
       if (tank.id != tanks[i].id) {
@@ -32,16 +32,16 @@ function Team() {
 
   this.colourToInt = function (col, array) {
     var colourInts = array;
-    if (col == 'red') {
+    if (col == 'firebrick') {
       colourInts[0]++;
     }
-    if (col == 'yellow') {
+    if (col == 'gold') {
       colourInts[3]++;
     }
-    if (col == 'blue') {
+    if (col == 'cornflowerblue') {
       colourInts[2]++;
     }
-    if (col == 'green') {
+    if (col == 'seagreen') {
       colourInts[1]++;
     }
     return colourInts;

@@ -78,7 +78,7 @@ function Gun() {
     } else if (this.type == 2) {
       this.type = 1;
     }
-    notify(this.type, 60, color(150), 40);
+    notify("Gun Mode: " + this.type, 60, color(150), 40);
   }
 
   this.toggleTrackMouse = function () {

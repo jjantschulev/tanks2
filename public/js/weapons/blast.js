@@ -31,11 +31,4 @@ function showBoostTimer() {
   }
 }
 
-function generateId() {
-  var letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
-  var randomID = '';
-  for (var i = 0; i < 100; i++) {
-    randomID += letters[Math.floor(random(letters.length))];
-  }
-  return randomID;
-}
+

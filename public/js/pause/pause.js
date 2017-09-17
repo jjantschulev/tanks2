@@ -111,7 +111,7 @@ function Pause() {
 
 
 function ColorSelect() {
-  this.colours = ['#10802E', '#E40C19', '#CE9621', '#3614A5'];
+  this.colours = ['seagreen', 'gold', 'firebrick', 'cornflowerblue'];
   this.active = false;
   this.backButton = new Button(60, 60, 80, 'Back', 20);
 
@@ -134,16 +134,16 @@ function ColorSelect() {
     }
     var newColour = "";
     if (collidePointRect(mouseX, mouseY, 0, 0, width / 2, height / 2)) {
-      newColour = "green";
+      newColour = this.colours[0];
     }
     if (collidePointRect(mouseX, mouseY, 0, height / 2, width / 2, height / 2)) {
-      newColour = "red";
+      newColour = this.colours[1];
     }
     if (collidePointRect(mouseX, mouseY, width / 2, 0, width / 2, height / 2)) {
-      newColour = "yellow";
+      newColour = this.colours[2];
     }
     if (collidePointRect(mouseX, mouseY, width / 2, height / 2, width / 2, height / 2)) {
-      newColour = "blue";
+      newColour = this.colours[3];
     }
     if (team.allowColour(newColour)) {
       tank.loadImages(newColour);
