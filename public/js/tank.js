@@ -65,6 +65,8 @@ function Tank() {
     this.respawnTimer--;
     this.boostTimer--;
 
+    team.payForFlags();
+
     // SMOOTHEN TANK MOVEMENT
     this.viewPos.x = lerp(this.viewPos.x, this.pos.x, 0.6);
     this.viewPos.y = lerp(this.viewPos.y, this.pos.y, 0.6);

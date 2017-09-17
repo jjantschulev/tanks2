@@ -64,8 +64,12 @@ socket.on('id', function (id) {
 })
 
 socket.on('new_map', function (data) {
-  pause.mapEditor.newMap(data.walls, data.waters);
+  pause.mapEditor.newMap(data);
 });
+
+socket.on('flag_changed', function (flagData) {
+  pause.mapEditor.createFlagsFromArray(flagData);
+})
 
 socket.on('bullet', function (bulletData) {
   bullets.push(new Bullet(bulletData.x, bulletData.y, bulletData.dir, bulletData.name, bulletData.type, bulletData.col));

@@ -3,14 +3,17 @@ function MapEditor() {
   this.allWalls = [];
   this.currentWater = [];
   this.allWaters = [];
+  this.flags = [];
 
   this.active = false;
   this.eraser = false;
   this.watering = false;
+  this.flagging = false;
 
   this.menu = new MapEditorMenu();
   this.syncedWalls = [];
   this.syncedWaters = [];
+  this.syncedFlags = [];
   this.showMenu = true;
 
   this.viewScale = 1;
@@ -79,7 +82,15 @@ function MapEditor() {
     }
 
 
+    noStroke();
+    fill(200);
+    for (var i = 0; i < this.flags.length; i++) {
+      ellipse(this.flags[i].x, this.flags[i].y, 25, 25);
+    }
 
+
+
+    // x under mouse when using eraser
     if (this.eraser) {
       stroke(255, 0, 0);
       strokeWeight(3);
@@ -152,6 +163,15 @@ function MapEditor() {
     });
   }
 
+  this.addFlag = function () {
+    this.flags.push({
+      x: this.grmp().x,
+      y: this.grmp().y,
+      col: "grey",
+      id: generateId()
+    })
+  }
+
   this.removePoint = function () {
     for (var i = this.allWalls.length - 1; i >= 0; i--) {
       for (var j = 0; j < this.allWalls[i].length; j++) {
@@ -180,6 +200,12 @@ function MapEditor() {
         }
       }
     }
+
+    for (var i = this.flags.length - 1; i >= 0; i--) {
+      if (dist(this.flags[i].x, this.flags[i].y, this.grmp().x, this.grmp().y) < 10) {
+        this.flags.splice(i, 1);
+      }
+    }
   }
 
   this.undo = function () {
@@ -196,6 +222,7 @@ function MapEditor() {
     this.currentWater = [];
     this.allWalls = [];
     this.allWaters = [];
+    this.flags = [];
   }
 
   this.mouseClick = function () {
@@ -206,6 +233,8 @@ function MapEditor() {
           this.removePoint();
         } else if (this.watering) {
           this.addWaterPoint();
+        } else if (this.flagging) {
+          this.addFlag();
         } else {
           this.addPoint();
         }
@@ -241,27 +270,49 @@ function MapEditor() {
     }
   }
 
+  this.toggleFlagging = function () {
+    if (this.flagging) {
+      this.flagging = false;
+      this.menu.buttons[7].active = false;
+    } else {
+      this.menu.buttons[7].active = true;
+      this.flagging = true;
+    }
+  }
+
   this.saveMap = function () {
     this.addLine();
     this.addWaterLine();
     this.syncedWalls = this.allWalls;
     this.syncedWaters = this.allWaters;
+    this.syncedFlags = this.flags;
     this.createWallsFromArray(this.allWalls);
     this.createWatersFromArray(this.allWaters);
-    socket.emit("new_map", this.allWalls, this.allWaters);
+    this.createFlagsFromArray(this.flags);
+
+    var data = {
+      walls: this.allWalls,
+      waters: this.allWaters,
+      flags: this.flags
+    }
+
+    socket.emit("new_map", data);
     this.changeMode();
   }
 
-  this.newMap = function (dataWalls, dataWaters) {
-    this.syncedWalls = dataWalls;
-    this.syncedWaters = dataWaters;
-    this.createWallsFromArray(dataWalls);
-    this.createWatersFromArray(dataWaters)
+  this.newMap = function (data) {
+    this.syncedWalls = data.walls;
+    this.syncedWaters = data.waters;
+    this.syncedFlags = data.flags;
+    this.createWallsFromArray(data.walls);
+    this.createWatersFromArray(data.waters)
+    this.createFlagsFromArray(data.flags);
   }
 
   this.loadLines = function () {
     this.allWalls = this.syncedWalls;
     this.allWaters = this.syncedWaters;
+    this.flags = this.syncedFlags;
   }
 
   this.createWallsFromArray = function (wallData) {
@@ -285,6 +336,13 @@ function MapEditor() {
       }
     }
   }
+
+  this.createFlagsFromArray = function (flagData) {
+    flags = [];
+    for (var i = 0; i < flagData.length; i++) {
+      flags.push(new Flag(flagData[i].x, flagData[i].y, flagData[i].col, flagData[i].id));
+    }
+  }
 }
 
 function MapEditorMenu() {
@@ -300,6 +358,7 @@ function MapEditorMenu() {
   this.buttons.push(new Button(this.x, this.y + 4 * this.r, this.r, 'Undo', 12))
   this.buttons.push(new Button(this.x, this.y + 5 * this.r, this.r, 'Add Line', 12))
   this.buttons.push(new Button(this.x, this.y + 6 * this.r, this.r, 'Water', 12))
+  this.buttons.push(new Button(this.x, this.y + 7 * this.r, this.r, 'Flag', 12))
 
   this.show = function () {
     for (var i = 0; i < this.buttons.length; i++) {
@@ -339,6 +398,9 @@ function MapEditorMenu() {
         break;
       case 6:
         pause.mapEditor.toggleWater();
+        break;
+      case 7:
+        pause.mapEditor.toggleFlagging();
         break;
     }
   }

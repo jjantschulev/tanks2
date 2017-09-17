@@ -42,6 +42,7 @@ function draw() {
 
   showWater();
   tank.weaponManager.showWeapons();
+  showFlags();
   showBullets();
   showWalls();
   showTanks();

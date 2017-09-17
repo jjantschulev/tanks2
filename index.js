@@ -93,15 +93,21 @@ io.on('connection', function (socket) {
     }
   });
 
-  socket.on('new_map', function (dataWalls, dataWaters) {
-    var data = {
-      walls: dataWalls,
-      waters: dataWaters
-    }
+  socket.on('new_map', function (data) {
     map = data;
     socket.broadcast.emit('new_map', map);
     saveJSON('map', map);
   });
+
+  socket.on("flag_changed", function (data) {
+    for (var i = 0; i < map.flags.length; i++) {
+      if (map.flags[i].id == data.id) {
+        map.flags[i].col = data.col;
+      }
+    }
+    socket.broadcast.emit("flag_changed", map.flags);
+    saveJSON('map', map);
+  })
 
   socket.on('bullet', function (data) {
     socket.broadcast.emit('bullet', data);

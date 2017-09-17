@@ -57,7 +57,7 @@ function WeaponManager() {
     fill('gold');
     noStroke();
     textSize(24);
-    text(tank.coins, width - 36, 18);
+    text(Math.floor(tank.coins), width - 36, 18);
 
     this.limitWeaponAmount();
   }

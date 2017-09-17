@@ -125,4 +125,24 @@ function Team() {
     return closestTank;
   }
 
+
+  this.getFlagCount = function () {
+    var flagCount = 0;
+    for (var i = 0; i < flags.length; i++) {
+      if (flags[i].colour == tank.colour) {
+        flagCount++
+      }
+    }
+    return flagCount;
+  }
+
+  this.payForFlags = function () {
+    var cc = this.getFlagCount();
+    var tp = this.getTeamPlayers(tank.colour);
+    if (tp != 0 && cc != 0) {
+      var amount = 0.003 / tp;
+      log(amount)
+      tank.coins += amount * cc;
+    }
+  }
 }
