@@ -115,6 +115,7 @@ socket.on('ammo', function (data) {
   tank.weaponManager.bombAmount = data.bomb;
   tank.weaponManager.gunnerAmount = data.gunner;
   tank.weaponManager.bridgeAmount = data.bridge;
+  tank.weaponManager.missileAmount = data.missile;
   tank.health = data.health;
   tank.coins = data.coins;
 });
@@ -141,6 +142,7 @@ function syncAmmo() {
     bomb: tank.weaponManager.bombAmount,
     gunner: tank.weaponManager.gunnerAmount,
     bridge: tank.weaponManager.bridgeAmount,
+    missile: tank.weaponManager.missileAmount,
     health: tank.health,
     name: tank.name,
     coins: tank.coins

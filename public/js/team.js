@@ -140,7 +140,7 @@ function Team() {
     var cc = this.getFlagCount();
     var tp = this.getTeamPlayers(tank.colour);
     if (tp != 0 && cc != 0) {
-      var amount = 0.003 / tp;
+      var amount = 0.006 / tp;
       log(amount)
       tank.coins += amount * cc;
     }

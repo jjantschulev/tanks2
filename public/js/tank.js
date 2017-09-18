@@ -293,10 +293,22 @@ function Tank() {
         }
       }
       var randomFlag = myFlags[floor(random(myFlags.length))];
-      tank.pos.set(randomFlag.x, randomFlag.y);
+      tank.pos.set(randomFlag.x + 25 * cos(random(TWO_PI)), randomFlag.y + 25 * sin(random(TWO_PI)));
     } else {
       // if (this.spawn == undefined) {
-      this.pos.set(random(-fullWidth / 2, fullWidth / 2), random(-fullHeight / 2, fullHeight / 2));
+      var spawnSafe = false;
+      while (spawnSafe == false) {
+        this.pos.set(random(-fullWidth / 2, fullWidth / 2), random(-fullHeight / 2, fullHeight / 2));
+        console.log('helo');
+        spawnSafe = true;
+        for (var i = 0; i < waters.length; i++) {
+          if (waters[i].tankColliding(this.pos)) {
+            spawnSafe = false;
+          } else {
+            break;
+          }
+        }
+      }
       // } else {
       //   this.pos.set(this.spawn.x, this.spawn.y);
       // }
@@ -306,7 +318,7 @@ function Tank() {
     tank.getSpawnPoint();
     connected = true;;
     pause.paused = false;
-  }, 700);
+  }, 400);
 
 }
 

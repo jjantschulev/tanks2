@@ -6,6 +6,7 @@ function Shop() {
   this.items.push(new Item(3 * width / 4 - 125, 320, "Boost"));
   this.items.push(new Item(4 * width / 4 - 125, 320, "Gunner"));
   this.items.push(new Item(1 * width / 4 - 125, 620, "Bridge"));
+  this.items.push(new Item(2 * width / 4 - 125, 620, "Missile"));
   this.backButton = new Button(80, 60, 60, 'Back', 17);
 
   this.show = function () {
@@ -74,6 +75,9 @@ function Item(x, y, type) {
   if (this.type == "Bridge") {
     this.price = tank.weaponManager.bridgePrice;
   }
+  if (this.type == "Missile") {
+    this.price = tank.weaponManager.missilePrice;
+  }
 
   this.buyButton = new Button(this.x - 45, this.y + 60, 70, 'Buy', 20);
   this.sellButton = new Button(this.x + 45, this.y + 60, 70, 'Sell', 20);
@@ -126,6 +130,12 @@ function Item(x, y, type) {
           tank.coins -= this.price;
         }
       }
+      if (this.type == "Missile") {
+        if (tank.coins - this.price >= 0 && tank.weaponManager.missileAmount < tank.weaponManager.missileLimit) {
+          tank.weaponManager.missileAmount++;
+          tank.coins -= this.price;
+        }
+      }
     }
 
     if (this.sellButton.detectPress()) {
@@ -156,6 +166,12 @@ function Item(x, y, type) {
       if (this.type == "Bridge") {
         if (tank.weaponManager.bridgeAmount > 0) {
           tank.weaponManager.bridgeAmount--;
+          tank.coins += this.price;
+        }
+      }
+      if (this.type == "Missile") {
+        if (tank.weaponManager.missileAmount > 0) {
+          tank.weaponManager.missileAmount--;
           tank.coins += this.price;
         }
       }

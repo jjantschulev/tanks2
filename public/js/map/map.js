@@ -8,6 +8,7 @@ function View() {
   this.x = 0;
   this.y = 0;
   this.object = tank.pos;
+  this.trackingSpeed = 0.1
 
   this.update = function () {
     translate(width / 2, height / 2);
@@ -19,8 +20,8 @@ function View() {
   }
 
   this.track = function (vector) {
-    this.x = lerp(this.x, vector.x, 0.08);
-    this.y = lerp(this.y, vector.y, 0.08);
+    this.x = lerp(this.x, vector.x, this.trackingSpeed);
+    this.y = lerp(this.y, vector.y, this.trackingSpeed);
     this.x = constrain(this.x, -fullWidth / 2 + width / 2 / this.zoom, fullWidth / 2 - width / 2 / this.zoom);
     this.y = constrain(this.y, -fullHeight / 2 + height / 2 / this.zoom, fullHeight / 2 - height / 2 / this.zoom);
   }
@@ -111,6 +112,14 @@ function Minimap() {
         }
       }
     }
+    if (this.zoomed) {
+      strokeWeight(10);
+      for (var i = 0; i < tank.weaponManager.bridges.length; i++) {
+        var b = tank.weaponManager.bridges[i];
+        stroke(b.colour);
+        line(b.x1, b.y1, b.x2, b.y2);
+      }
+    }
 
     noStroke();
     for (var i = 0; i < tanks.length; i++) {
@@ -123,15 +132,32 @@ function Minimap() {
         }
       }
     }
+
+    if (this.zoomed) {
+      for (var i = 0; i < flags.length; i++) {
+        rectMode(CENTER);
+        fill(flags[i].colour);
+        rect(flags[i].x, flags[i].y, 20, 20);
+      }
+    }
+
     fill(tank.colour);
     ellipse(tank.pos.x, tank.pos.y, 40, 40);
     pop();
 
     if (this.zoomed) {
-      this.size = 1;
+      if (this.size < 0.97) {
+        this.size += 0.03;
+      } else {
+        this.size = 1;
+      }
       this.alpha = 255;
     } else {
-      this.size = 0.14;
+      if (this.size > 0.18) {
+        this.size -= 0.03;
+      } else {
+        this.size = 0.14;
+      }
       this.alpha = 180;
     }
   }

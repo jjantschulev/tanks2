@@ -1,4 +1,4 @@
-const PORT = 3333;
+const PORT = 5000;
 // IMPORTS
 var express = require('express');
 var socket_io = require('socket.io');
@@ -190,6 +190,7 @@ function saveAmmo(data) {
       ammo[i].mine = data.mine;
       ammo[i].gunner = data.gunner;
       ammo[i].bridge = data.bridge;
+      ammo[i].missile = data.missile;
       ammo[i].blast = data.blast;
       ammo[i].bomb = data.bomb;
       ammo[i].health = data.health;
@@ -215,6 +216,7 @@ function loadAmmo(name) {
       bomb: 4,
       gunner: 0,
       bridge: 0,
+      missile: 0,
       health: 100,
       name: name,
       coins: 150,

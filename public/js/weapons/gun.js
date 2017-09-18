@@ -131,16 +131,16 @@ function Gun() {
       targetDir = PI - atan((x - tank.pos.x) / (y - tank.pos.y)) - tank.dir;
     }
 
-    var vel = targetDir - currentDir;
-    if (vel > PI) {
-      currentDir += TWO_PI;
-    } else if (vel < -PI) {
-      currentDir -= TWO_PI;
-    }
-    vel = targetDir - currentDir;
-    vel = constrain(vel, -0.05, 0.05);
-    tank.gunDirVel = vel;
-    // tank.gunDir = targetDir; // instant lock on mousePos
+    // var vel = targetDir - currentDir;
+    // if (vel > PI) {
+    //   currentDir += TWO_PI;
+    // } else if (vel < -PI) {
+    //   currentDir -= TWO_PI;
+    // }
+    // vel = targetDir - currentDir;
+    // vel = constrain(vel, -0.05, 0.05);
+    // tank.gunDirVel = vel;
+    tank.gunDir = targetDir; // instant lock on mousePos
   }
 
   this.toggleAi = function () {

@@ -31,14 +31,14 @@ function WeaponManager() {
   this.landminePrice = 80;
   this.gunnerPrice = 300;
   this.bridgePrice = 300;
-  this.missilePrice = 1000;
+  this.missilePrice = 500;
 
   this.landmineColour = color(0, 190, 255);
   this.bombColour = color(255, 180, 0);
   this.blastColour = color(15, 255, 150);
   this.gunnerColour = color(255, 250, 50);
   this.bridgeColour = color(255, 60, 40);
-  this.missileColour = color(255);
+  this.missileColour = color(119, 255, 223);
 
   this.showInfo = function () {
     var rectSize = 6;
@@ -114,7 +114,7 @@ function WeaponManager() {
       this.bombs.push(new Bomb(data.x, data.y, data.name));
     }
     if (data.type == 'missile') {
-      this.missiles.push(new Missile(data.x, data.y, data.dir, data.name, data.fuel, data.col));
+      this.missiles.push(new Missile(data.x, data.y, data.dir, data.name, data.fuel, data.col, data.range));
     }
     if (data.type == 'blast') {
       this.blasts.push(new Blast(data.x, data.y, data.name));
@@ -188,14 +188,20 @@ function WeaponManager() {
       this.bombs.push(new Bomb(data.x, data.y, data.name));
       this.bombAmount--;
     }
-    if (this.missileAmount > 0 && data.type == 'missile') {
+    if (data.type == 'missile') {
       data.dir = tank.dir + tank.gunDir - PI / 2;
       data.fuel = this.missileStrength;
+      if (this.missileAmount > 0) {
+        data.range = 300;
+        this.missileAmount--;
+      } else {
+        data.range = 0;
+        tank.coins -= 20;
+      }
       socket.emit('weapon', data);
-      var m = new Missile(data.x, data.y, data.dir, data.name, data.fuel, data.col);
+      var m = new Missile(data.x, data.y, data.dir, data.name, data.fuel, data.col, data.range);
       view.object = m.pos;
       this.missiles.push(m);
-      this.missileAmount--;
 
 
     }
