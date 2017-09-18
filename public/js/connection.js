@@ -42,8 +42,8 @@ socket.on("update", function (tanks_array) {
         setTimeout(tank.setColour, 180);
       }
       tanks.push(newTank);
-      connected = true;
-      pause.paused = false;
+      // connected = true;
+      // pause.paused = false;
     } else {
       tanks[i].pos.x = tanks_array[i].x;
       tanks[i].pos.y = tanks_array[i].y;

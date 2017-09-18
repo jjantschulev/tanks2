@@ -7,15 +7,22 @@ function View() {
   this.zoomed = false;
   this.x = 0;
   this.y = 0;
+  this.object = tank.pos;
 
   this.update = function () {
     translate(width / 2, height / 2);
-    this.x = lerp(this.x, tank.pos.x, 0.08);
-    this.y = lerp(this.y, tank.pos.y, 0.08);
-    this.x = constrain(this.x, -fullWidth / 2 + width / 2 / this.zoom, fullWidth / 2 - width / 2 / this.zoom);
-    this.y = constrain(this.y, -fullHeight / 2 + height / 2 / this.zoom, fullHeight / 2 - height / 2 / this.zoom);
+    if (this.object) {
+      this.track(this.object);
+    }
     scale(this.zoom);
     translate(-this.x, -this.y);
+  }
+
+  this.track = function (vector) {
+    this.x = lerp(this.x, vector.x, 0.08);
+    this.y = lerp(this.y, vector.y, 0.08);
+    this.x = constrain(this.x, -fullWidth / 2 + width / 2 / this.zoom, fullWidth / 2 - width / 2 / this.zoom);
+    this.y = constrain(this.y, -fullHeight / 2 + height / 2 / this.zoom, fullHeight / 2 - height / 2 / this.zoom);
   }
 
   this.getRealMousePoints = function () {

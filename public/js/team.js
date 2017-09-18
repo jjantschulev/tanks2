@@ -32,17 +32,17 @@ function Team() {
 
   this.colourToInt = function (col, array) {
     var colourInts = array;
-    if (col == 'firebrick') {
+    if (col == 'seagreen') {
       colourInts[0]++;
     }
     if (col == 'gold') {
-      colourInts[3]++;
+      colourInts[1]++;
     }
-    if (col == 'cornflowerblue') {
+    if (col == 'firebrick') {
       colourInts[2]++;
     }
-    if (col == 'seagreen') {
-      colourInts[1]++;
+    if (col == 'cornflowerblue') {
+      colourInts[3]++;
     }
     return colourInts;
   }

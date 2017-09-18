@@ -1,4 +1,4 @@
-const PORT = 5000;
+const PORT = 3333;
 // IMPORTS
 var express = require('express');
 var socket_io = require('socket.io');

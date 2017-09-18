@@ -12,9 +12,6 @@ function showTanks() {
 function Tank() {
   this.pos = createVector(random(-fullWidth / 2, fullWidth / 2), random(-fullHeight / 2, fullHeight / 2));
   this.spawn = Cookies.getJSON('spawn');
-  if (this.spawn != undefined) {
-    this.pos.set(this.spawn.x, this.spawn.y);
-  }
   this.previousPos = this.pos.copy();
   this.viewPos = this.pos.copy();
   this.dir = 0;
@@ -129,6 +126,9 @@ function Tank() {
     }
   }
 
+
+  // =========================== COLLISIONS =========================== //
+
   this.collisions = function () {
     this.pos.x = constrain(this.pos.x, -fullWidth / 2, fullWidth / 2);
     this.pos.y = constrain(this.pos.y, -fullHeight / 2, fullHeight / 2);
@@ -172,6 +172,12 @@ function Tank() {
     }
   }
 
+
+
+  // =================== DEATH AND HEALTH FUNCTIONS ======================== //
+
+
+
   this.death = function (name) {
     var deathData = {
       killerName: name,
@@ -181,11 +187,7 @@ function Tank() {
     }
     socket.emit('death', deathData);
     this.health = 100;
-    if (this.spawn == undefined) {
-      this.pos.set(random(width), random(height));
-    } else {
-      this.pos.set(this.spawn.x, this.spawn.y);
-    }
+    this.getSpawnPoint();
     this.previousPos.set(this.pos);
     pause.deathScreen.toggleDeathScreen(name);
   }
@@ -231,6 +233,9 @@ function Tank() {
     }
   }
 
+
+  // =================== VISUAL FUNCTIONS ======================== //
+
   this.loadImages = function (col) {
     this.colour = col;
     this.image = loadImage('./assets/' + this.colour + '_body.png');
@@ -267,12 +272,55 @@ function Tank() {
     }
   }
 
+
+  // =================== SPAWN FUNCTIONS ======================== //
   this.setSpawnPoint = function () {
-    simpleNotify("Spawn point set here");
-    Cookies.set('spawn', { x: this.pos.x, y: this.pos.y });
-    this.spawn = { x: this.pos.x, y: this.pos.y };
+    if (team.getFlagCount() <= 0) {
+      simpleNotify("Spawn point set here");
+      Cookies.set('spawn', { x: this.pos.x, y: this.pos.y });
+      this.spawn = { x: this.pos.x, y: this.pos.y };
+    } else {
+      simpleNotify("You will spawn at your flag");
+    }
   }
+
+  this.getSpawnPoint = function () {
+    if (team.getFlagCount() > 0) {
+      var myFlags = [];
+      for (var i = 0; i < flags.length; i++) {
+        if (flags[i].colour == this.colour) {
+          myFlags.push(flags[i]);
+        }
+      }
+      var randomFlag = myFlags[floor(random(myFlags.length))];
+      tank.pos.set(randomFlag.x, randomFlag.y);
+    } else {
+      // if (this.spawn == undefined) {
+      this.pos.set(random(-fullWidth / 2, fullWidth / 2), random(-fullHeight / 2, fullHeight / 2));
+      // } else {
+      //   this.pos.set(this.spawn.x, this.spawn.y);
+      // }
+    }
+  }
+  setTimeout(function () {
+    tank.getSpawnPoint();
+    connected = true;;
+    pause.paused = false;
+  }, 700);
+
 }
+
+
+
+
+
+
+// ====================================================================================== //
+// ====================================================================================== //
+// ============================          ENEMY TANK          ============================ //
+// ====================================================================================== //
+// ====================================================================================== //
+
 
 function EnemyTank() {
   this.pos = createVector(random(width), random(height));
@@ -286,7 +334,7 @@ function EnemyTank() {
   this.h = 30;
 
   this.id = "";
-  this.colour = "yellow";
+  this.colour = "gold";
   this.paused = false;
 
   this.health = 100;

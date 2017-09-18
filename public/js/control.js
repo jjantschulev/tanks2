@@ -41,6 +41,10 @@ function keyHold(k) {
     tank.gun.shoot(1);
     tank.gun.shooting = true;
   }
+  //Adjust Missile Strength;
+  if (k == 222) {
+    tank.weaponManager.missileStrength += 0.15;
+  }
 }
 
 function keyDown(k) {
@@ -111,7 +115,14 @@ function keyDown(k) {
 }
 
 function keyUp(k) {
-
+  if (!pause.paused) {
+    if (k == 222) {
+      if (tank.weaponManager.missileStrength <= 25) {
+        tank.weaponManager.dropWeapon('missile');
+      }
+      tank.weaponManager.missileStrength = 12;
+    }
+  }
 }
 
 function mousePressed() {

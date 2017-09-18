@@ -5,6 +5,8 @@ function MapEditor() {
   this.allWaters = [];
   this.flags = [];
 
+  this.maxFlagAmount = 9;
+
   this.active = false;
   this.eraser = false;
   this.watering = false;
@@ -164,12 +166,32 @@ function MapEditor() {
   }
 
   this.addFlag = function () {
-    this.flags.push({
-      x: this.grmp().x,
-      y: this.grmp().y,
-      col: "grey",
-      id: generateId()
-    })
+    if (this.flags.length < this.maxFlagAmount) {
+      var newFlagData = {
+        x: this.grmp().x,
+        y: this.grmp().y,
+        col: "grey",
+        id: generateId()
+      }
+
+      var minDist = Infinity;
+      for (var i = - 0; i < this.flags.length; i++) {
+        var newDist = dist(this.flags[i].x, this.flags[i].y, newFlagData.x, newFlagData.y);
+        if (newDist < minDist) {
+          minDist = newDist;
+        }
+      }
+
+      if (minDist > 200) {
+        this.flags.push(newFlagData);
+      } else {
+        simpleNotify("New flag too close to other flag");
+      }
+    } else {
+      simpleNotify("You can only have 9 flags in total")
+    }
+
+
   }
 
   this.removePoint = function () {
@@ -281,23 +303,28 @@ function MapEditor() {
   }
 
   this.saveMap = function () {
-    this.addLine();
-    this.addWaterLine();
-    this.syncedWalls = this.allWalls;
-    this.syncedWaters = this.allWaters;
-    this.syncedFlags = this.flags;
-    this.createWallsFromArray(this.allWalls);
-    this.createWatersFromArray(this.allWaters);
-    this.createFlagsFromArray(this.flags);
+    if (this.flags.length == this.maxFlagAmount) {
+      this.addLine();
+      this.addWaterLine();
+      this.syncedWalls = this.allWalls;
+      this.syncedWaters = this.allWaters;
+      this.syncedFlags = this.flags;
+      this.createWallsFromArray(this.allWalls);
+      this.createWatersFromArray(this.allWaters);
+      this.createFlagsFromArray(this.flags);
 
-    var data = {
-      walls: this.allWalls,
-      waters: this.allWaters,
-      flags: this.flags
+      var data = {
+        walls: this.allWalls,
+        waters: this.allWaters,
+        flags: this.flags
+      }
+
+      socket.emit("new_map", data);
+      this.changeMode();
+
+    } else {
+      simpleNotify("You need to place exactly 9 flags");
     }
-
-    socket.emit("new_map", data);
-    this.changeMode();
   }
 
   this.newMap = function (data) {

@@ -1,5 +1,6 @@
 function WeaponManager() {
   this.coinImage = loadImage("./assets/coin.png");
+  this.missileStrength = 12;
 
   this.landmines = [];
   this.gunners = [];
@@ -8,18 +9,21 @@ function WeaponManager() {
   this.healthPackets = [];
   this.bridges = [];
   this.coins = [];
+  this.missiles = [];
 
   this.landmineAmount = 0;
   this.bombAmount = 0;
   this.blastAmount = 0;
   this.gunnerAmount = 0;
   this.bridgeAmount = 0;
+  this.missileAmount = 50;
 
   this.landmineLimit = 100;
   this.bombLimit = 100;
   this.blastLimit = 100;
   this.gunnerLimit = 100;
   this.bridgeLimit = 100;
+  this.missileLimit = 100;
 
 
   this.blastPrice = 60;
@@ -27,12 +31,14 @@ function WeaponManager() {
   this.landminePrice = 80;
   this.gunnerPrice = 300;
   this.bridgePrice = 300;
+  this.missilePrice = 1000;
 
   this.landmineColour = color(0, 190, 255);
   this.bombColour = color(255, 180, 0);
   this.blastColour = color(15, 255, 150);
   this.gunnerColour = color(255, 250, 50);
   this.bridgeColour = color(255, 60, 40);
+  this.missileColour = color(255);
 
   this.showInfo = function () {
     var rectSize = 6;
@@ -48,9 +54,13 @@ function WeaponManager() {
     rect(rectSize * 3, 0, rectSize, rectSize * this.gunnerAmount);
     fill(this.bridgeColour);
     rect(rectSize * 4, 0, rectSize, rectSize * this.bridgeAmount);
+    fill(this.missileColour);
+    rect(rectSize * 5, 0, rectSize, rectSize * this.missileAmount);
 
     showBoostTimer();
+    showMissileStrength();
 
+    //Show The coin counter
     imageMode(CENTER);
     image(this.coinImage, width - 17, 17, 30, 30);
     textAlign(RIGHT);
@@ -87,6 +97,10 @@ function WeaponManager() {
       this.coins[i].show();
       this.coins[i].update();
     }
+    for (var i = this.missiles.length - 1; i >= 0; i--) {
+      this.missiles[i].show();
+      this.missiles[i].update();
+    }
     for (var i = this.blasts.length - 1; i >= 0; i--) {
       this.blasts[i].update();
     }
@@ -98,6 +112,9 @@ function WeaponManager() {
     }
     if (data.type == 'bomb') {
       this.bombs.push(new Bomb(data.x, data.y, data.name));
+    }
+    if (data.type == 'missile') {
+      this.missiles.push(new Missile(data.x, data.y, data.dir, data.name, data.fuel, data.col));
     }
     if (data.type == 'blast') {
       this.blasts.push(new Blast(data.x, data.y, data.name));
@@ -170,6 +187,17 @@ function WeaponManager() {
       socket.emit('weapon', data);
       this.bombs.push(new Bomb(data.x, data.y, data.name));
       this.bombAmount--;
+    }
+    if (this.missileAmount > 0 && data.type == 'missile') {
+      data.dir = tank.dir + tank.gunDir - PI / 2;
+      data.fuel = this.missileStrength;
+      socket.emit('weapon', data);
+      var m = new Missile(data.x, data.y, data.dir, data.name, data.fuel, data.col);
+      view.object = m.pos;
+      this.missiles.push(m);
+      this.missileAmount--;
+
+
     }
     if (this.bridgeAmount > 0 && data.type == 'bridge') {
       data.a = tank.dir
@@ -269,6 +297,9 @@ function WeaponManager() {
     }
     if (this.bridgeAmount > this.bridgeLimit) {
       this.bridgeAmount = this.bridgeLimit;
+    }
+    if (this.missileAmount > this.missileLimit) {
+      this.missileAmount = this.missileLimit;
     }
   }
 }
