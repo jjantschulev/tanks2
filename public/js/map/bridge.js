@@ -10,7 +10,7 @@ function Bridge(x, y, a, col, id) {
 
   this.a = a;
   this.colour = col;
-  this.health = 700;
+  this.health = 300;
   this.id = id;
 
 
@@ -63,6 +63,20 @@ function Bridge(x, y, a, col, id) {
 
   this.update = function () {
 
+  }
+
+  this.pickUp = function () {
+    if (this.colour == tank.colour && this.health > 250) {
+      tank.weaponManager.bridgeAmount++;
+      var data = {
+        id: this.id,
+        type: "bridgeRemove",
+      }
+      socket.emit('weapon', data);
+      particleEffects.push(new ParticleEffect(this.x, this.y, this.colour));
+      tank.weaponManager.bridges.splice(tank.weaponManager.bridges.indexOf(this), 1);
+      return;
+    }
   }
 
   this.checkDeath = function () {

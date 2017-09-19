@@ -26,11 +26,11 @@ function WeaponManager() {
   this.missileLimit = 100;
 
 
-  this.blastPrice = 60;
+  this.blastPrice = 50;
   this.bombPrice = 80;
   this.landminePrice = 80;
   this.gunnerPrice = 300;
-  this.bridgePrice = 300;
+  this.bridgePrice = 200;
   this.missilePrice = 500;
 
   this.landmineColour = color(0, 190, 255);
@@ -205,12 +205,26 @@ function WeaponManager() {
 
 
     }
-    if (this.bridgeAmount > 0 && data.type == 'bridge') {
-      data.a = tank.dir
-      data.id = generateId();
-      socket.emit('weapon', data);
-      this.bridges.push(new Bridge(data.x, data.y, data.a, data.col, data.id));
-      this.bridgeAmount--;
+    if (data.type == 'bridge') {
+      var b = null;
+      for (var i = 0; i < this.bridges.length; i++) {
+        if (this.bridges[i].colour == tank.colour) {
+          if (dist(this.bridges[i].x, this.bridges[i].y, tank.pos.x, tank.pos.y) < 55) {
+            b = this.bridges[i];
+          }
+        }
+      }
+      if (b != null) {
+        b.pickUp();
+      } else {
+        if (this.bridgeAmount > 0) {
+          data.a = tank.dir
+          data.id = generateId();
+          socket.emit('weapon', data);
+          this.bridges.push(new Bridge(data.x, data.y, data.a, data.col, data.id));
+          this.bridgeAmount--;
+        }
+      }
     }
     if (this.blastAmount > 0 && data.type == 'blast') {
       tank.boostTimer = tank.boostLength;

@@ -1,4 +1,4 @@
-const PORT = 5000;
+const PORT = 3333;
 // IMPORTS
 var express = require('express');
 var socket_io = require('socket.io');
@@ -37,7 +37,7 @@ setInterval(function () {
       coinCount++;
     }
   }
-  if (coinCount < 2) {
+  if (coinCount < 6) {
     if (Math.random() < 0.2) {
       var data = {
         type: "coin",

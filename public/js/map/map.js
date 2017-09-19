@@ -146,15 +146,15 @@ function Minimap() {
     pop();
 
     if (this.zoomed) {
-      if (this.size < 0.97) {
-        this.size += 0.03;
+      if (this.size < 0.95) {
+        this.size += 0.05;
       } else {
         this.size = 1;
       }
       this.alpha = 255;
     } else {
-      if (this.size > 0.18) {
-        this.size -= 0.03;
+      if (this.size > 0.20) {
+        this.size -= 0.05;
       } else {
         this.size = 0.14;
       }
