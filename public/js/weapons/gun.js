@@ -20,7 +20,7 @@ function Gun() {
   console.log(this.trackMouseActive);
   this.useAiAim = false;
 
-  this.shoot = function (mode) {
+  this.shoot = function(mode) {
     var bulletType = this.type;
     if (mode != undefined) {
       bulletType = mode;
@@ -55,7 +55,7 @@ function Gun() {
     }
   }
 
-  this.update = function () {
+  this.update = function() {
     this.reload1--;
     this.reload2--;
     if (this.trackMouseActive) {
@@ -72,7 +72,7 @@ function Gun() {
     this.shooting = false;
   }
 
-  this.toggleType = function () {
+  this.toggleType = function() {
     if (this.type == 1) {
       this.type = 2;
     } else if (this.type == 2) {
@@ -81,7 +81,7 @@ function Gun() {
     notify("Gun Mode: " + this.type, 60, color(150), 40);
   }
 
-  this.toggleTrackMouse = function () {
+  this.toggleTrackMouse = function() {
     if (this.trackMouseActive) {
       this.trackMouseActive = false;
       tank.gunDir = 0;
@@ -93,7 +93,7 @@ function Gun() {
     Cookies.set('trackMouseControl', this.trackMouseActive);
   }
 
-  this.trackMouse = function () {
+  this.trackMouse = function() {
     this.trackPoint(view.getRealMousePoints().x, view.getRealMousePoints().y);
 
     if (mouseIsPressed && !pause.paused) {
@@ -107,7 +107,7 @@ function Gun() {
   }
 
 
-  this.showReloadTimers = function () {
+  this.showReloadTimers = function() {
     if (this.reload2 > 0) {
       fill(150);
       noStroke();
@@ -122,7 +122,7 @@ function Gun() {
     }
   }
 
-  this.trackPoint = function (x, y) {
+  this.trackPoint = function(x, y) {
     var targetDir;
     var currentDir = tank.gunDir;
     if ((y - tank.pos.y) < 0) {
@@ -143,7 +143,7 @@ function Gun() {
     tank.gunDir = targetDir; // instant lock on mousePos
   }
 
-  this.toggleAi = function () {
+  this.toggleAi = function() {
     if (this.useAiAim) {
       this.useAiAim = false;
     } else {
@@ -151,7 +151,7 @@ function Gun() {
     }
   }
 
-  this.aiAim = function () {
+  this.aiAim = function() {
     var closestTank = team.getClosestTank();
     if (closestTank != null) {
       this.trackPoint(closestTank.x, closestTank.y);

@@ -94,6 +94,16 @@ function Team() {
     return count;
   }
 
+  this.getUnpausedTankCount = function () {
+    var count = 0;
+    for (var i = 0; i < tanks.length; i++) {
+      if (!tanks[i].paused) {
+        count++;
+      }
+    }
+    return count;
+  }
+
   this.getClosestTank = function () {
     var closestTank = null;
     var distanceToTank = Infinity;
@@ -137,12 +147,14 @@ function Team() {
   }
 
   this.payForFlags = function () {
-    var cc = this.getFlagCount();
-    var tp = this.getTeamPlayers(tank.colour);
-    if (tp != 0 && cc != 0) {
-      var amount = 0.006 / tp;
-      log(amount)
-      tank.coins += amount * cc;
+    if(this.getUnpausedTankCount() > 1){
+      var cc = this.getFlagCount();
+      var tp = this.getTeamPlayers(tank.colour);
+      if (tp != 0 && cc != 0) {
+        var amount = 0.006 / tp;
+        log(amount)
+        tank.coins += amount * cc;
+      }
     }
   }
 }

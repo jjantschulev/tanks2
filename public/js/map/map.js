@@ -47,23 +47,21 @@ function Wall(x1, y1, x2, y2) {
   this.x2 = x2;
   this.y2 = y2;
   this.thickness = 15;
-
-  this.show = function () {
-    stroke(100);
-    strokeWeight(this.thickness);
-    line(this.x1, this.y1, this.x2, this.y2);
-  }
-
-  this.tankColliding = function (vector) {
-    var hit = collideLineCircle(this.x1, this.y1, this.x2, this.y2, vector.x, vector.y, tank.h);
-    return hit;
-  }
-
-  this.bulletColliding = function (x, y, r) {
-    var hit = collideLineCircle(this.x1, this.y1, this.x2, this.y2, x, y, r);
-    return hit;
-  }
 }
+
+Wall.prototype.show = function () {
+  stroke(100);
+  strokeWeight(this.thickness);
+  line(this.x1, this.y1, this.x2, this.y2);
+};
+
+Wall.prototype.tankColliding = function (vector) {
+  return collideLineCircle(this.x1, this.y1, this.x2, this.y2, vector.x, vector.y, tank.h);
+};
+
+Wall.prototype.bulletColliding = function (x, y, r) {
+  return collideLineCircle(this.x1, this.y1, this.x2, this.y2, x, y, r);
+};
 
 function Minimap() {
   this.display = true;

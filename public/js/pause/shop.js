@@ -1,4 +1,4 @@
-function Shop() {
+ function Shop() {
   this.active = false;
   this.items = [];
   this.items.push(new Item(1 * width / 4 - 125, 320, "Landmine"));
@@ -114,7 +114,7 @@ function Item(x, y, type) {
       }
       if (this.type == "Boost") {
         if (tank.coins - this.price >= 0 && tank.weaponManager.blastAmount < tank.weaponManager.blastLimit) {
-          tank.weaponManager.blastAmount++;
+          tank.weaponManager.blastAmount+=tank.weaponManager.boostBarrelAmount;
           tank.coins -= this.price;
         }
       }
@@ -152,8 +152,8 @@ function Item(x, y, type) {
         }
       }
       if (this.type == "Boost") {
-        if (tank.weaponManager.blastAmount > 0) {
-          tank.weaponManager.blastAmount--;
+        if (tank.weaponManager.blastAmount > tank.weaponManager.boostBarrelAmount) {
+          tank.weaponManager.blastAmount-=tank.weaponManager.boostBarrelAmount;
           tank.coins += this.price;
         }
       }

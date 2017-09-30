@@ -38,22 +38,28 @@ function Flag(x, y, teamCol, id) {
     }
   }
 
-  this.changeColour = function (col) {
-    if (this.colour != col) {
-      this.colour = col;
-      var testCol = color(this.colour);
-      this.darkColour = color(red(testCol) - 50, green(testCol) - 50, blue(testCol) - 50);
-      var data = {
-        col: this.colour,
-        id: this.id,
+  this.changeColour = function (col, force) {
+    if(team.getUnpausedTankCount() > 1 || force == true){
+      if (this.colour != col) {
+        this.colour = col;
+        var testCol = color(this.colour);
+        this.darkColour = color(red(testCol) - 50, green(testCol) - 50, blue(testCol) - 50);
+        var data = {
+          col: this.colour,
+          id: this.id,
+        }
+        socket.emit("flag_changed", data);
       }
-      socket.emit("flag_changed", data);
     }
   }
 }
 
-function resetAllFlags() {
+function resetAllFlags(col) {
   for (var i = 0; i < flags.length; i++) {
-    flags[i].changeColour("grey");
+    if(col){
+      flags[i].changeColour(col, true);
+    }else{
+      flags[i].changeColour("grey", true);
+    }
   }
 }

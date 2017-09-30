@@ -7,43 +7,43 @@ function HealthPacket(x, y, owner, col, id) {
   this.timer = 0;
   this.id = id;
 
-  this.place = function () {
-    if(tank.health > this.healthAmount + 5){
+  this.place = function() {
+    if (tank.health > this.healthAmount + 5) {
       tank.removeHealth(this.healthAmount);
       return true;
-    }else{
+    } else {
       return false;
     }
   }
 
-  this.update = function () {
-    this.timer ++;
+  this.update = function() {
+    this.timer++;
     if (this.timer == 600) {
       this.owner = "";
     }
-    if (this.healthAmount < 40) {
-      this.healthAmount += 0.004;
+    if (this.healthAmount < 30) {
+      this.healthAmount += 0.002;
     }
   }
 
-  this.pickUp = function () {
-    notify(Math.round(this.healthAmount) + ' HP added to tank', 130, 200, width/2);
+  this.pickUp = function() {
+    notify(Math.round(this.healthAmount) + ' HP added to tank', 130, 200, width / 2);
     tank.health += this.healthAmount;
     tank.weaponManager.healthPackets.splice(tank.weaponManager.healthPackets.indexOf(this), 1);
     var data = {
-      type : 'healthPacketRemove',
-      id : this.id,
+      type: 'healthPacketRemove',
+      id: this.id,
     }
     socket.emit('weapon', data);
     return;
   }
 
-  this.show = function () {
+  this.show = function() {
     noStroke();
     fill(this.colour);
     rectMode(CENTER);
-    var l = map(this.healthAmount, 20, 50, 10, 30);
-    rect(this.x, this.y, l, l/3, 10);
-    rect(this.x, this.y, l/3, l, 10);
+    var l = map(this.healthAmount, 20, 40, 10, 30);
+    rect(this.x, this.y, l, l / 3, 10);
+    rect(this.x, this.y, l / 3, l, 10);
   }
 }

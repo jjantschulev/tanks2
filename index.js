@@ -212,7 +212,7 @@ function loadAmmo(name) {
   if (!hasFound) {
     returnObject = {
       mine: 4,
-      blast: 4,
+      blast: 100,
       bomb: 4,
       gunner: 0,
       bridge: 0,

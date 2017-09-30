@@ -50,9 +50,7 @@ function Tank() {
   this.gun = new Gun();
   this.weaponManager = new WeaponManager();
   this.ai = new AI();
-  this.boostTimer = 0;
-  this.boostLength = 400;
-
+  
   this.update = function () {
     // UPDATE VARIABLES
     this.pos.x += this.speed * sin(this.dir);
@@ -78,6 +76,8 @@ function Tank() {
     this.useAi = false;
     if (this.speedMultiplyer <= 0.9) {
       this.speedMultiplyer += 0.1;
+    } else if (this.speedMultiplyer >= 1.1) {
+      this.speedMultiplyer -= 0.1;
     } else {
       this.speedMultiplyer = 1;
     }
@@ -150,7 +150,7 @@ function Tank() {
         }
       }
     }
-    // 
+    //
 
     this.ai.colliding = hit;
 

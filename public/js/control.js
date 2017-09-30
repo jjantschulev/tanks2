@@ -1,18 +1,10 @@
 function keyHold(k) {
   // Tank Movement
   if (k == 87) {
-    if (tank.boostTimer >= 0) {
-      tank.speed = tank.speedMultiplyer * 4.0 * frameCompensate;
-    } else {
-      tank.speed = tank.speedMultiplyer * 2.0 * frameCompensate;
-    }
+    tank.speed = tank.speedMultiplyer * 2.0 * frameCompensate;
   }
   if (k == 83) {
-    if (tank.boostTimer >= 0) {
-      tank.speed = tank.speedMultiplyer * -3.5 * frameCompensate;
-    } else {
-      tank.speed = tank.speedMultiplyer * -1.7 * frameCompensate;
-    }
+    tank.speed = tank.speedMultiplyer * -1.7 * frameCompensate;
   }
   // Tank Rotation
   if (k == 65) {
@@ -43,7 +35,12 @@ function keyHold(k) {
   }
   //Adjust Missile Strength;
   if (k == 222) {
-    tank.weaponManager.missileStrength += 0.15;
+    if(tank.weaponManager.missileAmount > 0){
+      tank.weaponManager.missileStrength += 0.1;
+    }
+  }
+  if (k == 66) {
+    useBoost();
   }
 }
 
@@ -91,9 +88,6 @@ function keyDown(k) {
     if (k == 78) {
       tank.weaponManager.dropWeapon('landmine');
     }
-    if (k == 66) {
-      tank.weaponManager.dropWeapon('blast');
-    }
     if (k == 86) {
       tank.weaponManager.dropWeapon('gunner');
     }
@@ -117,10 +111,12 @@ function keyDown(k) {
 function keyUp(k) {
   if (!pause.paused) {
     if (k == 222) {
-      if (tank.weaponManager.missileStrength <= 25) {
-        tank.weaponManager.dropWeapon('missile');
+      if(tank.weaponManager.missileAmount > 0){
+        if (tank.weaponManager.missileStrength <= 25) {
+          tank.weaponManager.dropWeapon('missile');
+        }
+        tank.weaponManager.missileStrength = 12;
       }
-      tank.weaponManager.missileStrength = 12;
     }
   }
 }

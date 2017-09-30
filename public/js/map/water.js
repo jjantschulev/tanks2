@@ -37,9 +37,13 @@ function Water(x1, y1, x2, y2) {
 
       }
       if (!onBridge) {
-        tank.removeHealth(3);
+        if(tank.speedMultiplyer > 1){
+          tank.removeHealth(5*(tank.speedMultiplyer**2));
+        }else{
+          tank.removeHealth(1.5);
+        }
         tank.checkDeath("water");
-        tank.speedMultiplyer = 0.05;
+        tank.speedMultiplyer = 0.1;
       }
     }
   }

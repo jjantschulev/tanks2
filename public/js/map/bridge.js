@@ -1,4 +1,4 @@
-function Bridge(x, y, a, col, id) {
+function Bridge(x, y, a, col, id, pos) {
   this.x1 = x + 30 * sin(a);
   this.y1 = y - 30 * cos(a);
   this.x2 = x + 70 * sin(a);
@@ -10,12 +10,14 @@ function Bridge(x, y, a, col, id) {
 
   this.a = a;
   this.colour = col;
-  this.health = 300;
+  this.health = 600;
   this.id = id;
 
 
   this.x = (this.x1 + this.x2) / 2;
   this.y = (this.y1 + this.y2) / 2;
+
+  this.tankPosAtBuild = pos;
 
 
 
@@ -66,7 +68,7 @@ function Bridge(x, y, a, col, id) {
   }
 
   this.pickUp = function () {
-    if (this.colour == tank.colour && this.health > 250) {
+    if (this.colour == tank.colour && this.health > 250 && tank.pos.equals(this.tankPosAtBuild)) {
       tank.weaponManager.bridgeAmount++;
       var data = {
         id: this.id,
@@ -97,4 +99,3 @@ function Bridge(x, y, a, col, id) {
     }
   }
 }
-
