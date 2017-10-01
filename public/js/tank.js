@@ -10,7 +10,10 @@ function showTanks() {
 }
 
 function Tank() {
-  this.pos = createVector(random(-fullWidth / 2, fullWidth / 2), random(-fullHeight / 2, fullHeight / 2));
+  this.pos = createVector(
+    random(-fullWidth / 2, fullWidth / 2),
+    random(-fullHeight / 2, fullHeight / 2)
+  );
   this.spawn = Cookies.getJSON('spawn');
   this.previousPos = this.pos.copy();
   this.viewPos = this.pos.copy();
@@ -50,8 +53,8 @@ function Tank() {
   this.gun = new Gun();
   this.weaponManager = new WeaponManager();
   this.ai = new AI();
-  
-  this.update = function () {
+
+  this.update = function() {
     // UPDATE VARIABLES
     this.pos.x += this.speed * sin(this.dir);
     this.pos.y -= this.speed * cos(this.dir);
@@ -91,9 +94,9 @@ function Tank() {
     if (this.useAi) {
       this.ai.update();
     }
-  }
+  };
 
-  this.show = function () {
+  this.show = function() {
     push();
     imageMode(CENTER);
     translate(this.viewPos.x, this.viewPos.y);
@@ -124,12 +127,11 @@ function Tank() {
     if (this.useAi) {
       this.ai.show();
     }
-  }
-
+  };
 
   // =========================== COLLISIONS =========================== //
 
-  this.collisions = function () {
+  this.collisions = function() {
     this.pos.x = constrain(this.pos.x, -fullWidth / 2, fullWidth / 2);
     this.pos.y = constrain(this.pos.y, -fullHeight / 2, fullHeight / 2);
 
@@ -145,7 +147,10 @@ function Tank() {
           hit = true;
         }
       } else {
-        if (this.weaponManager.bridges[i].colliding() && !this.weaponManager.bridges[i].onRoad()) {
+        if (
+          this.weaponManager.bridges[i].colliding() &&
+          !this.weaponManager.bridges[i].onRoad()
+        ) {
           hit = true;
         }
       }
@@ -170,35 +175,38 @@ function Tank() {
     } else {
       this.previousPos.set(this.pos);
     }
-  }
-
-
+  };
 
   // =================== DEATH AND HEALTH FUNCTIONS ======================== //
 
-
-
-  this.death = function (name) {
+  this.death = function(name) {
     var deathData = {
       killerName: name,
       victimName: this.name,
       victimX: this.pos.x,
       victimY: this.pos.y
-    }
+    };
     socket.emit('death', deathData);
     this.health = 100;
     this.getSpawnPoint();
     this.previousPos.set(this.pos);
     pause.deathScreen.toggleDeathScreen(name);
-  }
+    if (name == this.name || name == 'water') {
+      if (this.coins > 200) {
+        this.coins -= 200;
+      } else {
+        this.coins = 0;
+      }
+    }
+  };
 
-  this.checkDeath = function (name) {
+  this.checkDeath = function(name) {
     if (this.health <= 0) {
       this.death(name);
     }
-  }
+  };
 
-  this.kill = function (name) {
+  this.kill = function(name) {
     notify('You killed ' + name, 200, this.colour, width / 2);
     if (name != tank.name) {
       switch (team.getTeamPlayers(this.colour)) {
@@ -216,34 +224,38 @@ function Tank() {
           break;
       }
     } else {
-      this.weaponManager.landmineAmount -= 2;
-      this.weaponManager.bombAmount -= 2;
-      this.weaponManager.blastAmount -= 2;
+      // this.weaponManager.landmineAmount -= 2;
+      // this.weaponManager.bombAmount -= 2;
+      // this.weaponManager.blastAmount -= 2;
     }
-  }
+  };
 
-  this.teamKill = function (name) {
-    notify('Your team gunner killed ' + name, 200, this.colour, width - width / 3);
+  this.teamKill = function(name) {
+    notify(
+      'Your team gunner killed ' + name,
+      200,
+      this.colour,
+      width - width / 3
+    );
     this.health += 30;
-  }
+  };
 
-  this.removeHealth = function (amount) {
+  this.removeHealth = function(amount) {
     if (!pause.paused) {
       this.health -= amount;
     }
-  }
-
+  };
 
   // =================== VISUAL FUNCTIONS ======================== //
 
-  this.loadImages = function (col) {
+  this.loadImages = function(col) {
     this.colour = col;
     this.image = loadImage('./assets/' + this.colour + '_body.png');
     this.gunImage = loadImage('./assets/' + this.colour + '_gun.png');
-  }
+  };
   this.loadImages(this.colour);
 
-  this.changeName = function (name) {
+  this.changeName = function(name) {
     if (name != null && name != undefined && name.length > 2) {
       this.name = name;
       Cookies.set('name', name);
@@ -251,14 +263,14 @@ function Tank() {
     } else {
       simpleNotify('invalid name');
     }
-  }
+  };
 
-  this.removeName = function () {
+  this.removeName = function() {
     Cookies.remove('name');
     window.location.reload();
-  }
+  };
 
-  this.setColour = function () {
+  this.setColour = function() {
     var colourAllowed = team.allowColour(tank.colour);
     if (colourAllowed) {
       return;
@@ -270,21 +282,20 @@ function Tank() {
       }
       tank.loadImages(col);
     }
-  }
-
+  };
 
   // =================== SPAWN FUNCTIONS ======================== //
-  this.setSpawnPoint = function () {
+  this.setSpawnPoint = function() {
     if (team.getFlagCount() <= 0) {
-      simpleNotify("Spawn point set here");
-      Cookies.set('spawn', { x: this.pos.x, y: this.pos.y });
-      this.spawn = { x: this.pos.x, y: this.pos.y };
+      simpleNotify('Spawn point set here');
+      Cookies.set('spawn', {x: this.pos.x, y: this.pos.y});
+      this.spawn = {x: this.pos.x, y: this.pos.y};
     } else {
-      simpleNotify("You will spawn at your flag");
+      simpleNotify('You will spawn at your flag');
     }
-  }
+  };
 
-  this.getSpawnPoint = function () {
+  this.getSpawnPoint = function() {
     if (team.getFlagCount() > 0) {
       var myFlags = [];
       for (var i = 0; i < flags.length; i++) {
@@ -293,12 +304,18 @@ function Tank() {
         }
       }
       var randomFlag = myFlags[floor(random(myFlags.length))];
-      tank.pos.set(randomFlag.x + 25 * cos(random(TWO_PI)), randomFlag.y + 25 * sin(random(TWO_PI)));
+      tank.pos.set(
+        randomFlag.x + 25 * cos(random(TWO_PI)),
+        randomFlag.y + 25 * sin(random(TWO_PI))
+      );
     } else {
       // if (this.spawn == undefined) {
       var spawnSafe = false;
       while (spawnSafe == false) {
-        this.pos.set(random(-fullWidth / 2, fullWidth / 2), random(-fullHeight / 2, fullHeight / 2));
+        this.pos.set(
+          random(-fullWidth / 2, fullWidth / 2),
+          random(-fullHeight / 2, fullHeight / 2)
+        );
         console.log('helo');
         spawnSafe = true;
         for (var i = 0; i < waters.length; i++) {
@@ -313,26 +330,19 @@ function Tank() {
       //   this.pos.set(this.spawn.x, this.spawn.y);
       // }
     }
-  }
-  setTimeout(function () {
+  };
+  setTimeout(function() {
     tank.getSpawnPoint();
-    connected = true;;
+    connected = true;
     pause.paused = false;
   }, 400);
-
 }
-
-
-
-
-
 
 // ====================================================================================== //
 // ====================================================================================== //
 // ============================          ENEMY TANK          ============================ //
 // ====================================================================================== //
 // ====================================================================================== //
-
 
 function EnemyTank() {
   this.pos = createVector(random(width), random(height));
@@ -345,15 +355,15 @@ function EnemyTank() {
   this.w = 25.5;
   this.h = 30;
 
-  this.id = "";
-  this.colour = "gold";
+  this.id = '';
+  this.colour = 'gold';
   this.paused = false;
 
   this.health = 100;
   this.maxHealth = 150;
   this.name = 'other';
 
-  this.show = function () {
+  this.show = function() {
     if (this.paused) {
       return;
     }
@@ -389,22 +399,167 @@ function EnemyTank() {
     rotate(this.viewGunDir);
     image(this.gunImage, 0, -this.w / 4, this.w, this.h);
     pop();
-  }
+  };
 
-  this.loadImages = function (col) {
+  this.loadImages = function(col) {
     this.colour = col;
     this.image = loadImage('./assets/' + this.colour + '_body.png');
     this.gunImage = loadImage('./assets/' + this.colour + '_gun.png');
-  }
+  };
   this.loadImages(this.colour);
 }
 
 function generateName() {
-  var nouns = ['avogadro', 'fairy', 'lad', 'sebastian', 'beau', 'email', 'letter', 'parcel', 'snake', 'grass', 'gravel', 'squirrel', 'doctor', 'teacher', 'developer', 'cook', 'bus', 'skeleton', 'jumpy-thing', 'cat', 'dog', 'monster', 'duck', 'politician', 'car', 'auto', 'truck', 'rocket', 'fly', 'leech', 'apple', 'book', 'frog', 'spam', 'eggs', 'rabbit', 'elephant', 'rock', 'horse', 'robot', 'avocado', 'salad', 'bread', 'shoe', 'donkey', 'mouse', 'spinach', 'german', 'french', 'italian', 'beats', 'japanese', 'american', 'tree', 'forest', 'piano', 'computer', 'wall', 'fred', 'bob', 'richard', 'beef', 'potato', 'tomato'];
-  var adjectives = ['crunchy', 'bouyant', 'engorged', 'fancyful', 'convoluted', 'speedy', 'old', 'eletrified', 'corrupt', 'thick', 'black', 'asian', 'insane', 'annoying', 'exciting', 'boring', 'sophisticated', 'educated', 'lame', 'deadly', 'comical', 'undefined', 'young', 'old', 'middle-aged', 'radical', 'putrid', 'beautiful', 'primitive', 'animalistic', 'relaxing', 'superb', 'rude', 'ruthless', 'relentless', 'racist', 'clever', 'dumb', 'interesting', 'silly', 'wild', 'partying', 'green', 'blue', 'red', 'orange', 'brown', 'purple', 'fat', 'quick', 'slow', 'yummy', 'electric', 'charged', 'sad', 'stuuupid', 'cool', 'uncool', 'amazing', 'phat', 'loud', 'soft', 'dead', 'alive', 'smart', 'stinking', 'clean', 'large', 'miniscule', 'vegetarian', 'beef-eating', 'loving', 'hateful', 'mediocre'];
-  var name = '-' + adjectives[Math.floor(random(adjectives.length))]
-    + '-' + adjectives[Math.floor(random(adjectives.length))]
-    + '-' + nouns[Math.floor(random(nouns.length))] + '-';
+  var nouns = [
+    'avogadro',
+    'fairy',
+    'lad',
+    'sebastian',
+    'beau',
+    'email',
+    'letter',
+    'parcel',
+    'snake',
+    'grass',
+    'gravel',
+    'squirrel',
+    'doctor',
+    'teacher',
+    'developer',
+    'cook',
+    'bus',
+    'skeleton',
+    'jumpy-thing',
+    'cat',
+    'dog',
+    'monster',
+    'duck',
+    'politician',
+    'car',
+    'auto',
+    'truck',
+    'rocket',
+    'fly',
+    'leech',
+    'apple',
+    'book',
+    'frog',
+    'spam',
+    'eggs',
+    'rabbit',
+    'elephant',
+    'rock',
+    'horse',
+    'robot',
+    'avocado',
+    'salad',
+    'bread',
+    'shoe',
+    'donkey',
+    'mouse',
+    'spinach',
+    'german',
+    'french',
+    'italian',
+    'beats',
+    'japanese',
+    'american',
+    'tree',
+    'forest',
+    'piano',
+    'computer',
+    'wall',
+    'fred',
+    'bob',
+    'richard',
+    'beef',
+    'potato',
+    'tomato'
+  ];
+  var adjectives = [
+    'crunchy',
+    'bouyant',
+    'engorged',
+    'fancyful',
+    'convoluted',
+    'speedy',
+    'old',
+    'eletrified',
+    'corrupt',
+    'thick',
+    'black',
+    'asian',
+    'insane',
+    'annoying',
+    'exciting',
+    'boring',
+    'sophisticated',
+    'educated',
+    'lame',
+    'deadly',
+    'comical',
+    'undefined',
+    'young',
+    'old',
+    'middle-aged',
+    'radical',
+    'putrid',
+    'beautiful',
+    'primitive',
+    'animalistic',
+    'relaxing',
+    'superb',
+    'rude',
+    'ruthless',
+    'relentless',
+    'racist',
+    'clever',
+    'dumb',
+    'interesting',
+    'silly',
+    'wild',
+    'partying',
+    'green',
+    'blue',
+    'red',
+    'orange',
+    'brown',
+    'purple',
+    'fat',
+    'quick',
+    'slow',
+    'yummy',
+    'electric',
+    'charged',
+    'sad',
+    'stuuupid',
+    'cool',
+    'uncool',
+    'amazing',
+    'phat',
+    'loud',
+    'soft',
+    'dead',
+    'alive',
+    'smart',
+    'stinking',
+    'clean',
+    'large',
+    'miniscule',
+    'vegetarian',
+    'beef-eating',
+    'loving',
+    'hateful',
+    'mediocre'
+  ];
+  var name =
+    '-' +
+    adjectives[Math.floor(random(adjectives.length))] +
+    '-' +
+    adjectives[Math.floor(random(adjectives.length))] +
+    '-' +
+    nouns[Math.floor(random(nouns.length))] +
+    '-';
   console.log(nouns.length * adjectives.length * adjectives.length);
   return name;
 }

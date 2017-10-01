@@ -13,15 +13,12 @@ function Bridge(x, y, a, col, id, pos) {
   this.health = 600;
   this.id = id;
 
-
   this.x = (this.x1 + this.x2) / 2;
   this.y = (this.y1 + this.y2) / 2;
 
   this.tankPosAtBuild = pos;
 
-
-
-  this.show = function () {
+  this.show = function() {
     noStroke();
     push();
     translate(this.x, this.y);
@@ -46,42 +43,75 @@ function Bridge(x, y, a, col, id, pos) {
     line(20, -len / 2, 23, -len / 2 - 3);
 
     pop();
-  }
+  };
 
-  this.ontop = function () {
-    var hit = collideLineCircle(this.x1, this.y1, this.x2, this.y2, tank.pos.x, tank.pos.y, tank.h);
+  this.ontop = function() {
+    var hit = collideLineCircle(
+      this.x1,
+      this.y1,
+      this.x2,
+      this.y2,
+      tank.pos.x,
+      tank.pos.y,
+      tank.h
+    );
     return hit;
-  }
+  };
 
-  this.colliding = function () {
-    var hit = collideLineCircle(this.x1, this.y1, this.x2, this.y2, tank.pos.x, tank.pos.y, tank.h * 2);
+  this.colliding = function() {
+    var hit = collideLineCircle(
+      this.x1,
+      this.y1,
+      this.x2,
+      this.y2,
+      tank.pos.x,
+      tank.pos.y,
+      tank.h * 2
+    );
     return hit;
-  }
+  };
 
-  this.onRoad = function () {
-    var hit = collideLineCircle(this.road_x1, this.road_y1, this.road_x2, this.road_y2, tank.pos.x, tank.pos.y, tank.h * 0.99);
+  this.onRoad = function() {
+    var hit = collideLineCircle(
+      this.road_x1,
+      this.road_y1,
+      this.road_x2,
+      this.road_y2,
+      tank.pos.x,
+      tank.pos.y,
+      tank.h * 0.99
+    );
     return hit;
-  }
+  };
 
-  this.update = function () {
+  this.update = function() {
+    if (this.health < 600) {
+      this.health += 0.001;
+    }
+  };
 
-  }
-
-  this.pickUp = function () {
-    if (this.colour == tank.colour && this.health > 250 && tank.pos.equals(this.tankPosAtBuild)) {
+  this.pickUp = function() {
+    if (
+      this.colour == tank.colour &&
+      this.health > 250 &&
+      tank.pos.equals(this.tankPosAtBuild)
+    ) {
       tank.weaponManager.bridgeAmount++;
       var data = {
         id: this.id,
-        type: "bridgeRemove",
-      }
+        type: 'bridgeRemove'
+      };
       socket.emit('weapon', data);
       particleEffects.push(new ParticleEffect(this.x, this.y, this.colour));
-      tank.weaponManager.bridges.splice(tank.weaponManager.bridges.indexOf(this), 1);
+      tank.weaponManager.bridges.splice(
+        tank.weaponManager.bridges.indexOf(this),
+        1
+      );
       return;
     }
-  }
+  };
 
-  this.checkDeath = function () {
+  this.checkDeath = function() {
     if (this.health <= 0) {
       particleEffects.push(new ParticleEffect(this.x, this.y, this.colour));
       if (this.colour == tank.colour) {
@@ -89,13 +119,15 @@ function Bridge(x, y, a, col, id, pos) {
       }
 
       var removeData = {
-        type: "bridgeRemove",
-        id: this.id,
-      }
-      socket.emit("weapon", removeData);
+        type: 'bridgeRemove',
+        id: this.id
+      };
+      socket.emit('weapon', removeData);
 
-      tank.weaponManager.bridges.splice(tank.weaponManager.bridges.indexOf(this), 1);
-
+      tank.weaponManager.bridges.splice(
+        tank.weaponManager.bridges.indexOf(this),
+        1
+      );
     }
-  }
+  };
 }

@@ -7,18 +7,22 @@ function keyHold(k) {
     tank.speed = tank.speedMultiplyer * -1.7 * frameCompensate;
   }
   // Tank Rotation
+  var rMult = tank.speedMultiplyer;
+  if(tank.speedMultiplyer > 1.5){
+    rMult = 1.3
+  }
   if (k == 65) {
-    tank.dirVel = tank.speedMultiplyer * -0.06 * frameCompensate;
+    tank.dirVel = rMult * -0.06 * frameCompensate;
   }
   if (k == 68) {
-    tank.dirVel = tank.speedMultiplyer * 0.06 * frameCompensate;
+    tank.dirVel = rMult * 0.06 * frameCompensate;
   }
   // Gun Rotation
   if (k == 69 || k == 39) {
-    tank.gunDirVel = tank.speedMultiplyer * 0.04 * frameCompensate;
+    tank.gunDirVel = rMult * 0.04 * frameCompensate;
   }
   if (k == 81 || k == 37) {
-    tank.gunDirVel = tank.speedMultiplyer * -0.04 * frameCompensate;
+    tank.gunDirVel = rMult * -0.04 * frameCompensate;
   }
   // Gun Shooting
   if (k == 32) {
@@ -35,7 +39,7 @@ function keyHold(k) {
   }
   //Adjust Missile Strength;
   if (k == 222) {
-    if(tank.weaponManager.missileAmount > 0){
+    if (tank.weaponManager.missileAmount > 0) {
       tank.weaponManager.missileStrength += 0.1;
     }
   }
@@ -55,7 +59,7 @@ function keyDown(k) {
         pause.mapEditor.addLine();
       }
       if (k == 83) {
-        pause.mapEditor.saveMap()
+        pause.mapEditor.saveMap();
       }
       if (k == 69) {
         pause.mapEditor.toggleEraser();
@@ -73,7 +77,8 @@ function keyDown(k) {
         pause.mapEditor.toggleWater();
       }
     }
-  } else { // not paused:
+  } else {
+    // not paused:
     if (k == 220) {
       minimap.toggleDisplay();
     }
@@ -94,24 +99,26 @@ function keyDown(k) {
     if (k == 72) {
       tank.weaponManager.dropWeapon('healthPacket');
     }
+    if (k == 80) {
+      tank.weaponManager.dropWeapon('healthBeacon');
+    }
     if (k == 67) {
       tank.weaponManager.dropWeapon('bridge');
     }
 
-    if (k == 80) {
-      tank.setSpawnPoint();
-    }
+    // if (k == 80) {
+    //   tank.setSpawnPoint();
+    // }
     if (k == 48) {
       tank.gun.toggleAi();
     }
-
   }
 }
 
 function keyUp(k) {
   if (!pause.paused) {
     if (k == 222) {
-      if(tank.weaponManager.missileAmount > 0){
+      if (tank.weaponManager.missileAmount > 0) {
         if (tank.weaponManager.missileStrength <= 25) {
           tank.weaponManager.dropWeapon('missile');
         }
@@ -130,7 +137,7 @@ function mousePressed() {
 }
 
 var keys = [];
-window.addEventListener('keydown', function () {
+window.addEventListener('keydown', function() {
   var addKeyToArray = true;
   for (var i = 0; i < keys.length; i++) {
     if (keys[i] == event.keyCode) {
@@ -145,7 +152,7 @@ window.addEventListener('keydown', function () {
     event.preventDefault();
   }
 });
-window.addEventListener('keyup', function () {
+window.addEventListener('keyup', function() {
   for (var i = 0; i < keys.length; i++) {
     if (keys[i] == event.keyCode) {
       keys.splice(i, 1);

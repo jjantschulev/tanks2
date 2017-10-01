@@ -18,27 +18,37 @@ function showDisconnectedInfo() {
     textSize(50);
     textAlign(CENTER, CENTER);
     if (timeDisconnected < 300) {
-      text("Please wait, Connecting...", width / 2, height / 2);
+      text('Please wait, Connecting...', width / 2, height / 2);
     } else if (timeDisconnected < 600) {
-      text("Error Connecting. Please Wait...", width / 2, height / 2);
+      text('Error Connecting. Please Wait...', width / 2, height / 2);
     } else {
-      text("Cannot connect to server!", width / 2, height / 2);
+      text('Cannot connect to server!', width / 2, height / 2);
     }
   } else {
     timeDisconnected = 0;
   }
 }
 
-socket.on("update", function (tanks_array) {
+socket.on('update', function(tanks_array) {
   for (var i = 0; i < tanks_array.length; i++) {
     if (tanks[i] == null) {
       var newTank = new EnemyTank();
       newTank.id = tanks_array[i].id;
       newTank.loadImages(tanks_array[i].col);
       if (tanks_array[i].name != tank.name) {
-        notify(tanks_array[i].name + ' joined the game', 130, tanks_array[i].col, width / 2);
+        notify(
+          tanks_array[i].name + ' joined the game',
+          130,
+          tanks_array[i].col,
+          width / 2
+        );
       } else {
-        notify('connected succesfully as \'' + tank.name + "\'", 200, tank.colour, width / 2);
+        notify(
+          "connected succesfully as '" + tank.name + "'",
+          200,
+          tank.colour,
+          width / 2
+        );
         setTimeout(tank.setColour, 180);
       }
       tanks.push(newTank);
@@ -59,43 +69,55 @@ socket.on("update", function (tanks_array) {
   }
 });
 
-socket.on('id', function (id) {
+socket.on('id', function(id) {
   tank.id = id;
-})
+});
 
-socket.on('new_map', function (data) {
+socket.on('new_map', function(data) {
   pause.mapEditor.newMap(data);
 });
 
-socket.on('flag_changed', function (flagData) {
+socket.on('flag_changed', function(flagData) {
   pause.mapEditor.createFlagsFromArray(flagData);
-})
-
-socket.on('bullet', function (bulletData) {
-  bullets.push(new Bullet(bulletData.x, bulletData.y, bulletData.dir, bulletData.name, bulletData.type, bulletData.col));
 });
 
-socket.on('weapon', function (data) {
+socket.on('bullet', function(bulletData) {
+  bullets.push(
+    new Bullet(
+      bulletData.x,
+      bulletData.y,
+      bulletData.dir,
+      bulletData.name,
+      bulletData.type,
+      bulletData.col
+    )
+  );
+});
+
+socket.on('weapon', function(data) {
   tank.weaponManager.addWeapon(data);
 });
 
-socket.on('weapons', function (data) {
+socket.on('weapons', function(data) {
   for (var i = 0; i < data.length; i++) {
     tank.weaponManager.addWeapon(data[i]);
   }
-})
+});
 
-socket.on('death', function (deathData) {
+socket.on('death', function(deathData) {
   gifExplosions.push(new GifExplosion(deathData.victimX, deathData.victimY));
   if (deathData.killerName == tank.name) {
     tank.kill(deathData.victimName);
   }
-  if (deathData.killerName.substr(0, deathData.killerName.indexOf('_')) == tank.colour) {
+  if (
+    deathData.killerName.substr(0, deathData.killerName.indexOf('_')) ==
+    tank.colour
+  ) {
     tank.teamKill(deathData.victimName);
   }
 });
 
-socket.on('remove', function (id) {
+socket.on('remove', function(id) {
   for (var i = tanks.length - 1; i >= 0; i--) {
     if (tanks[i].id == id) {
       notify(tanks[i].name + ' left the game', 130, tank.colour, width / 2);
@@ -104,18 +126,19 @@ socket.on('remove', function (id) {
   }
 });
 
-socket.on('disconnect', function () {
+socket.on('disconnect', function() {
   connected = false;
   pause.paused = true;
-})
+});
 
-socket.on('ammo', function (data) {
+socket.on('ammo', function(data) {
   tank.weaponManager.landmineAmount = data.mine;
   tank.weaponManager.blastAmount = data.blast;
   tank.weaponManager.bombAmount = data.bomb;
   tank.weaponManager.gunnerAmount = data.gunner;
   tank.weaponManager.bridgeAmount = data.bridge;
   tank.weaponManager.missileAmount = data.missile;
+  tank.weaponManager.healthBeaconAmount = data.healthBeacon;
   tank.health = data.health;
   tank.coins = data.coins;
 });
@@ -130,8 +153,8 @@ function sync() {
     col: tank.colour,
     paused: pause.paused,
     health: tank.health,
-    name: tank.name,
-  }
+    name: tank.name
+  };
   socket.emit('sync', data);
 }
 
@@ -143,10 +166,11 @@ function syncAmmo() {
     gunner: tank.weaponManager.gunnerAmount,
     bridge: tank.weaponManager.bridgeAmount,
     missile: tank.weaponManager.missileAmount,
+    healthBeacon: tank.weaponManager.healthBeaconAmount,
     health: tank.health,
     name: tank.name,
     coins: tank.coins
-  }
+  };
   socket.emit('ammoSync', data);
 }
 
@@ -156,6 +180,6 @@ function refresh() {
   window.location.reload(true);
 }
 
-socket.on('refresh', function () {
+socket.on('refresh', function() {
   window.location.reload(true);
-})
+});

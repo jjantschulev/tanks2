@@ -1,9 +1,9 @@
-function HealthPacket(x, y, owner, col, id) {
+function HealthPacket(x, y, owner, col, id, size) {
   this.x = x;
   this.y = y;
   this.owner = owner;
   this.colour = col;
-  this.healthAmount = 15;
+  this.healthAmount = size;
   this.timer = 0;
   this.id = id;
 
@@ -14,29 +14,34 @@ function HealthPacket(x, y, owner, col, id) {
     } else {
       return false;
     }
-  }
+  };
 
   this.update = function() {
     this.timer++;
-    if (this.timer == 600) {
-      this.owner = "";
-    }
     if (this.healthAmount < 30) {
       this.healthAmount += 0.002;
     }
-  }
+  };
 
   this.pickUp = function() {
-    notify(Math.round(this.healthAmount) + ' HP added to tank', 130, 200, width / 2);
+    notify(
+      Math.round(this.healthAmount) + ' HP added to tank',
+      130,
+      200,
+      width / 2
+    );
     tank.health += this.healthAmount;
-    tank.weaponManager.healthPackets.splice(tank.weaponManager.healthPackets.indexOf(this), 1);
+    tank.weaponManager.healthPackets.splice(
+      tank.weaponManager.healthPackets.indexOf(this),
+      1
+    );
     var data = {
       type: 'healthPacketRemove',
-      id: this.id,
-    }
+      id: this.id
+    };
     socket.emit('weapon', data);
     return;
-  }
+  };
 
   this.show = function() {
     noStroke();
@@ -45,5 +50,5 @@ function HealthPacket(x, y, owner, col, id) {
     var l = map(this.healthAmount, 20, 40, 10, 30);
     rect(this.x, this.y, l, l / 3, 10);
     rect(this.x, this.y, l / 3, l, 10);
-  }
+  };
 }

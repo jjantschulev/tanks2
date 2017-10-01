@@ -1,15 +1,16 @@
- function Shop() {
+function Shop() {
   this.active = false;
   this.items = [];
-  this.items.push(new Item(1 * width / 4 - 125, 320, "Landmine"));
-  this.items.push(new Item(2 * width / 4 - 125, 320, "Bomb"));
-  this.items.push(new Item(3 * width / 4 - 125, 320, "Boost"));
-  this.items.push(new Item(4 * width / 4 - 125, 320, "Gunner"));
-  this.items.push(new Item(1 * width / 4 - 125, 620, "Bridge"));
-  this.items.push(new Item(2 * width / 4 - 125, 620, "Missile"));
+  this.items.push(new Item(1 * width / 4 - 125, 320, 'Landmine'));
+  this.items.push(new Item(2 * width / 4 - 125, 320, 'Bomb'));
+  this.items.push(new Item(3 * width / 4 - 125, 320, 'Boost'));
+  this.items.push(new Item(4 * width / 4 - 125, 320, 'Gunner'));
+  this.items.push(new Item(1 * width / 4 - 125, 620, 'Bridge'));
+  this.items.push(new Item(2 * width / 4 - 125, 620, 'Missile'));
+  this.items.push(new Item(3 * width / 4 - 125, 620, 'Beacon'));
   this.backButton = new Button(80, 60, 60, 'Back', 17);
 
-  this.show = function () {
+  this.show = function() {
     // set background
     fill(0);
     noStroke();
@@ -21,26 +22,24 @@
     textSize(60);
     text('Shop', width / 2, 60);
 
-
-
     for (var i = 0; i < this.items.length; i++) {
       this.items[i].show();
     }
     this.backButton.show();
 
     tank.weaponManager.showInfo();
-  }
+  };
 
-  this.mouseClick = function () {
+  this.mouseClick = function() {
     for (var i = 0; i < this.items.length; i++) {
       this.items[i].mClick();
     }
     if (this.backButton.detectPress()) {
       this.toggle();
     }
-  }
+  };
 
-  this.toggle = function () {
+  this.toggle = function() {
     if (this.active) {
       pause.onHomeScreen = true;
       this.active = false;
@@ -48,9 +47,8 @@
       pause.onHomeScreen = false;
       this.active = true;
     }
-  }
+  };
 }
-
 
 function Item(x, y, type) {
   this.x = x;
@@ -60,30 +58,32 @@ function Item(x, y, type) {
   this.type = type;
   this.price = 0;
 
-  if (this.type == "Landmine") {
+  if (this.type == 'Landmine') {
     this.price = tank.weaponManager.landminePrice;
   }
-  if (this.type == "Bomb") {
+  if (this.type == 'Bomb') {
     this.price = tank.weaponManager.bombPrice;
   }
-  if (this.type == "Boost") {
+  if (this.type == 'Boost') {
     this.price = tank.weaponManager.blastPrice;
   }
-  if (this.type == "Gunner") {
+  if (this.type == 'Gunner') {
     this.price = tank.weaponManager.gunnerPrice;
   }
-  if (this.type == "Bridge") {
+  if (this.type == 'Bridge') {
     this.price = tank.weaponManager.bridgePrice;
   }
-  if (this.type == "Missile") {
+  if (this.type == 'Missile') {
     this.price = tank.weaponManager.missilePrice;
+  }
+  if (this.type == 'Beacon') {
+    this.price = tank.weaponManager.healthBeaconPrice;
   }
 
   this.buyButton = new Button(this.x - 45, this.y + 60, 70, 'Buy', 20);
   this.sellButton = new Button(this.x + 45, this.y + 60, 70, 'Sell', 20);
 
-
-  this.show = function () {
+  this.show = function() {
     rectMode(CENTER);
     fill(tank.colour);
     rect(this.x, this.y, this.w, this.h, 10);
@@ -92,89 +92,127 @@ function Item(x, y, type) {
     textAlign(CENTER);
     text(this.type, this.x, this.y - 70);
     textSize(24);
-    text(this.price + " coins", this.x, this.y - 20);
+    text(this.price + ' coins', this.x, this.y - 20);
 
     this.buyButton.show();
     this.sellButton.show();
-  }
+  };
 
-  this.mClick = function () {
+  this.mClick = function() {
     if (this.buyButton.detectPress()) {
-      if (this.type == "Landmine") {
-        if (tank.coins - this.price >= 0 && tank.weaponManager.landmineAmount < tank.weaponManager.landmineLimit) {
+      if (this.type == 'Landmine') {
+        if (
+          tank.coins - this.price >= 0 &&
+          tank.weaponManager.landmineAmount < tank.weaponManager.landmineLimit
+        ) {
           tank.weaponManager.landmineAmount++;
           tank.coins -= this.price;
         }
       }
-      if (this.type == "Bomb") {
-        if (tank.coins - this.price >= 0 && tank.weaponManager.bombAmount < tank.weaponManager.bombLimit) {
+      if (this.type == 'Bomb') {
+        if (
+          tank.coins - this.price >= 0 &&
+          tank.weaponManager.bombAmount < tank.weaponManager.bombLimit
+        ) {
           tank.weaponManager.bombAmount++;
           tank.coins -= this.price;
         }
       }
-      if (this.type == "Boost") {
-        if (tank.coins - this.price >= 0 && tank.weaponManager.blastAmount < tank.weaponManager.blastLimit) {
-          tank.weaponManager.blastAmount+=tank.weaponManager.boostBarrelAmount;
+      if (this.type == 'Boost') {
+        if (
+          tank.coins - this.price >= 0 &&
+          tank.weaponManager.blastAmount < tank.weaponManager.blastLimit
+        ) {
+          tank.weaponManager.blastAmount +=
+            tank.weaponManager.boostBarrelAmount;
           tank.coins -= this.price;
         }
       }
-      if (this.type == "Gunner") {
-        if (tank.coins - this.price >= 0 && tank.weaponManager.gunnerAmount < tank.weaponManager.gunnerLimit) {
+      if (this.type == 'Gunner') {
+        if (
+          tank.coins - this.price >= 0 &&
+          tank.weaponManager.gunnerAmount < tank.weaponManager.gunnerLimit
+        ) {
           tank.weaponManager.gunnerAmount++;
           tank.coins -= this.price;
         }
       }
-      if (this.type == "Bridge") {
-        if (tank.coins - this.price >= 0 && tank.weaponManager.bridgeAmount < tank.weaponManager.bridgeLimit) {
+      if (this.type == 'Bridge') {
+        if (
+          tank.coins - this.price >= 0 &&
+          tank.weaponManager.bridgeAmount < tank.weaponManager.bridgeLimit
+        ) {
           tank.weaponManager.bridgeAmount++;
           tank.coins -= this.price;
         }
       }
-      if (this.type == "Missile") {
-        if (tank.coins - this.price >= 0 && tank.weaponManager.missileAmount < tank.weaponManager.missileLimit) {
+      if (this.type == 'Missile') {
+        if (
+          tank.coins - this.price >= 0 &&
+          tank.weaponManager.missileAmount < tank.weaponManager.missileLimit
+        ) {
           tank.weaponManager.missileAmount++;
+          tank.coins -= this.price;
+        }
+      }
+      if (this.type == 'Beacon') {
+        if (
+          tank.coins - this.price >= 0 &&
+          tank.weaponManager.healthBeaconAmount <
+            tank.weaponManager.healthBeaconLimit
+        ) {
+          tank.weaponManager.healthBeaconAmount++;
           tank.coins -= this.price;
         }
       }
     }
 
     if (this.sellButton.detectPress()) {
-      if (this.type == "Landmine") {
+      if (this.type == 'Landmine') {
         if (tank.weaponManager.landmineAmount > 0) {
           tank.weaponManager.landmineAmount--;
           tank.coins += this.price;
         }
       }
-      if (this.type == "Bomb") {
+      if (this.type == 'Bomb') {
         if (tank.weaponManager.bombAmount > 0) {
           tank.weaponManager.bombAmount--;
           tank.coins += this.price;
         }
       }
-      if (this.type == "Boost") {
-        if (tank.weaponManager.blastAmount > tank.weaponManager.boostBarrelAmount) {
-          tank.weaponManager.blastAmount-=tank.weaponManager.boostBarrelAmount;
+      if (this.type == 'Boost') {
+        if (
+          tank.weaponManager.blastAmount > tank.weaponManager.boostBarrelAmount
+        ) {
+          tank.weaponManager.blastAmount -=
+            tank.weaponManager.boostBarrelAmount;
           tank.coins += this.price;
         }
       }
-      if (this.type == "Gunner") {
+      if (this.type == 'Gunner') {
         if (tank.weaponManager.gunnerAmount > 0) {
           tank.weaponManager.gunnerAmount--;
           tank.coins += this.price;
         }
       }
-      if (this.type == "Bridge") {
+      if (this.type == 'Bridge') {
         if (tank.weaponManager.bridgeAmount > 0) {
           tank.weaponManager.bridgeAmount--;
           tank.coins += this.price;
         }
       }
-      if (this.type == "Missile") {
+      if (this.type == 'Missile') {
         if (tank.weaponManager.missileAmount > 0) {
           tank.weaponManager.missileAmount--;
           tank.coins += this.price;
         }
       }
+      if (this.type == 'Beacon') {
+        if (tank.weaponManager.healthBeaconAmount > 0) {
+          tank.weaponManager.healthBeaconAmount--;
+          tank.coins += this.price;
+        }
+      }
     }
-  }
+  };
 }

@@ -2,8 +2,7 @@ var teams = true;
 var team;
 
 function Team() {
-
-  this.allowColour = function (col) {
+  this.allowColour = function(col) {
     // colours is format: | r | g | b | y |
     var colourNames = ['seagreen', 'gold', 'firebrick', 'cornflowerblue'];
     var colourInts = [0, 0, 0, 0];
@@ -13,24 +12,23 @@ function Team() {
       }
     }
     var sortedInts = colourInts.slice();
-    sortedInts.sort(function (a, b) {
+    sortedInts.sort(function(a, b) {
       return b - a;
     });
     var difference = sortedInts[0] - sortedInts[1];
     for (var i = colourInts.length - 1; i >= 0; i--) {
       if (col == colourNames[i]) {
         if (colourInts[i] == sortedInts[0] && difference > 0) {
-          notify("Too many people on " + col + " team", 150, 255, width);
+          notify('Too many people on ' + col + ' team', 150, 255, width);
           return false;
         } else {
           return true;
         }
       }
     }
+  };
 
-  }
-
-  this.colourToInt = function (col, array) {
+  this.colourToInt = function(col, array) {
     var colourInts = array;
     if (col == 'seagreen') {
       colourInts[0]++;
@@ -45,9 +43,9 @@ function Team() {
       colourInts[3]++;
     }
     return colourInts;
-  }
+  };
 
-  this.allowGunner = function (g) {
+  this.allowGunner = function(g) {
     var col = g.colour;
     var count = 0;
 
@@ -58,14 +56,19 @@ function Team() {
     }
 
     if (count >= 4) {
-      notify("too many " + g.colour + " gunners on the field", 150, g.colour, width - width / 3);
+      notify(
+        'too many ' + g.colour + ' gunners on the field',
+        150,
+        g.colour,
+        width - width / 3
+      );
       return false;
     } else {
       return true;
     }
-  }
+  };
 
-  this.allowHealthPacket = function (hp) {
+  this.allowHealthPacket = function(hp) {
     var col = hp.colour;
     var count = 0;
 
@@ -76,15 +79,36 @@ function Team() {
     }
 
     if (count >= 10) {
-      notify("too many " + hp.colour + " health packets on the field", 150, hp.colour, width - width / 3);
+      notify(
+        'too many ' + hp.colour + ' health packets on the field',
+        150,
+        hp.colour,
+        width - width / 3
+      );
+      return false;
+    } else {
+      simpleNotify('Allowed');
+      return true;
+    }
+  };
+
+  this.allowHealthBeacon = function(hb) {
+    var col = hb.colour;
+    var count = 0;
+    for (var i = 0; i < tank.weaponManager.healthBeacons.length; i++) {
+      if (tank.weaponManager.healthBeacons[i].colour == col) {
+        count++;
+      }
+    }
+    if (count >= 1) {
+      simpleNotify('Only 1 health beacon per team');
       return false;
     } else {
       return true;
     }
-  }
+  };
 
-
-  this.getTeamPlayers = function (col) {
+  this.getTeamPlayers = function(col) {
     var count = 0;
     for (var i = 0; i < tanks.length; i++) {
       if (tanks[i].colour == col) {
@@ -92,9 +116,9 @@ function Team() {
       }
     }
     return count;
-  }
+  };
 
-  this.getUnpausedTankCount = function () {
+  this.getUnpausedTankCount = function() {
     var count = 0;
     for (var i = 0; i < tanks.length; i++) {
       if (!tanks[i].paused) {
@@ -102,59 +126,72 @@ function Team() {
       }
     }
     return count;
-  }
+  };
 
-  this.getClosestTank = function () {
+  this.getClosestTank = function() {
     var closestTank = null;
     var distanceToTank = Infinity;
     for (var i = 0; i < tanks.length; i++) {
-      if (tanks[i].id != tank.id && tanks[i].colour != tank.colour && !tanks[i].paused) {
-        var distance = dist(tanks[i].pos.x, tanks[i].pos.y, tank.pos.x, tank.pos.y);
+      if (
+        tanks[i].id != tank.id &&
+        tanks[i].colour != tank.colour &&
+        !tanks[i].paused
+      ) {
+        var distance = dist(
+          tanks[i].pos.x,
+          tanks[i].pos.y,
+          tank.pos.x,
+          tank.pos.y
+        );
         if (distance < distanceToTank) {
           distanceToTank = distance;
           closestTank = {
             x: tanks[i].pos.x,
             y: tanks[i].pos.y
-          }
+          };
         }
       }
     }
 
     for (var i = 0; i < tank.weaponManager.gunners.length; i++) {
       if (tank.weaponManager.gunners[i].colour != tank.colour) {
-        var distance = dist(tank.weaponManager.gunners[i].x, tank.weaponManager.gunners[i].y, tank.pos.x, tank.pos.y);
+        var distance = dist(
+          tank.weaponManager.gunners[i].x,
+          tank.weaponManager.gunners[i].y,
+          tank.pos.x,
+          tank.pos.y
+        );
         if (distance < distanceToTank) {
           distanceToTank = distance;
           closestTank = {
             x: tank.weaponManager.gunners[i].x,
             y: tank.weaponManager.gunners[i].y
-          }
+          };
         }
       }
     }
     return closestTank;
-  }
+  };
 
-
-  this.getFlagCount = function () {
+  this.getFlagCount = function() {
     var flagCount = 0;
     for (var i = 0; i < flags.length; i++) {
       if (flags[i].colour == tank.colour) {
-        flagCount++
+        flagCount++;
       }
     }
     return flagCount;
-  }
+  };
 
-  this.payForFlags = function () {
-    if(this.getUnpausedTankCount() > 1){
+  this.payForFlags = function() {
+    if (this.getUnpausedTankCount() > 1) {
       var cc = this.getFlagCount();
       var tp = this.getTeamPlayers(tank.colour);
       if (tp != 0 && cc != 0) {
         var amount = 0.006 / tp;
-        log(amount)
+        log(amount);
         tank.coins += amount * cc;
       }
     }
-  }
+  };
 }
