@@ -100,8 +100,8 @@ function Team() {
         count++;
       }
     }
-    if (count >= 1) {
-      simpleNotify('Only 1 health beacon per team');
+    if (count >= 2) {
+      simpleNotify('Only 2 health beacon per team');
       return false;
     } else {
       return true;

@@ -100,7 +100,7 @@ function Pause() {
 
   this.togglePause = function () {
     if (this.paused) {
-      tank.weaponManager.pushTank(tank.pos.x + 1, tank.pos.y + 1, 35, random(TWO_PI));
+      // tank.weaponManager.pushTank(tank.pos.x + 1, tank.pos.y + 1, 35, random(TWO_PI));
       this.paused = false;
     } else {
       this.paused = true;

@@ -37,15 +37,21 @@ function Gun() {
     } else {
       return;
     }
+    // if(tank.name == 'Jordan'){
+    //   bmode = true;
+    // }
     var bulletData = {
       x: tank.pos.x + 20 * sin(tank.gunDir + tank.dir),
       y: tank.pos.y - 20 * cos(tank.gunDir + tank.dir),
       dir: tank.gunDir + tank.dir,
       type: bulletType,
       col: tank.colour,
-      name: tank.name
+      name: tank.name,
+      options : {
+        bombMode : false,
+      }
     }
-    bullets.push(new Bullet(bulletData.x, bulletData.y, bulletData.dir, bulletData.name, bulletData.type, bulletData.col));
+    bullets.push(new Bullet(bulletData.x, bulletData.y, bulletData.dir, bulletData.name, bulletData.type, bulletData.col, bulletData.options));
     socket.emit('bullet', bulletData);
 
     // Recoil effect

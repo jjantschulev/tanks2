@@ -7,13 +7,14 @@ function showBullets() {
   }
 }
 
-function Bullet(x, y, dir, name, type, col) {
+function Bullet(x, y, dir, name, type, col, options) {
   this.x = x;
   this.y = y;
   this.dir = dir;
   this.name = name;
   this.col = col;
   this.type = type;
+  this.options = options;
 
   if (type == 1) {
     this.r = 4;
@@ -39,6 +40,9 @@ Bullet.prototype.collisions = function () {
   for (var i = 0; i < walls.length; i++) {
     if (walls[i].bulletColliding(this.x, this.y, 20)) {
       explosions.push(new Explosion(this.x, this.y, this.r * 6, this.col, 30));
+      if(this.options.bombMode){
+        makeInstantBomb(this.x, this.y);
+      }
       bullets.splice(bullets.indexOf(this), 1);
       return true;
     }

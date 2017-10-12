@@ -18,7 +18,7 @@ function MapEditor() {
   this.syncedFlags = [];
   this.showMenu = true;
 
-  this.viewScale = 1;
+  this.viewScale = width / fullWidth;
   this.tx = 0;
   this.ty = 0;
 

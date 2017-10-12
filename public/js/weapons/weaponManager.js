@@ -62,7 +62,7 @@ function WeaponManager() {
     fill(this.missileColour);
     rect(rectSize * 5, 0, rectSize, rectSize * this.missileAmount);
     fill(this.healthBeaconColour);
-    rect(rectSize * 5, 0, rectSize, rectSize * this.healthBeaconAmount);
+    rect(rectSize * 6, 0, rectSize, rectSize * this.healthBeaconAmount);
 
     showMissileStrength();
 
