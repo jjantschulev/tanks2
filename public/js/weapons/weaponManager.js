@@ -137,7 +137,7 @@ function WeaponManager() {
     }
     if (data.type == 'healthPacket') {
       this.healthPackets.push(
-        new HealthPacket(data.x, data.y, data.name, data.col, data.id)
+        new HealthPacket(data.x, data.y, data.name, data.col, data.id, data.size)
       );
     }
     if (data.type == 'gunner') {

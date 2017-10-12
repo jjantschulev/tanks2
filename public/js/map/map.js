@@ -91,7 +91,7 @@ function Minimap() {
     translate(-tx, -ty);
     // show map contents
     noFill();
-    stroke(0, 0, 140);
+    stroke(255, 145, 0);
     strokeWeight(35);
     for (var i = 0; i < waters.length; i++) {
       if (abs(waters[i].x1 - tx) < width / 2 / this.viewScale || abs(waters[i].x2 - tx) < width / 2 / this.viewScale) {

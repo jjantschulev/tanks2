@@ -45,8 +45,8 @@ function MapEditor() {
 
 
     //show waters
-    stroke(50, 50, 255);
-    fill(50, 50, 255);
+    stroke(255, 176, 0);
+    fill(255, 176, 0);
     strokeWeight(35);
     if (this.currentWater.length == 1) {
       noStroke();
@@ -56,8 +56,7 @@ function MapEditor() {
       line(this.currentWater[i].x, this.currentWater[i].y, this.currentWater[i + 1].x, this.currentWater[i + 1].y);
     }
 
-
-    stroke(0, 0, 255);
+    stroke(255, 145, 0);
     for (var j = 0; j < this.allWaters.length; j++) {
       for (var i = 0; i < this.allWaters[j].length - 1; i++) {
         line(this.allWaters[j][i].x, this.allWaters[j][i].y, this.allWaters[j][i + 1].x, this.allWaters[j][i + 1].y);

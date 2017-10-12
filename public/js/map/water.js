@@ -14,15 +14,19 @@ function Water(x1, y1, x2, y2) {
   this.y2 = y2;
   this.rOff = 0;
   this.width = 30;
-
+  this.colOff = 0;
 
   this.show = function () {
-    stroke(0, 0, 140);
-    // stroke(50, 150, 255);
+    colorMode(HSB);
+
+    stroke(map(sin(this.colOff), -1, 1, 25, 40), 255, 128);
+    // stroke(255, 173, 13);
     this.width = 35 * map(noise(this.rOff), 0, 1, 1, 1.3);
     strokeWeight(this.width);
     line(this.x1, this.y1, this.x2, this.y2);
-    this.rOff += 0.01;
+    this.rOff += 0.02;
+    this.colOff += 0.03;
+    colorMode(RGB);
   }
 
   this.update = function () {
