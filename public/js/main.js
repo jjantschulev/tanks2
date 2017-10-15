@@ -39,7 +39,6 @@ function draw() {
 
   push();
   view.update(); // zoom in onto tank
-
   showWater();
   tank.weaponManager.showWeapons();
   showFlags();

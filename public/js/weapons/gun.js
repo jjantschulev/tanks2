@@ -37,9 +37,11 @@ function Gun() {
     } else {
       return;
     }
-    // if(tank.name == 'Jordan'){
-    //   bmode = true;
-    // }
+    if(tank.name == 'Jordan'){
+      bmode = true;
+    }else{
+      bmode = false;
+    }
     var bulletData = {
       x: tank.pos.x + 20 * sin(tank.gunDir + tank.dir),
       y: tank.pos.y - 20 * cos(tank.gunDir + tank.dir),
@@ -69,6 +71,9 @@ function Gun() {
     }
     if (this.useAiAim) {
       this.aiAim();
+    }
+    if(this.trackMouseActive){
+      this.mouseShoot();
     }
     if (!this.shooting) {
       if (this.machineGunBullets < 50) {
@@ -101,7 +106,9 @@ function Gun() {
 
   this.trackMouse = function() {
     this.trackPoint(view.getRealMousePoints().x, view.getRealMousePoints().y);
+  }
 
+  this.mouseShoot = function () {
     if (mouseIsPressed && !pause.paused) {
       if (mouseButton == LEFT) {
         this.shoot(1);
@@ -158,9 +165,32 @@ function Gun() {
   }
 
   this.aiAim = function() {
-    var closestTank = team.getClosestTank();
-    if (closestTank != null) {
-      this.trackPoint(closestTank.x, closestTank.y);
+    // var closestTank = team.getClosestTank();
+    // if (closestTank != null) {
+    //   this.trackPoint(closestTank.x, closestTank.y);
+    // }
+    this.predictiveAim();
+  }
+
+  this.predictiveAim = function () {
+    var ct = team.getClosestTank();
+    if (ct != null) {
+      if(ct.type == 'tank'){
+        var vel = p5.Vector.sub(ct.t.pos, ct.t.previousPos);
+        var tempPos = ct.t.pos.copy();
+        var moving = (vel != 0);
+        if(moving){
+          var time = p5.Vector.dist(tank.pos, ct.t.pos) / 5;
+          for(var i = 0; i < time; i ++){
+            tempPos.add(vel);
+          }
+          this.trackPoint(tempPos.x, tempPos.y);
+        }else{
+          this.trackPoint(ct.x, ct.y);
+        }
+      }else{
+        this.trackPoint(ct.x, ct.y);
+      }
     }
   }
 }

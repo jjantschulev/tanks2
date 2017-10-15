@@ -46,7 +46,7 @@ function Water(x1, y1, x2, y2) {
         }else{
           tank.removeHealth(1.5);
         }
-        tank.checkDeath("water");
+        tank.checkDeath("lava");
         tank.speedMultiplyer = 0.1;
       }
     }

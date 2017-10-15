@@ -14,7 +14,9 @@ function Bullet(x, y, dir, name, type, col, options) {
   this.name = name;
   this.col = col;
   this.type = type;
-  this.options = options;
+  this.options = options || {
+    bombMode : false,
+  };
 
   if (type == 1) {
     this.r = 4;

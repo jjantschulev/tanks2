@@ -6,7 +6,7 @@ function Gunner(x, y, colour, name, id) {
   this.owner = name;
   this.id = id;
   this.health = 120;
-  this.range = 200;
+  this.range = 400;
   this.w = 30;
   this.h = 30;
 
@@ -62,12 +62,33 @@ function Gunner(x, y, colour, name, id) {
   }
 
   this.trackTank = function () {
-    var ct = this.getClosestTank();
-    if (ct == null) {
+    var closestTank = this.getClosestTank();
+    var ct = {x:0,y:0}
+    if (closestTank == null) {
       if (this.health < 120 - 0.08) {
         this.health += 0.04;
       }
       return;
+    }else{
+      if(closestTank.type == 'tank'){
+        var vel = p5.Vector.sub(closestTank.t.pos, closestTank.t.previousPos);
+        var tempPos = closestTank.t.pos.copy();
+        var moving = (vel != 0);
+        if(moving){
+          var time = dist(this.x, this.y, closestTank.t.pos.x, closestTank.t.pos.y) / 13;
+          for(var i = 0; i < time; i ++){
+            tempPos.add(vel);
+          }
+          ct.x = tempPos.x;
+          ct.y = tempPos.y;
+        }else{
+          ct.x = closestTank.x;
+          ct.y = closestTank.y;
+        }
+      }else{
+        ct.x = closestTank.x;
+        ct.y = closestTank.y;
+      }
     }
 
     var targetDir;
@@ -101,7 +122,9 @@ function Gunner(x, y, colour, name, id) {
           distance = newDist;
           closestEnemy = {
             x: tanks[i].pos.x,
-            y: tanks[i].pos.y
+            y: tanks[i].pos.y,
+            type: 'tank',
+            t: tanks[i],
           };
         }
       }
@@ -113,7 +136,9 @@ function Gunner(x, y, colour, name, id) {
           distance = newDist;
           closestEnemy = {
             x: tank.weaponManager.gunners[i].x,
-            y: tank.weaponManager.gunners[i].y
+            y: tank.weaponManager.gunners[i].y,
+            type : 'gunner',
+            g: tank.weaponManager.gunners[i],
           };
         }
       }

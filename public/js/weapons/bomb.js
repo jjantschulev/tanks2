@@ -89,18 +89,21 @@ function makeInstantBomb(xp, yp) {
     x : xp,
     y : yp,
     name : tank.name,
+    type : 'bomb',
   }
   socket.emit('weapon', data);
   tank.weaponManager.bombs.push(new Bomb(data.x, data.y, data.name));
 }
-//
+
 // function rektEveryOne(password) {
-//   if(tank.name == 'Jordan' && password == 'die3333')
-//   for(var x = -fullWidth/2; x < fullWidth/2; x += 60){
-//     for(var y = -fullHeight/2; y < fullHeight/2; y += 60){
-//       if(dist(x, y, tank.pos.x, tank.pos.y) > 100){
-//         makeInstantBomb(x, y);
+//   if(tank.name == 'Jordan' && password == 'die3333'){
+//     for(var x = -fullWidth/2; x < fullWidth/2; x += 60){
+//       for(var y = -fullHeight/2; y < fullHeight/2; y += 60){
+//         if(dist(x, y, tank.pos.x, tank.pos.y) > 100){
+//           makeInstantBomb(x, y);
+//         }
 //       }
 //     }
 //   }
+//
 // }

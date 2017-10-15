@@ -55,6 +55,7 @@ socket.on('update', function(tanks_array) {
       // connected = true;
       // pause.paused = false;
     } else {
+      tanks[i].previousPos.set(tanks[i].pos);
       tanks[i].pos.x = tanks_array[i].x;
       tanks[i].pos.y = tanks_array[i].y;
       tanks[i].gunDir = tanks_array[i].gunDir;
@@ -89,7 +90,8 @@ socket.on('bullet', function(bulletData) {
       bulletData.dir,
       bulletData.name,
       bulletData.type,
-      bulletData.col
+      bulletData.col,
+      bulletData.options
     )
   );
 });

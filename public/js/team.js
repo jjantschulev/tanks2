@@ -1,10 +1,11 @@
 var teams = true;
 var team;
+var colourArray = ['firebrick', 'seagreen', 'cornflowerblue', 'gold'];
 
 function Team() {
   this.allowColour = function(col) {
     // colours is format: | r | g | b | y |
-    var colourNames = ['seagreen', 'gold', 'firebrick', 'cornflowerblue'];
+    var colourNames = colourArray.slice();
     var colourInts = [0, 0, 0, 0];
     for (var i = tanks.length - 1; i >= 0; i--) {
       if (tank.id != tanks[i].id) {
@@ -30,16 +31,16 @@ function Team() {
 
   this.colourToInt = function(col, array) {
     var colourInts = array;
-    if (col == 'seagreen') {
+    if (col == colourArray[0]) {
       colourInts[0]++;
     }
-    if (col == 'gold') {
+    if (col == colourArray[1]) {
       colourInts[1]++;
     }
-    if (col == 'firebrick') {
+    if (col == colourArray[2]) {
       colourInts[2]++;
     }
-    if (col == 'cornflowerblue') {
+    if (col == colourArray[3]) {
       colourInts[3]++;
     }
     return colourInts;
@@ -87,7 +88,7 @@ function Team() {
       );
       return false;
     } else {
-      simpleNotify('Allowed');
+      // simpleNotify('Allowed');
       return true;
     }
   };
@@ -132,11 +133,7 @@ function Team() {
     var closestTank = null;
     var distanceToTank = Infinity;
     for (var i = 0; i < tanks.length; i++) {
-      if (
-        tanks[i].id != tank.id &&
-        tanks[i].colour != tank.colour &&
-        !tanks[i].paused
-      ) {
+      if (tanks[i].id != tank.id && tanks[i].colour != tank.colour && !tanks[i].paused) {
         var distance = dist(
           tanks[i].pos.x,
           tanks[i].pos.y,
@@ -147,7 +144,9 @@ function Team() {
           distanceToTank = distance;
           closestTank = {
             x: tanks[i].pos.x,
-            y: tanks[i].pos.y
+            y: tanks[i].pos.y,
+            type: 'tank',
+            t: tanks[i]
           };
         }
       }
@@ -165,7 +164,9 @@ function Team() {
           distanceToTank = distance;
           closestTank = {
             x: tank.weaponManager.gunners[i].x,
-            y: tank.weaponManager.gunners[i].y
+            y: tank.weaponManager.gunners[i].y,
+            type : 'gunner',
+            g: tank.weaponManager.gunners[i],
           };
         }
       }

@@ -14,7 +14,6 @@ function Tank() {
     random(-fullWidth / 2, fullWidth / 2),
     random(-fullHeight / 2, fullHeight / 2)
   );
-  this.spawn = Cookies.getJSON('spawn');
   this.previousPos = this.pos.copy();
   this.viewPos = this.pos.copy();
   this.dir = 0;
@@ -32,7 +31,7 @@ function Tank() {
 
   this.colour = Cookies.get('tank_colour');
   if (this.colour == undefined) {
-    var colours = ['seagreen', 'gold', 'firebrick', 'cornflowerblue'];
+    var colours = colourArray.slice();
     var col = colours[Math.floor(random(4))];
     console.log(col);
     this.colour = col;
@@ -191,7 +190,7 @@ function Tank() {
     this.getSpawnPoint();
     this.previousPos.set(this.pos);
     pause.deathScreen.toggleDeathScreen(name);
-    if (name == this.name || name == 'water') {
+    if (name == this.name || name == 'lava') {
       if (this.coins > 200) {
         this.coins -= 200;
       } else {
@@ -212,11 +211,11 @@ function Tank() {
       switch (team.getTeamPlayers(this.colour)) {
         case 1:
           this.health += 70;
-          this.coins += 120;
+          this.coins += 150;
           break;
         case 2:
           this.health += 50;
-          this.coins += 100;
+          this.coins += 120;
           break;
         default:
           this.health += 30;
@@ -238,6 +237,7 @@ function Tank() {
       width - width / 3
     );
     this.health += 30;
+    this.coins += 20;
   };
 
   this.removeHealth = function(amount) {
@@ -275,7 +275,7 @@ function Tank() {
     if (colourAllowed) {
       return;
     } else {
-      var colours = ['red', 'green', 'yellow', 'blue'];
+      var colours = colourArray.slice();
       while (!colourAllowed) {
         col = colours[Math.floor(random(4))];
         colourAllowed = team.allowColour(col);
@@ -285,16 +285,6 @@ function Tank() {
   };
 
   // =================== SPAWN FUNCTIONS ======================== //
-  this.setSpawnPoint = function() {
-    if (team.getFlagCount() <= 0) {
-      simpleNotify('Spawn point set here');
-      Cookies.set('spawn', {x: this.pos.x, y: this.pos.y});
-      this.spawn = {x: this.pos.x, y: this.pos.y};
-    } else {
-      simpleNotify('You will spawn at your flag');
-    }
-  };
-
   this.getSpawnPoint = function() {
     if (team.getFlagCount() > 0) {
       var myFlags = [];
@@ -305,34 +295,29 @@ function Tank() {
       }
       var randomFlag = myFlags[floor(random(myFlags.length))];
       tank.pos.set(
-        randomFlag.x + 25 * cos(random(TWO_PI)),
-        randomFlag.y + 25 * sin(random(TWO_PI))
+        randomFlag.x + 40 * cos(random(TWO_PI)),
+        randomFlag.y + 40 * sin(random(TWO_PI))
       );
     } else {
-      // if (this.spawn == undefined) {
       var spawnSafe = false;
       while (spawnSafe == false) {
         this.pos.set(
           random(-fullWidth / 2, fullWidth / 2),
           random(-fullHeight / 2, fullHeight / 2)
         );
-        console.log('helo');
+        console.log('not safe, in water');
         spawnSafe = true;
         for (var i = 0; i < waters.length; i++) {
           if (waters[i].tankColliding(this.pos)) {
             spawnSafe = false;
-          } else {
-            break;
           }
         }
       }
-      // } else {
-      //   this.pos.set(this.spawn.x, this.spawn.y);
-      // }
     }
   };
   setTimeout(function() {
     tank.getSpawnPoint();
+    tank.setColour();
     connected = true;
     pause.paused = false;
   }, 400);
@@ -346,6 +331,7 @@ function Tank() {
 
 function EnemyTank() {
   this.pos = createVector(random(width), random(height));
+  this.previousPos = this.pos.copy();
   this.viewPos = this.pos.copy();
   this.dir = 0;
   this.gunDir = 0;
