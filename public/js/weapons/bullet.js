@@ -59,6 +59,16 @@ Bullet.prototype.collisions = function () {
       }
     }
   }
+  // splice and apply damage to healthBeacons
+  for (var i = tank.weaponManager.healthBeacons.length - 1; i >= 0; i--) {
+    if (collideCircleCircle(this.x, this.y, this.r, tank.weaponManager.healthBeacons[i].x, tank.weaponManager.healthBeacons[i].y, tank.weaponManager.healthBeacons[i].w)) {
+      if (tank.weaponManager.healthBeacons[i].hitByBullet(this)) {
+        explosions.push(new Explosion(this.x, this.y, this.r * 6, this.col, 30));
+        bullets.splice(bullets.indexOf(this), 1);
+        return true;
+      }
+    }
+  }
   // Splice and apply damage if hitting tank
   if (this.name != tank.name) {
     if (collideRectCircle(tank.pos.x - tank.w / 2, tank.pos.y - tank.h / 2, tank.w, tank.h, this.x, this.y, this.r)) {

@@ -33,7 +33,7 @@ function WeaponManager() {
   this.bombPrice = 80;
   this.landminePrice = 80;
   this.gunnerPrice = 300;
-  this.bridgePrice = 200;
+  this.bridgePrice = 240;
   this.missilePrice = 500;
   this.healthBeaconPrice = 600;
 

@@ -165,11 +165,11 @@ function Gun() {
   }
 
   this.aiAim = function() {
-    // var closestTank = team.getClosestTank();
-    // if (closestTank != null) {
-    //   this.trackPoint(closestTank.x, closestTank.y);
-    // }
-    this.predictiveAim();
+    var closestTank = team.getClosestTank();
+    if (closestTank != null) {
+      this.trackPoint(closestTank.x, closestTank.y);
+    }
+    // this.predictiveAim();
   }
 
   this.predictiveAim = function () {

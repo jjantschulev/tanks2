@@ -75,12 +75,15 @@ function Gunner(x, y, colour, name, id) {
         var tempPos = closestTank.t.pos.copy();
         var moving = (vel != 0);
         if(moving){
-          var time = dist(this.x, this.y, closestTank.t.pos.x, closestTank.t.pos.y) / 13;
+          var time = dist(this.x, this.y, closestTank.t.pos.x, closestTank.t.pos.y) / 10;
           for(var i = 0; i < time; i ++){
             tempPos.add(vel);
           }
           ct.x = tempPos.x;
           ct.y = tempPos.y;
+          fill(0, 255, 0);
+          noStroke();
+          ellipse(ct.x, ct.y, 10, 10);
         }else{
           ct.x = closestTank.x;
           ct.y = closestTank.y;
@@ -173,11 +176,11 @@ function Gunner(x, y, colour, name, id) {
 
   this.place = function () {
     var inRange = false;
-    for (var i = tank.weaponManager.gunners.length - 1; i >= 0; i--) {
-      if (dist(tank.weaponManager.gunners[i].x, tank.weaponManager.gunners[i].y, this.x, this.y) < this.range - this.range / 3) {
-        inRange = true;
-      }
-    }
+    // for (var i = tank.weaponManager.gunners.length - 1; i >= 0; i--) {
+      // if (dist(tank.weaponManager.gunners[i].x, tank.weaponManager.gunners[i].y, this.x, this.y) < 100) {
+    //     inRange = true;
+    //   }
+    // }
 
     if (!inRange) {
       return true;

@@ -135,6 +135,62 @@ p5.prototype.collideLineCircle = function( x1,  y1,  x2,  y2,  cx,  cy,  diamete
   return false;
 }
 
+p5.prototype.distanceCollideLineCircle = function( x1,  y1,  x2,  y2,  cx,  cy,  diameter) {
+  // is either end INSIDE the circle?
+  // if so, return true immediately
+
+
+  // get length of the line
+  var distX = x1 - x2;
+  var distY = y1 - y2;
+  var len = this.sqrt( (distX*distX) + (distY*distY) );
+
+  // get dot product of the line and circle
+  var dot = ( ((cx-x1)*(x2-x1)) + ((cy-y1)*(y2-y1)) ) / this.pow(len,2);
+
+  // find the closest point on the line
+  var closestX = x1 + (dot * (x2-x1));
+  var closestY = y1 + (dot * (y2-y1));
+
+  // is this point actually on the line segment?
+  // if so keep going, but if not, return false
+  var onSegment = this.collidePointLine(closestX,closestY,x1,y1,x2,y2);
+  if (!onSegment) return false;
+
+  // draw a debug circle at the closest point on the line
+  if(this._collideDebug){
+    this.ellipse(closestX, closestY,10,10);
+  }
+
+  // get distance to closest point
+  distX = closestX - cx;
+  distY = closestY - cy;
+  var distance = this.sqrt( (distX*distX) + (distY*distY) );
+
+  if (distance <= diameter/2) {
+    return {
+      x : closestX,
+      y : closestY,
+      d : diameter/2 - distance,
+    }
+  }
+
+  var inside1 = this.collidePointCircle(x1,y1, cx,cy,diameter);
+  var distInside1 = this.dist(x1,y1,cx, cy)
+  var inside2 = this.collidePointCircle(x2,y2, cx,cy,diameter);
+  var distInside2 = this.dist(x2,y2, cx,cy)
+  if(inside1) return {
+    x : x1,
+    y : y1,
+    d : diameter/2 - distInside1,
+  };
+  if(inside2) return {
+    x : x2,
+    y : y2,
+    d : diameter/2 - distInside2,
+  };
+}
+
 p5.prototype.collideLineLine = function(x1, y1, x2, y2, x3, y3, x4, y4,calcIntersection) {
 
   var intersection;

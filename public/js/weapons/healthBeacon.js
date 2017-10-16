@@ -38,13 +38,11 @@ function HealthBeacon(x, y, col, owner, id) {
         if (d < this.radius) {
           tank.health += map(d, 0, this.radius, 0.07, 0);
           this.speed = map(d, 0, this.radius, 0.15, 0.01);
-          if (this.health < 1000) {
-            this.health += map(d, 0, this.radius, 0.1, 0);
-          } else {
-            this.health = 1000;
-          }
         }
       }
+    }
+    if(this.health < 999){
+      this.health += 0.03;
     }
     this.angle -= this.speed;
   };
@@ -94,4 +92,26 @@ function HealthBeacon(x, y, col, owner, id) {
     socket.emit('weapon', data);
     tank.weaponManager.healthPackets.push(hp);
   };
+
+
+  this.hitByBullet = function (b) {
+    if (b.col != this.colour) {
+      this.health -= b.damage;
+      if (this.health <= 0) {
+        if (b.name == tank.name) {
+          tank.health += 30;
+          tank.coins += 40;
+          notify("You destoyed " + this.owner + "'s health beacon", 150, this.colour, width - width / 3)
+        }
+        var data = {
+          id: this.id,
+          type: "healthBeaconRemove",
+        }
+        socket.emit('weapon', data);
+        particleEffects.push(new ParticleEffect(this.x, this.y, this.colour));
+        tank.weaponManager.healthBeacons.splice(tank.weaponManager.healthBeacons.indexOf(this), 1);
+      }
+      return true;
+    }
+  }
 }

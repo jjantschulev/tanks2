@@ -48,19 +48,20 @@ function Bomb(x, y, owner) {
         tank.weaponManager.bridges[i].checkDeath();
       }
     }
-    for (var i = tank.weaponManager.healthBeacons.length - 1; i >= 0; i--) {
-      var b = tank.weaponManager.healthBeacons[i];
-      var distToBridge = dist(
-        this.x,
-        this.y,
-        tank.weaponManager.healthBeacons[i].x,
-        tank.weaponManager.healthBeacons[i].y
-      );
-      if (distToBridge < 200) {
-        tank.weaponManager.healthBeacons[i].health -= 200 - distToBridge;
-        tank.weaponManager.healthBeacons[i].checkDeath();
-      }
-    }
+    //remove health beacons
+    // for (var i = tank.weaponManager.healthBeacons.length - 1; i >= 0; i--) {
+    //   var b = tank.weaponManager.healthBeacons[i];
+    //   var distToBridge = dist(
+    //     this.x,
+    //     this.y,
+    //     tank.weaponManager.healthBeacons[i].x,
+    //     tank.weaponManager.healthBeacons[i].y
+    //   );
+    //   if (distToBridge < 200) {
+    //     tank.weaponManager.healthBeacons[i].health -= 200 - distToBridge;
+    //     tank.weaponManager.healthBeacons[i].checkDeath();
+    //   }
+    // }
     for (var i = tank.weaponManager.landmines.length - 1; i >= 0; i--) {
       var d = dist(
         tank.weaponManager.landmines[i].x,

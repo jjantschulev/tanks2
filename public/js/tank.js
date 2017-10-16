@@ -135,9 +135,11 @@ function Tank() {
     this.pos.y = constrain(this.pos.y, -fullHeight / 2, fullHeight / 2);
 
     var hit = false;
+    var touchingWalls =[];
     for (var i = 0; i < walls.length; i++) {
       if (walls[i].tankColliding(this.pos)) {
         hit = true;
+        touchingWalls.push(walls[i]);
       }
     }
     for (var i = 0; i < this.weaponManager.bridges.length; i++) {
@@ -159,18 +161,25 @@ function Tank() {
     this.ai.colliding = hit;
 
     if (hit) {
+      // for(var j = 0; j < touchingWalls.length; j++){
+      //   var wall = touchingWalls[j];
+      //   if(wall){
+      //     var c = distanceCollideLineCircle(wall.x1, wall.y1, wall.x2, wall.y2, this.pos.x, this.pos.y, this.h);
+      //     var v = createVector(this.pos.x - c.x, this.pos.y - c.y);
+      //     v.setMag(c.d);
+      //     this.pos.add(v);
+      //
+      //     if(c.d > 2){
+      //       this.pos.set(this.previousPos);
+      //     }else{
+      //       this.previousPos.set(this.pos);
+      //     }
+      //   }else {
+      //     this.pos.set(this.previousPos);
+      //   }
+      // }
+      //old collisions :
       this.pos.set(this.previousPos);
-      var phit = true;
-      while (phit) {
-        for (var i = 0; i < walls.length; i++) {
-          if (walls[i].tankColliding(this.previousPos)) {
-            phit = true;
-            this.previousPos.set(random(width), random(height));
-          } else {
-            phit = false;
-          }
-        }
-      }
     } else {
       this.previousPos.set(this.pos);
     }
@@ -305,10 +314,15 @@ function Tank() {
           random(-fullWidth / 2, fullWidth / 2),
           random(-fullHeight / 2, fullHeight / 2)
         );
-        console.log('not safe, in water');
+        console.log('not safe');
         spawnSafe = true;
         for (var i = 0; i < waters.length; i++) {
           if (waters[i].tankColliding(this.pos)) {
+            spawnSafe = false;
+          }
+        }
+        for (var i = 0; i < walls.length; i++) {
+          if(walls[i].tankColliding(this.pos)){
             spawnSafe = false;
           }
         }
