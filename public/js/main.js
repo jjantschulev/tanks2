@@ -8,7 +8,7 @@ function setup() {
   createCanvas(1000, 1000);
   font = loadFont("./assets/Raleway/Raleway-Regular.ttf");
   textFont(font);
-
+  stateManager = new StateManager();
   team = new Team();
   tank = new Tank();
   view = new View();
@@ -18,6 +18,8 @@ function setup() {
 
   //Prevent Right Click Menu
   var canvas = document.querySelector('#defaultCanvas0');
+  canvas.style.width = "100vh";
+  canvas.style.height = "100vh";
   canvas.oncontextmenu = function (e) {
     e.preventDefault();
   };
@@ -64,5 +66,28 @@ function showFrameRate() {
   textAlign(RIGHT);
   textSize(23);
   text(int(frameRate()), width - 8, 18);
+}
+
+
+
+/*
+Get Project line count:
+
+lib length = 45771
+
+git ls-files | grep js | xargs wc -l
+
+*/
+
+
+function newMap() {
+  resetAllFlags();
+  clearAllBridges(3333);
+  for(var i = tank.weaponManager.gunners.length - 1; i >= 0; i --){
+    tank.weaponManager.gunners[i].remove();
+  }
+  for(var i = tank.weaponManager.healthBeacons.length - 1; i >= 0; i --){
+    tank.weaponManager.healthBeacons[i].remove();
+  }
 
 }

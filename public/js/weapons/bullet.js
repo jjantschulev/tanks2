@@ -18,6 +18,7 @@ function Bullet(x, y, dir, name, type, col, options) {
     bombMode : false,
   };
 
+
   if (type == 1) {
     this.r = 4;
     this.speed = 6;

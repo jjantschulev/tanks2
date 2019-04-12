@@ -135,18 +135,8 @@ function Bridge(x, y, a, col, id, pos) {
 function clearAllBridges(password) {
   if(password == 3333){
     for(var i = tank.weaponManager.bridges.length - 1; i >= 0; i --){
-      var data = {
-        x : tank.weaponManager.bridges[i].x,
-        y : tank.weaponManager.bridges[i].y,
-        name : tank.name,
-      }
-      for (var j = 0; j < 10; j++) {
-        socket.emit('weapon', data);
-        tank.weaponManager.bombs.push(new Bomb(data.x, data.y, data.name));
-      }
-      // tank.weaponManager.bridges[i].health = -10;
-      // tank.weaponManager.bridges[i].checkDeath();
-
+      tank.weaponManager.bridges[i].health = -10;
+      tank.weaponManager.bridges[i].checkDeath();
     }
   }
 }

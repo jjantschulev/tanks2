@@ -55,11 +55,8 @@ function Flag(x, y, teamCol, id) {
 }
 
 function resetAllFlags(col) {
+  var colorToResetTo = col || "grey";
   for (var i = 0; i < flags.length; i++) {
-    if(col){
-      flags[i].changeColour(col, true);
-    }else{
-      flags[i].changeColour("grey", true);
-    }
+    flags[i].changeColour(colorToResetTo, true);
   }
 }

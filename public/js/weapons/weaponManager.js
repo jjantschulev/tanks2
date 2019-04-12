@@ -24,7 +24,7 @@ function WeaponManager() {
   this.landmineLimit = 10;
   this.bombLimit = 10;
   this.blastLimit = 2000;
-  this.gunnerLimit = 3;
+  this.gunnerLimit = 6;
   this.bridgeLimit = 7;
   this.missileLimit = 3;
   this.healthBeaconLimit = 1;

@@ -56,7 +56,7 @@ function Team() {
       }
     }
 
-    if (count >= 4) {
+    if (count >= 10) {
       notify(
         'too many ' + g.colour + ' gunners on the field',
         150,

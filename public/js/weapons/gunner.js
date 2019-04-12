@@ -81,9 +81,7 @@ function Gunner(x, y, colour, name, id) {
           }
           ct.x = tempPos.x;
           ct.y = tempPos.y;
-          fill(0, 255, 0);
-          noStroke();
-          ellipse(ct.x, ct.y, 10, 10);
+
         }else{
           ct.x = closestTank.x;
           ct.y = closestTank.y;
@@ -162,16 +160,20 @@ function Gunner(x, y, colour, name, id) {
           tank.coins += 40;
           notify("You destoyed " + this.owner + "'s gunner", 150, this.colour, width - width / 3)
         }
-        var data = {
-          id: this.id,
-          type: "gunnerRemove",
-        }
-        socket.emit('weapon', data);
-        particleEffects.push(new ParticleEffect(this.x, this.y, this.colour));
-        tank.weaponManager.gunners.splice(tank.weaponManager.gunners.indexOf(this), 1);
+        this.remove();
       }
       return true;
     }
+  }
+
+  this.remove = function () {
+    var data = {
+      id: this.id,
+      type: "gunnerRemove",
+    }
+    socket.emit('weapon', data);
+    particleEffects.push(new ParticleEffect(this.x, this.y, this.colour));
+    tank.weaponManager.gunners.splice(tank.weaponManager.gunners.indexOf(this), 1);
   }
 
   this.place = function () {
@@ -205,5 +207,11 @@ function Gunner(x, y, colour, name, id) {
       tank.weaponManager.gunners.splice(tank.weaponManager.gunners.indexOf(this), 1);
       return;
     }
+  }
+}
+
+function removeAllGunners() {
+  for(var i = tank.weaponManager.gunners.length -1; i >= 0; i --){
+    tank.weaponManager.gunners[i].remove();
   }
 }

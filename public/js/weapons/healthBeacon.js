@@ -56,20 +56,23 @@ function HealthBeacon(x, y, col, owner, id) {
       for (var i = 0; i < 4; i++) {
         this.dropHealthPacket();
       }
-
-      var removeData = {
-        type: 'healthBeaconRemove',
-        id: this.id
-      };
-      socket.emit('weapon', removeData);
-
-      tank.weaponManager.healthBeacons.splice(
-        tank.weaponManager.healthBeacons.indexOf(this),
-        1
-      );
+      this.remove();
       return true;
     }
   };
+
+  this.remove = function () {
+    var removeData = {
+      type: 'healthBeaconRemove',
+      id: this.id
+    };
+    socket.emit('weapon', removeData);
+
+    tank.weaponManager.healthBeacons.splice(
+      tank.weaponManager.healthBeacons.indexOf(this),
+      1
+    );
+  }
 
   this.dropHealthPacket = function() {
     var data = {
@@ -103,15 +106,25 @@ function HealthBeacon(x, y, col, owner, id) {
           tank.coins += 40;
           notify("You destoyed " + this.owner + "'s health beacon", 150, this.colour, width - width / 3)
         }
-        var data = {
-          id: this.id,
-          type: "healthBeaconRemove",
-        }
-        socket.emit('weapon', data);
-        particleEffects.push(new ParticleEffect(this.x, this.y, this.colour));
-        tank.weaponManager.healthBeacons.splice(tank.weaponManager.healthBeacons.indexOf(this), 1);
+        this.remove();
       }
       return true;
     }
+  }
+
+  this.remove = function () {
+    var data = {
+      id: this.id,
+      type: "healthBeaconRemove",
+    }
+    socket.emit('weapon', data);
+    particleEffects.push(new ParticleEffect(this.x, this.y, this.colour));
+    tank.weaponManager.healthBeacons.splice(tank.weaponManager.healthBeacons.indexOf(this), 1);
+  }
+}
+
+function removeAllHealthBeacons() {
+  for(var i = tank.weaponManager.healthBeacons.length -1; i >= 0; i--){
+    tank.weaponManager.healthBeacons[i].remove();
   }
 }
