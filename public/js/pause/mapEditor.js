@@ -57,6 +57,9 @@ function MapEditor() {
     }
 
     stroke(255, 145, 0);
+    if (!this.allWaters) this.allWaters = [];
+    if (!this.allWalls) this.allWalls = [];
+    if (!this.flags) this.flags = [];
     for (var j = 0; j < this.allWaters.length; j++) {
       for (var i = 0; i < this.allWaters[j].length - 1; i++) {
         line(this.allWaters[j][i].x, this.allWaters[j][i].y, this.allWaters[j][i + 1].x, this.allWaters[j][i + 1].y);

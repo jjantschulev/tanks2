@@ -104,6 +104,9 @@ function GifExplosion(x, y) {
 
   this.show = function () {
     imageMode(CENTER);
-    image(this.image, this.x, this.y, 45, 45);
+    console.log(this.image)
+    if (!this.image.loaded()) {
+      // image(this.image, this.x, this.y, 45, 45);
+    }
   }
 }

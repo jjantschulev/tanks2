@@ -17,16 +17,16 @@ function setup() {
   onLoad();
 
   //Prevent Right Click Menu
-  var canvas = document.querySelector('#defaultCanvas0');
-  canvas.style.width = "100vh";
-  canvas.style.height = "100vh";
+  var canvas = document.querySelector("#defaultCanvas0");
+  canvas.style.width = "80vh";
+  canvas.style.height = "80vh";
   canvas.oncontextmenu = function (e) {
     e.preventDefault();
   };
-  var win = document.querySelector('#window');
+  var win = document.querySelector("#window");
   win.oncontextmenu = function (e) {
     e.preventDefault();
-  }
+  };
 }
 
 function draw() {
@@ -68,8 +68,6 @@ function showFrameRate() {
   text(int(frameRate()), width - 8, 18);
 }
 
-
-
 /*
 Get Project line count:
 
@@ -79,15 +77,13 @@ git ls-files | grep js | xargs wc -l
 
 */
 
-
 function newMap() {
   resetAllFlags();
   clearAllBridges(3333);
-  for(var i = tank.weaponManager.gunners.length - 1; i >= 0; i --){
+  for (var i = tank.weaponManager.gunners.length - 1; i >= 0; i--) {
     tank.weaponManager.gunners[i].remove();
   }
-  for(var i = tank.weaponManager.healthBeacons.length - 1; i >= 0; i --){
+  for (var i = tank.weaponManager.healthBeacons.length - 1; i >= 0; i--) {
     tank.weaponManager.healthBeacons[i].remove();
   }
-
 }
